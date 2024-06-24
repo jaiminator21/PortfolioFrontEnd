@@ -1,0 +1,99 @@
+<app-header></app-header>
+<div class="login-component">
+    <div *ngIf="succesfulRegistry">
+        <div class="alert alert-success" role="alert">
+            {{succesfulRegistry}} <a href="">login</a>
+        </div>
+    </div>
+    <div *ngIf="existingUser">
+        <div class="alert alert-warning" role="alert">
+            {{existingUser}}
+        </div>
+    </div>
+    <mat-card class="register-card">
+      <div>
+        <h1 class="title">Register</h1>
+      </div>
+      <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+
+        <mat-form-field appearance="fill">
+            <mat-label>Username</mat-label>
+            <input
+              matInput
+              type="username"
+              id="username"
+              required
+              [(ngModel)]="user.username"
+              name="username"
+              #email="ngModel"
+              placeholder="John"
+            />
+          </mat-form-field>
+
+
+        <mat-form-field appearance="fill">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            id="email"
+            required
+            [(ngModel)]="user.email"
+            name="email"
+            #email="ngModel"
+            placeholder="example@example.com"
+          />
+          <div *ngIf="emailError" style="color: red">
+            {{ emailError }}
+          </div>
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+          <mat-label>Password</mat-label>
+          <input
+            matInput
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            required
+            [(ngModel)]="user.password"
+            name="password"
+            #password="ngModel"
+            placeholder="********"
+          />
+          <div *ngIf="passwordError" style="color: red">
+            {{ passwordError }}
+          </div>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+            <mat-label>Confirm password</mat-label>
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              id="cpassword"
+              required
+              [(ngModel)]="user.cpassword"
+              name="cpassword"
+              #password="ngModel"
+              placeholder="********"
+            />
+            <div *ngIf="passwordError" style="color: red">
+              {{ passwordError }}
+            </div>
+          </mat-form-field>
+          <section class="example-section">
+            <mat-checkbox class="example-margin" (change)="toggleShowPassword()">Show password</mat-checkbox>
+          </section>
+          
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="registerForm.invalid">Login</button>
+      </form>
+      <div class="title">
+        <h5>¿Todavía no tienes una cuenta? <a href="/register">Registrate</a></h5>
+      </div>
+
+    </mat-card>
+  </div>
+  
