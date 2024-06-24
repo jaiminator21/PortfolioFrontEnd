@@ -1,13 +1,17 @@
 <app-header></app-header>
 <div class="games-container">
-    <div>
-        <mat-card>
-            
-        </mat-card>
-    </div>
-
+  <mat-card *ngFor="let game of gamesList" fxFlex="25">
+    <ngb-carousel>
+        <ng-template ngbSlide *ngFor="let image of game.images; let i = index" [id]="'slide-' + i">
+          <div class="picsum-img-wrapper">
+            <img mat-card-image [src]="image" alt="Slide {{ i + 1 }}" class="d-block w-100" />
+            <div class="carousel-caption">
+              <h1>{{ game.name }}</h1>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-carousel>
+      
+    
+  </mat-card>
 </div>
-
-
-
-<p>videogames works!</p>
