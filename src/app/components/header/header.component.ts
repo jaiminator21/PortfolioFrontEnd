@@ -15,9 +15,7 @@ export class HeaderComponent {
   }
 
 
-  OnInit(){
-    
-  }
+
   openMenu(){
     this.menuValue =! this.menuValue ;
     this.menu_icon = this.menuValue ? 'bi bi-x' : 'bi bi-list';
@@ -34,6 +32,10 @@ export class HeaderComponent {
 
   Login = ()=>{
     this.router.navigate(['/login'])
+  }
+
+  Games = ()=>{
+    this.router.navigate(['/games'])
   }
 
 

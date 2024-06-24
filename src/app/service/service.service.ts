@@ -29,7 +29,9 @@ export class ServiceService {
     return this.http.get<any>(`${this.baseUrl}/users/checksession`, { headers });
   }
 
-
+  getGames() {
+    return this.http.get(`${this.baseUrl}/games`);
+  }
 
 
 }

@@ -22,6 +22,10 @@ export class LoginComponent {
 
   passwordError: string = '';
   emailError: string = '';
+  loginError: string = '';
+  sucessfulLogin:string='';
+  showCountDown:any= '';
+  showPassword: boolean = false;
 
   constructor(
     private service: ServiceService,
@@ -50,6 +54,28 @@ export class LoginComponent {
     return true;
   }
 
+  CountDown(minute:number) {
+    // let minute = 1;
+    let seconds: number = minute * 60;
+    let currentSecondtxt: any = "0";
+
+    const timer = setInterval(() => {
+      seconds--;
+      currentSecondtxt = seconds;
+      this.showCountDown = `${currentSecondtxt}`;
+
+      if (seconds == 0) {
+        clearInterval(timer);
+        this.router.navigate(['/about']);
+      }
+    }, 1000);
+  }
+
+  toggleShowPassword(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+
   onSubmit(): void {
     if (this.validateEmail(this.user.email)) {
       console.log("Email correcto");      
@@ -58,13 +84,18 @@ export class LoginComponent {
         this.service.login(this.user).subscribe(
           (res) => {
             console.log(res);
+            this.loginError = ''
             localStorage.setItem('token', res.token);
             localStorage.setItem('role', res.user.role);
             localStorage.setItem('role', res.user.username);
-            this.router.navigate(['/lista']);
+            this.sucessfulLogin = `Login succesfull, you will be redirected in`
+            this.CountDown(0.2)
+            //this.router.navigate(['/lista']);
           },
           (err) => {
             console.error('Hubo un error durante el inicio de sesión', err);
+              this.sucessfulLogin = ''
+            this.loginError = err.error.message
           }
         );
       } else {

@@ -18,6 +18,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './pages/register/register.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { VideogamesComponent } from './pages/videogames/videogames.component';
 
 
 @NgModule({
@@ -29,6 +30,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     HeaderComponent,
     LoginComponent,
     RegisterComponent,
+    VideogamesComponent,
 
 
   ],
