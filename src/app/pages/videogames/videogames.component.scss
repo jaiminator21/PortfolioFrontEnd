@@ -1,33 +1,44 @@
-
-
-
-.games-container{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-content: space-evenly;
-  flex-wrap: wrap;
+.menu-spacer {
+  flex: 1 1 auto;
 }
 
-.game-card{
-  .image{
-    height: 500px;
+
+
+.games-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 25px; // Agrega espacio entre las tarjetas
+
+  @media (max-width: 1200px) {
+    .game-card {
+      flex: 0 0 33.33%; // 3 tarjetas por fila
+    }
+  }
+
+  @media (max-width: 992px) {
+    .game-card {
+      flex: 0 0 50%; // 2 tarjetas por fila
+    }
+  }
+
+  @media (max-width: 768px) {
+    .game-card {
+      flex: 0 0 100%; // 1 tarjeta por fila
+    }
+    .carousel-caption h1 {
+      font-size: 1.5rem;
+    }
+    .carousel-caption h4 {
+      font-size: 1rem;
+    }
   }
 }
 
-.picsum-img-wrapper {
+.carousel-inner {
   position: relative;
-  border-radius: 15px;
+  width: 100%;
   overflow: hidden;
-  margin-left: 10px;
-  margin-right: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.picsum-img-wrapper img {
-  height: 350px;
 }
 
 .carousel-caption {
@@ -37,21 +48,12 @@
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
   color: white;
-  background-color: rgba(
-    0,
-    0,
-    0,
-    0.5
-  ); /* Fondo semitransparente para mejorar la legibilidad */
-}
-
-.carousel-caption{
-  display: flex;
-  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.5); // Fondo semitransparente para mejorar la legibilidad
 }
 
 .carousel-caption h1 {
@@ -60,7 +62,26 @@
   font-weight: bold;
 }
 
-.d-block{
-  margin-left: 20px;
-  margin-right: 20px;
+.carousel-caption h4 {
+  margin: 0;
+  font-size: 1.2rem;
 }
+.carousel-inner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+
+.carousel-item {
+  position: relative;
+  width: 100%;
+  height: 300px; /* Ajusta la altura deseada */
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que la imagen cubra completamente el contenedor */
+}
+
+

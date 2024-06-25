@@ -7,6 +7,7 @@ export class Games {
     public engine: string,
     public descripcion: string,
     public trailer: string = '',
+    public download: string = '',
     public images: string[]
   ) {}
 }

@@ -20,6 +20,10 @@ import { RegisterComponent } from './pages/register/register.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { VideogamesComponent } from './pages/videogames/videogames.component';
 import { ViewVideogameComponent } from './pages/view-videogame/view-videogame.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from "@angular/material/icon";
 
 
 @NgModule({
@@ -49,7 +53,11 @@ import { ViewVideogameComponent } from './pages/view-videogame/view-videogame.co
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatIconModule
   ],
   providers: [provideAnimations(),],
   bootstrap: [AppComponent]

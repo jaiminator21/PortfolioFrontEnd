@@ -1,16 +1,65 @@
-<app-header></app-header>
-<div class="games-container">
-  <div class="game-card" *ngFor="let game of gamesList" fxFlex="25" [routerLink]="[game._id]">
-    <ngb-carousel>
-        <ng-template class="image" ngbSlide *ngFor="let image of game.images; let i = index" [id]="'slide-' + i">
-          <div class="picsum-img-wrapper">
-            <img mat-card-image [src]="image" alt="Slide {{ i + 1 }}" class="d-block w-100" />
-            <div class="carousel-caption">
+<div style="height: 80vh">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        fxShow="true"
+        fxHide.gt-sm
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Responsive Navigation</span>
+      <span class="menu-spacer"></span>
+      <div fxShow="true" fxHide.lt-md>
+        <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+        <a href="/about" mat-button>About</a>
+        <a href="/games" mat-button>Games</a>
+        <a href="/levels" mat-button>Level Design</a>
+        <a href="/fullstack" mat-button>Fullstack</a>
+        <a href="/login" mat-button>Login</a>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-sidenav-container fxFlexFill>
+    <mat-sidenav #sidenav>
+      <mat-nav-list>
+        <a (click)="sidenav.toggle()" mat-list-item>Close</a>
+        <a href="#" mat-list-item>About</a>
+        <a href="#" mat-list-item>Games</a>
+        <a href="#" mat-list-item>Level Design</a>
+        <a href="#" mat-list-item>Fullstack</a>
+        <a href="#" mat-list-item>Login</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <div class="games-container">
+      <div class="games-container">
+        <div class="game-card" *ngFor="let game of gamesList" fxFlex="25">
+          <div id="carouselExample{{ game._id }}" class="carousel slide">
+            <div class="carousel-inner" >
+              <div *ngFor="let image of game.images; let i = index" [ngClass]="{'carousel-item': true, 'active': i === 0}" [id]="'slide-' + i" >
+                <img mat-card-image [src]="image" alt="Slide {{ i + 1 }}" class="d-block w-100" />
+              </div>
+            </div>
+            <div class="carousel-caption" [routerLink]="[game._id]">
               <h1>{{ game.name }}</h1>
               <h4>{{ game.genero }}</h4>
             </div>
+            <button class="carousel-control-prev" type="button" [attr.data-bs-target]="'#carouselExample' + game._id" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" [attr.data-bs-target]="'#carouselExample' + game._id" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
           </div>
-        </ng-template>
-      </ngb-carousel>
-  </div>
+        </div>
+      </div>
+      
+    </div>
+    
+  </mat-sidenav-container>
 </div>
+

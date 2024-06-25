@@ -1,66 +1,110 @@
-<app-header></app-header>
-
-<div class="login-component">
-  <div *ngIf="sucessfulLogin">
-    <div class="alert alert-success" role="alert">
-      {{ sucessfulLogin }} {{showCountDown}}
-    </div>
-  </div>
-  <div *ngIf="loginError">
-    <div class="alert alert-warning" role="alert">
-      {{ loginError }}
-    </div>
-  </div>
-  <mat-card class="register-card">
-    <div>
-      <h1 class="title">Login</h1>
-    </div>
-    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-      <mat-form-field appearance="fill">
-        <mat-label>Email</mat-label>
-        <input
-          matInput
-          type="email"
-          id="email"
-          required
-          [(ngModel)]="user.email"
-          name="email"
-          #email="ngModel"
-        />
-        <div *ngIf="emailError" style="color: red">
-          {{ emailError }}
-        </div>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          [type]="showPassword ? 'text' : 'password'"
-          id="password"
-          required
-          [(ngModel)]="user.password"
-          name="password"
-          #password="ngModel"
-        />
-        <div *ngIf="passwordError" style="color: red">
-          {{ passwordError }}
-        </div>
-      </mat-form-field>
-      <section class="example-section">
-        <mat-checkbox class="example-margin" (change)="toggleShowPassword()">Show password</mat-checkbox>
-      </section>
+<div >
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
       <button
-        mat-flat-button
-        color="primary"
-        type="submit"
-        [disabled]="registerForm.invalid"
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        fxShow="true"
+        fxHide.gt-sm
       >
-        Login
+        <mat-icon>menu</mat-icon>
       </button>
-    </form>
-    <div class="title">
-      <h5>¿Todavía no tienes una cuenta? <a href="/register">Registrate</a></h5>
+      <span>Responsive Navigation</span>
+      <span class="menu-spacer"></span>
+      <div fxShow="true" fxHide.lt-md>
+        <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+        <a href="/about" mat-button>About</a>
+        <a href="/games" mat-button>Games</a>
+        <a href="/levels" mat-button>Level Design</a>
+        <a href="/fullstack" mat-button>Fullstack</a>
+        <a href="/login" mat-button>Login</a>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-sidenav-container fxFlexFill>
+    <mat-sidenav #sidenav>
+      <mat-nav-list>
+        <a (click)="sidenav.toggle()" mat-list-item>Close</a>
+        <a href="#" mat-list-item>About</a>
+        <a href="#" mat-list-item>Games</a>
+        <a href="#" mat-list-item>Level Design</a>
+        <a href="#" mat-list-item>Fullstack</a>
+        <a href="#" mat-list-item>Login</a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <div class="login-component">
+      <div *ngIf="sucessfulLogin">
+        <div class="alert alert-success" role="alert">
+          {{ sucessfulLogin }} {{ showCountDown }}
+        </div>
+      </div>
+      <div *ngIf="loginError">
+        <div class="alert alert-warning" role="alert">
+          {{ loginError }}
+        </div>
+      </div>
+      <mat-card class="register-card">
+        <div>
+          <h1 class="title">Login</h1>
+        </div>
+        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              type="email"
+              id="email"
+              required
+              [(ngModel)]="user.email"
+              name="email"
+              #email="ngModel"
+            />
+            <div *ngIf="emailError" style="color: red">
+              {{ emailError }}
+            </div>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              required
+              [(ngModel)]="user.password"
+              name="password"
+              #password="ngModel"
+            />
+
+            <div *ngIf="passwordError" style="color: red">
+              {{ passwordError }}
+            </div>
+          </mat-form-field>
+          <h5>
+           <a href="/register">He olvidado mi contraseña</a>
+          </h5>
+          <section class="example-section">
+            <mat-checkbox class="example-margin" (change)="toggleShowPassword()"
+              >Show password</mat-checkbox
+            >
+          </section>
+          <button
+            mat-flat-button
+            color="primary"
+            type="submit"
+            [disabled]="registerForm.invalid"
+          >
+            Login
+          </button>
+        </form>
+        <div class="title">
+          <h5>
+            ¿Todavía no tienes una cuenta? <a href="/register">Registrate</a>
+          </h5>
+        </div>
+      </mat-card>
     </div>
-  </mat-card>
+  </mat-sidenav-container>
 </div>

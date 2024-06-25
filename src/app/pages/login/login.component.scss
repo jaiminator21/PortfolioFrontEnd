@@ -1,3 +1,7 @@
+.menu-spacer {
+  flex: 1 1 auto;
+}
+
 .btn-primary {
   margin-top: 5px;
 }
@@ -6,15 +10,11 @@
   max-width: 400px;
   margin: 2rem auto;
   padding: 2rem;
-  /*  background-image: url('../../../assets/home1.jpg'); 
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; */
-
   .title {
     text-align: center;
   }
 }
+
 form {
   display: flex;
   flex-direction: column;

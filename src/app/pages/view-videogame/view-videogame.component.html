@@ -1,47 +1,63 @@
-<app-header></app-header>
-<div>
-  <div class="title">
-    <h1>{{ game.name }}</h1>
-  </div>
-  <div class="main">
-    <div class="left">
-      <div>
-        <h2>Genre</h2>
-        <h3>{{ game.genero }}</h3>
+<div >
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <button
+        mat-icon-button
+        (click)="sidenav.toggle()"
+        fxShow="true"
+        fxHide.gt-sm
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Responsive Navigation</span>
+      <span class="menu-spacer"></span>
+      <div fxShow="true" fxHide.lt-md>
+        <!-- The following menu items will be hidden on both SM and XS screen sizes -->
+        <a href="/about" mat-button>About</a>
+        <a href="/games" mat-button>Games</a>
+        <a href="/levels" mat-button>Level Design</a>
+        <a href="/fullstack" mat-button>Fullstack</a>
+        <a href="/login" mat-button>Login</a>
       </div>
-      <div>
-        <h2>Engine</h2>
-        <h3>{{ game.engine }}</h3>
-      </div>
-    </div>
-    <div class="right">
-      <p>{{ game.descripcion }}</p>
-    </div>
-  </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
 
-  <ngb-carousel class="images">
-    <ng-template
-      class="image"
-      ngbSlide
-      *ngFor="let image of game.images; let i = index"
-      [id]="'slide-' + i"
-    >
-      <div class="picsum-img-wrapper">
-        <img
-          mat-card-image
-          [src]="image"
-          alt="Slide {{ i + 1 }}"
-          class="d-block w-100"
-        />
-        <div class="carousel-caption">
-          <h1>{{ game.name }}</h1>
-          <h4>{{ game.genero }}</h4>
+  <mat-sidenav-container fxFlexFill>
+    <mat-sidenav #sidenav>
+      <mat-nav-list>
+        <a (click)="sidenav.toggle()" mat-list-item>Close</a>
+        <a href="#" mat-list-item>About</a>
+        <a href="#" mat-list-item>Games</a>
+        <a href="#" mat-list-item>Level Design</a>
+        <a href="#" mat-list-item>Fullstack</a>
+        <a href="#" mat-list-item>Login</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <div class="main-game">
+      <div class="game-title">
+        <h1>{{game.name}}</h1>
+      </div>
+      <div class="game-desc">
+        <div class="left">
+          <div>
+            <h2>Genre</h2>
+            <h3>{{ game.genero }}</h3>
+          </div>
+          <div>
+            <h2>Engine</h2>
+            <h3>{{ game.engine }}</h3>
+          </div>
+        </div>
+        <div class="right">
+          <h3>{{ game.descripcion }}</h3>
         </div>
       </div>
-    </ng-template>
-  </ngb-carousel>
-  <h1>{{game.trailer}}</h1>
-  <div *ngIf="game.trailer" class="video-container">
-    <iframe width="560" height="315" [src]="trailerUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-  </div>
+      <div class="game-download" *ngIf="game.download">
+          <a [href]="game.download" class="custom-btn btn" target="_blank"><span>Try the game</span></a>
+      </div>
+      <div *ngIf="game.trailer" class="video-container">
+        <iframe width="560" height="315" [src]="trailerUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </div>
+  </mat-sidenav-container>
 </div>
