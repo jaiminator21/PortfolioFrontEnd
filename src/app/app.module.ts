@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { RegisterComponent } from './pages/register/register.component';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { VideogamesComponent } from './pages/videogames/videogames.component';
+import { ViewVideogameComponent } from './pages/view-videogame/view-videogame.component';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { VideogamesComponent } from './pages/videogames/videogames.component';
     LoginComponent,
     RegisterComponent,
     VideogamesComponent,
+    ViewVideogameComponent,
 
 
   ],

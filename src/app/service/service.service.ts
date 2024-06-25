@@ -21,6 +21,14 @@ export class ServiceService {
     return this.http.post(`${this.baseUrl}/users/login`, user);
   }
   
+  logout(token: string | null): Observable<any> {
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.get<any>(`${this.baseUrl}/users/logout`, { headers });
+  }
+
   checksession(token: string | null): Observable<any> {
     let headers = new HttpHeaders();
     if (token) {
@@ -33,5 +41,8 @@ export class ServiceService {
     return this.http.get(`${this.baseUrl}/games`);
   }
 
+  getGamesById(id:string): Observable<string>  {
+    return this.http.get<string>(`${this.baseUrl}/games/${id}`);
+  }
 
 }

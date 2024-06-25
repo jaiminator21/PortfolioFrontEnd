@@ -1,5 +1,6 @@
 export class Games {
   constructor(
+    public _id: any = '',
     public name: string = '',
     public genero: string,
     public year: string,

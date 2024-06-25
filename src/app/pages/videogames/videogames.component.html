@@ -1,17 +1,16 @@
 <app-header></app-header>
 <div class="games-container">
-  <mat-card *ngFor="let game of gamesList" fxFlex="25">
+  <div class="game-card" *ngFor="let game of gamesList" fxFlex="25" [routerLink]="[game._id]">
     <ngb-carousel>
-        <ng-template ngbSlide *ngFor="let image of game.images; let i = index" [id]="'slide-' + i">
+        <ng-template class="image" ngbSlide *ngFor="let image of game.images; let i = index" [id]="'slide-' + i">
           <div class="picsum-img-wrapper">
             <img mat-card-image [src]="image" alt="Slide {{ i + 1 }}" class="d-block w-100" />
             <div class="carousel-caption">
               <h1>{{ game.name }}</h1>
+              <h4>{{ game.genero }}</h4>
             </div>
           </div>
         </ng-template>
       </ngb-carousel>
-      
-    
-  </mat-card>
+  </div>
 </div>
