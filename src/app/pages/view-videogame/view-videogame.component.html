@@ -1,4 +1,4 @@
-<div >
+<div>
   <mat-toolbar color="primary">
     <mat-toolbar-row>
       <button
@@ -35,7 +35,7 @@
     </mat-sidenav>
     <div class="main-game">
       <div class="game-title">
-        <h1>{{game.name}}</h1>
+        <h1>{{ game.name }}</h1>
       </div>
       <div class="game-desc">
         <div class="left">
@@ -53,10 +53,61 @@
         </div>
       </div>
       <div class="game-download" *ngIf="game.download">
-          <a [href]="game.download" class="custom-btn btn" target="_blank"><span>Try the game</span></a>
+        <a [href]="game.download" class="custom-btn btn" target="_blank"
+          ><span>Try the game</span></a
+        >
       </div>
-      <div *ngIf="game.trailer" class="video-container">
-        <iframe width="560" height="315" [src]="trailerUrl" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <div class="game-media">
+        <div *ngIf="game.trailer" class="video-container">
+          <iframe
+            width="560"
+            height="315"
+            [src]="trailerUrl"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div id="carouselExample{{ game._id }}" class="carousel slide">
+          <div class="carousel-inner">
+            <div
+              *ngFor="let image of game.images; let i = index"
+              [ngClass]="{ 'carousel-item': true, active: i === 0 }"
+              [id]="'slide-' + i"
+            >
+              <img
+                mat-card-image
+                [src]="image"
+                alt="Slide {{ i + 1 }}"
+                class="d-block w-100"
+              />
+            </div>
+          </div>
+          <div class="carousel-caption" [routerLink]="[game._id]">
+            <h1>{{ game.name }}</h1>
+            <h4>{{ game.genero }}</h4>
+          </div>
+          <button
+            class="carousel-control-prev"
+            type="button"
+            [attr.data-bs-target]="'#carouselExample' + game._id"
+            data-bs-slide="prev"
+          >
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button
+            class="carousel-control-next"
+            type="button"
+            [attr.data-bs-target]="'#carouselExample' + game._id"
+            data-bs-slide="next"
+          >
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
     </div>
   </mat-sidenav-container>
