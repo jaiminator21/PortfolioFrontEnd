@@ -24,6 +24,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from "@angular/material/icon";
+import { TestComponent } from './pages/test/test.component';
 
 
 @NgModule({
@@ -37,6 +38,7 @@ import { MatIconModule } from "@angular/material/icon";
     RegisterComponent,
     VideogamesComponent,
     ViewVideogameComponent,
+    TestComponent,
 
 
   ],
