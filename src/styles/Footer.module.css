@@ -1,0 +1,58 @@
+.footer {
+  padding: 4rem 0; /* py-16 */
+  background-color: var(--background);
+  border-top: 1px solid var(--border);
+  transition: background-color 0.3s ease;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.title {
+  color: var(--foreground);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.navStack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.socialFlex {
+  display: flex;
+  gap: 1rem;
+}
+
+.bottomBar {
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .bottomBar {
+    flex-direction: row;
+  }
+}
+
+.copy {
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
