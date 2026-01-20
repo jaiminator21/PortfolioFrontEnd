@@ -1,0 +1,43 @@
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background);
+  width: 100vw;
+}
+
+.content {
+  max-width: 64rem; /* max-w-5xl */
+}
+
+.title {
+  font-size: clamp(2.5rem, 8vw, 4.5rem); /* Tamaño fluido */
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  color: var(--foreground);
+}
+
+.description {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+  margin-bottom: 3rem;
+  max-width: 40rem;
+  line-height: 1.6;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Animación de la flecha al hacer hover en el link padre */
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+.buttonGroup a:hover .arrow {
+  transform: translateX(4px);
+}
