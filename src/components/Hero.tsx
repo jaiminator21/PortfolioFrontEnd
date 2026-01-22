@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from 'framer-motion';
-
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import styles from '@/styles/Hero.module.css';
@@ -40,6 +39,7 @@ export default function Hero() {
               Proyectos personales
             </Link>
           </div>
+          
         </motion.div>
       </div>
     </section>

@@ -10,7 +10,6 @@ const ThemeContext = createContext({
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [isDark, setIsDark] = useState(false);
 
-  // Al cargar, comprobamos si ya había una preferencia guardada
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme === "dark") {

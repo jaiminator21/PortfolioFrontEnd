@@ -3,9 +3,10 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon } from 'lucide-react';
+import { Menu, X, Sun, Moon, CircleUserIcon } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import styles from '@/styles/Header.module.css';
+import { Button } from '../ui/Button';
 
 export default function Header() {
   const pathname = usePathname();
@@ -51,10 +52,12 @@ export default function Header() {
               >
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
               </button>
-              
-              <Link href="/login" className="btn-primary">
+              <Button variant="default" size="sm" asChild>
+              <Link href="/login" >
+              <CircleUserIcon />
                 Iniciar sesión
               </Link>
+              </Button>
             </div>
           </nav>
 
