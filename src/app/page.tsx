@@ -1,5 +1,3 @@
-import Image from "next/image";
-import styles from "@/styles/Page.module.css";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Experience from "@/components/Experience";
