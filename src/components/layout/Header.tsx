@@ -45,13 +45,13 @@ export default function Header() {
             </div>
 
             <div className={styles.actions}>
-              <button 
+              <Button 
                 onClick={toggleTheme} 
                 className="btn-icon" 
                 aria-label="Cambiar tema"
               >
                 {isDark ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
+              </Button>
               <Button variant="default" size="sm" asChild>
               <Link href="/login" >
               <CircleUserIcon />

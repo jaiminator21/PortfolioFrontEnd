@@ -1,43 +1,146 @@
 .hero {
+  position: relative;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
   background-color: var(--background);
-  width: 100vw;
 }
 
+/* Background Video */
+.videoContainer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.video {
+  width: 100%;
+  height: 100%;
+  object-cover: cover;
+  opacity: 0.25;
+  transition: opacity 1s;
+}
+
+.videoOverlay {
+  position: absolute;
+  inset: 0;
+  /* Degradado que funde el video con el fondo */
+  background: linear-gradient(to bottom, transparent, var(--background) 80%);
+}
+
+/* Patterns */
+.noiseOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.15;
+  pointer-events: none;
+}
+
+.gridPattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.05;
+  pointer-events: none;
+  background-image: radial-gradient(var(--foreground) 0.5px, transparent 0.5px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 80%);
+}
+
+/* Text Styles */
 .content {
-  max-width: 64rem; /* max-w-5xl */
+  max-width: 64rem;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--primary); /* Cambiado de blue-600 a tu variable primary */
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.875rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 1.5rem;
+}
+
+.kickerLine {
+  width: 2rem;
+  height: 1px;
+  background-color: var(--primary);
 }
 
 .title {
-  font-size: clamp(2.5rem, 8vw, 4.5rem); /* Tamaño fluido */
-  font-weight: 700;
-  line-height: 1.1;
+  font-size: clamp(2.5rem, 10vw, 6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.05em;
   margin-bottom: 1.5rem;
   color: var(--foreground);
 }
 
-.description {
-  font-size: 1.125rem;
-  color: var(--muted-foreground);
-  margin-bottom: 3rem;
-  max-width: 40rem;
-  line-height: 1.6;
+.titleGradient {
+  background: linear-gradient(90deg, var(--foreground), var(--muted-foreground), var(--foreground));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
+.description {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--muted-foreground);
+  max-width: 45rem;
+  margin-bottom: 2rem;
+}
+
+.highlight {
+  font-weight: 600;
+  color: var(--foreground);
+  text-decoration: underline;
+  text-decoration-color: rgba(59, 130, 246, 0.3); /* Un toque de azul sutil */
+}
+
+/* Buttons */
 .buttonGroup {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-/* Animación de la flecha al hacer hover en el link padre */
 .arrow {
   transition: transform 0.3s ease;
 }
 
-.buttonGroup a:hover .arrow {
+.mainBtn:hover .arrow {
   transform: translateX(4px);
+}
+
+.secondaryBtn span {
+  transition: letter-spacing 0.3s ease;
+}
+
+.secondaryBtn:hover span {
+  letter-spacing: 0.05em;
+}
+
+/* Scroll Indicator */
+.scrollIndicator {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+}
+
+.scrollText {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
 }

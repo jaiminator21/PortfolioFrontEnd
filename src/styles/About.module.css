@@ -1,36 +1,156 @@
 .about {
   padding: 8rem 0; /* py-32 */
-  background-color: var(--secondary); /* Fondo sutil que cambia con el tema */
+  background-color: var(--background);
+  position: relative;
+  overflow: hidden;
   transition: background-color 0.3s ease;
 }
 
-.title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
+/* Texto de fondo "PROFILE" */
+.sideText {
+  position: absolute;
+  right: -3rem;
+  top: 50%;
+  transform: translateY(-50%) rotate(-90deg);
+  font-size: 10rem;
+  font-weight: 900;
   color: var(--foreground);
+  opacity: 0.03;
+  pointer-events: none;
+  user-select: none;
+  display: none;
 }
 
+@media (min-width: 1024px) {
+  .sideText { display: block; }
+}
+
+/* Cabecera */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 2.5rem;
+  white-space: nowrap;
+   color: var(--foreground);
+}
+
+.headerLine {
+  height: 2px;
+  flex: 1;
+  background: linear-gradient(90deg, var(--ring), transparent);
+  opacity: 0.3;
+}
+
+/* Layout Grid */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 3rem;
+  align-items: start;
 }
 
 @media (min-width: 768px) {
   .grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(12, 1fr);
   }
+  .textColumn { grid-column: span 7; }
+  .visualColumn { grid-column: span 5; }
 }
 
-.column {
+/* Tipografía */
+.textColumn {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem; /* space-y-6 */
+  gap: 2rem;
+  font-size: 1.25rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
 }
 
-.column p {
-  font-size: 1.125rem; /* text-lg */
-  line-height: 1.75; /* leading-relaxed */
+.leadParagraph {
+  color: var(--foreground);
+}
+
+.highContrast {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.techSpan {
+  font-family: monospace;
+  color: var(--primary);
+  font-weight: 500;
+}
+
+/* Mini Grid inferior */
+.miniGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.subLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted-foreground);
+  margin-bottom: 0.5rem;
+}
+
+.subText {
+  font-size: 1rem;
+  color: var(--foreground);
+}
+
+/* Caja de Experiencia */
+.experienceBox {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background-color: var(--secondary);
+  padding: 2rem;
+}
+
+.boxDecoration {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--foreground);
+  opacity: 0.1;
+  transition: transform 0.5s ease;
+}
+
+.experienceBox:hover .boxDecoration {
+  transform: translate(1rem, 1rem);
+}
+
+.boxContent {
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+}
+
+.expNumber {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--foreground);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.expLabel {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--muted-foreground);
 }
