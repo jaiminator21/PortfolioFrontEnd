@@ -2,44 +2,38 @@
 
 import { motion } from 'framer-motion';
 import { Code2, Database, Wrench } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from '@/styles/Skills.module.css';
 
-interface SkillCategory {
-  title: string;
-  icon: React.ReactNode;
-  skills: string[];
-}
-
-const skillCategories: SkillCategory[] = [
+const skillCategories = [
   {
-    title: 'Frontend',
+    key: 'frontend' as const,
     icon: <Code2 size={24} />,
     skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
   },
   {
-    title: 'Backend',
+    key: 'backend' as const,
     icon: <Database size={24} />,
     skills: ['Node.js', 'Express', 'MongoDB', 'MySQL'],
   },
   {
-    title: 'Tooling',
+    key: 'tooling' as const,
     icon: <Wrench size={24} />,
     skills: ['Git', 'Docker', 'GitHub Actions', 'Vercel', 'AWS', 'Vite'],
-  }
+  },
 ];
 
 export default function Skills() {
+  const t = useTranslations('Skills');
+
   const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.05 }
-    }
+    show: { opacity: 1, transition: { staggerChildren: 0.05 } },
   };
 
   const itemVariants = {
     hidden: { opacity: 0, y: 10 },
-    show: { opacity: 1, y: 0 }
+    show: { opacity: 1, y: 0 },
   };
 
   return (
@@ -52,16 +46,14 @@ export default function Skills() {
           transition={{ duration: 0.8 }}
         >
           <header className={styles.header}>
-            <h2 className={styles.title}>Stack Técnico</h2>
-            <p className={styles.subtitle}>
-              Herramientas seleccionadas para construir software escalable.
-            </p>
+            <h2 className={styles.title}>{t('title')}</h2>
+            <p className={styles.subtitle}>{t('subtitle')}</p>
           </header>
 
           <div className={styles.grid}>
             {skillCategories.map((category, index) => (
               <motion.div
-                key={index}
+                key={category.key}
                 className={styles.card}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -73,9 +65,9 @@ export default function Skills() {
                   <span className={styles.cardNumber}>0{index + 1}</span>
                 </div>
 
-                <h3 className={styles.categoryTitle}>{category.title}</h3>
+                <h3 className={styles.categoryTitle}>{t(`categories.${category.key}`)}</h3>
 
-                <motion.div 
+                <motion.div
                   className={styles.tagCloud}
                   variants={containerVariants}
                   initial="hidden"
@@ -83,11 +75,7 @@ export default function Skills() {
                   viewport={{ once: true }}
                 >
                   {category.skills.map((skill, i) => (
-                    <motion.span 
-                      key={i} 
-                      className={styles.tag}
-                      variants={itemVariants}
-                    >
+                    <motion.span key={i} className={styles.tag} variants={itemVariants}>
                       {skill}
                     </motion.span>
                   ))}

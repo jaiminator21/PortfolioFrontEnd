@@ -2,66 +2,30 @@
 
 import { motion } from 'framer-motion';
 import { Github, ExternalLink } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from '@/styles/PersonalProjects.module.css';
 
+type ProjectKey = 'devmetrics' | 'taskmaster' | 'perfmonitor' | 'componentlib' | 'ratelimiter' | 'snippets';
+
 interface PersonalProject {
-  name: string;
-  description: string;
+  key: ProjectKey;
   stack: string[];
   demoUrl?: string;
   repoUrl: string;
 }
 
 const projects: PersonalProject[] = [
-  {
-    name: 'DevMetrics Dashboard',
-    description:
-      'Dashboard para visualizar métricas de GitHub: commits, PRs, issues. Integración con GitHub API y gráficas interactivas.',
-    stack: ['React', 'Chart.js', 'GitHub API', 'Tailwind CSS'],
-    demoUrl: '#',
-    repoUrl: '#',
-  },
-  {
-    name: 'Task Master Pro',
-    description:
-      'Gestor de tareas con drag & drop, categorías personalizadas, filtros avanzados y modo offline-first con sync.',
-    stack: ['Next.js', 'IndexedDB', 'React DnD', 'TypeScript'],
-    demoUrl: '#',
-    repoUrl: '#',
-  },
-  {
-    name: 'Performance Monitor',
-    description:
-      'Herramienta CLI para analizar performance de aplicaciones web. Genera reports detallados de Core Web Vitals.',
-    stack: ['Node.js', 'Puppeteer', 'Lighthouse', 'Commander.js'],
-    repoUrl: '#',
-  },
-  {
-    name: 'Component Library',
-    description:
-      'Sistema de diseño personal con componentes reutilizables, documentación interactiva y theming customizable.',
-    stack: ['React', 'Storybook', 'CSS Modules', 'TypeScript'],
-    demoUrl: '#',
-    repoUrl: '#',
-  },
-  {
-    name: 'API Rate Limiter',
-    description:
-      'Middleware configurable de rate limiting para APIs con diferentes estrategias (token bucket, sliding window).',
-    stack: ['Express', 'Redis', 'Jest', 'TypeScript'],
-    repoUrl: '#',
-  },
-  {
-    name: 'Code Snippet Manager',
-    description:
-      'Aplicación para guardar, organizar y buscar snippets de código con syntax highlighting y etiquetas.',
-    stack: ['Vue 3', 'Pinia', 'Prism.js', 'Vite'],
-    demoUrl: '#',
-    repoUrl: '#',
-  },
+  { key: 'devmetrics', stack: ['React', 'Chart.js', 'GitHub API', 'Tailwind CSS'], demoUrl: '#', repoUrl: '#' },
+  { key: 'taskmaster', stack: ['Next.js', 'IndexedDB', 'React DnD', 'TypeScript'], demoUrl: '#', repoUrl: '#' },
+  { key: 'perfmonitor', stack: ['Node.js', 'Puppeteer', 'Lighthouse', 'Commander.js'], repoUrl: '#' },
+  { key: 'componentlib', stack: ['React', 'Storybook', 'CSS Modules', 'TypeScript'], demoUrl: '#', repoUrl: '#' },
+  { key: 'ratelimiter', stack: ['Express', 'Redis', 'Jest', 'TypeScript'], repoUrl: '#' },
+  { key: 'snippets', stack: ['Vue 3', 'Pinia', 'Prism.js', 'Vite'], demoUrl: '#', repoUrl: '#' },
 ];
 
 export default function PersonalProjects() {
+  const t = useTranslations('PersonalProjects');
+
   return (
     <section className={styles.section}>
       <div className="container-custom">
@@ -72,27 +36,25 @@ export default function PersonalProjects() {
           transition={{ duration: 0.6 }}
         >
           <div className={styles.intro}>
-            <h2 className={styles.title}>Proyectos Personales</h2>
-            <p className={styles.subtitle}>
-              Experimentación y exploración técnica fuera del entorno corporativo
-            </p>
+            <h2 className={styles.title}>{t('sectionTitle')}</h2>
+            <p className={styles.subtitle}>{t('sectionSubtitle')}</p>
           </div>
 
           <div className={styles.grid}>
             {projects.map((project, index) => (
               <motion.div
-                key={index}
+                key={project.key}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.6, delay: index * 0.05 }}
                 className={styles.card}
               >
-                <h3 className={styles.cardTitle}>{project.name}</h3>
-                <p className={styles.cardDescription}>{project.description}</p>
+                <h3 className={styles.cardTitle}>{t(`items.${project.key}.name`)}</h3>
+                <p className={styles.cardDescription}>{t(`items.${project.key}.description`)}</p>
 
                 <div>
-                  <p className={styles.stackLabel}>Stack</p>
+                  <p className={styles.stackLabel}>{t('stackLabel')}</p>
                   <div className={styles.stackList}>
                     {project.stack.map((tech, i) => (
                       <span key={i} className={styles.stackTag}>{tech}</span>
@@ -104,12 +66,12 @@ export default function PersonalProjects() {
                   {project.demoUrl && (
                     <a href={project.demoUrl} className={styles.actionLink}>
                       <ExternalLink size={16} />
-                      Demo
+                      {t('demo')}
                     </a>
                   )}
                   <a href={project.repoUrl} className={styles.actionLink}>
                     <Github size={16} />
-                    Código
+                    {t('code')}
                   </a>
                 </div>
               </motion.div>

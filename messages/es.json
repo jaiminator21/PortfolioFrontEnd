@@ -1,0 +1,297 @@
+{
+  "Common": {
+    "downloadCV": "Descargar CV",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "toggleTheme": "Cambiar tema",
+    "scroll": "Scroll",
+    "back": "Volver",
+    "loading": "Cargando..."
+  },
+  "Nav": {
+    "home": "Inicio",
+    "personalProjects": "Proyectos Personales",
+    "certifications": "Certificaciones",
+    "professionalProjects": "Proyectos Profesionales",
+    "contact": "Contacto"
+  },
+  "Hero": {
+    "kicker": "Desarrollador Web Full Stack",
+    "titlePart1": "Building the",
+    "titleHighlight": "digital",
+    "titlePart2": "future.",
+    "description": "Especializado en aplicaciones escalables con un enfoque implacable en el",
+    "descriptionHighlight": "rendimiento",
+    "descriptionEnd": "y la experiencia de usuario.",
+    "ctaProfessional": "Ver proyectos profesionales",
+    "ctaPersonal": "Proyectos personales"
+  },
+  "About": {
+    "sideText": "ABOUT ME",
+    "title": "Sobre mí",
+    "lead1Pre": "Soy un",
+    "lead1Highlight": "arquitecto de experiencias digitales",
+    "lead1Post": "con sede en España, dedicado a fusionar la estética técnica con un rendimiento impecable.",
+    "lead2Pre": "Mi enfoque va más allá del código; entiendo que cada línea debe servir a un propósito de negocio y mejorar la vida del usuario. Me especializo en el ecosistema",
+    "lead2Tech": "React / Next.js / TypeScript",
+    "philosophyLabel": "Filosofía",
+    "philosophyText": "Menos es más, pero mejor.",
+    "focusLabel": "Enfoque",
+    "focusText": "Producto-céntrico y modular.",
+    "experienceNumber": "5+",
+    "experienceLabel": "Años de experiencia construyendo productos"
+  },
+  "Experience": {
+    "title": "Experiencia",
+    "subtitle": "Trayectoria profesional enfocada en la excelencia técnica.",
+    "currentBadge": "Actual",
+    "presentLabel": "Presente",
+    "items": [
+      {
+        "company": "Tech Solutions Inc.",
+        "role": "Senior Frontend Developer",
+        "period": "2022 - Presente",
+        "description": "Liderazgo técnico en el desarrollo de plataformas SaaS B2B enfocadas en la gestión de proyectos de gran escala.",
+        "responsibilities": [
+          "Arquitectura y desarrollo del nuevo dashboard con React y TypeScript",
+          "Implementación de sistema de diseño compartido entre productos",
+          "Liderazgo técnico de un equipo de 4 desarrolladores frontend",
+          "Optimización de rendimiento y mejora de Core Web Vitals"
+        ]
+      },
+      {
+        "company": "Digital Ventures",
+        "role": "Full Stack Developer",
+        "period": "2020 - 2022",
+        "description": "Desarrollo integral de soluciones e-commerce de alto tráfico para retail multicanal.",
+        "responsibilities": [
+          "Desarrollo full stack con Next.js y Node.js",
+          "Integración con APIs de terceros (pasarelas de pago, CRM)",
+          "Implementación de testing automatizado (Jest, Cypress)",
+          "Colaboración directa con UX/UI en iteraciones de producto"
+        ]
+      }
+    ]
+  },
+  "Skills": {
+    "title": "Stack Técnico",
+    "subtitle": "Herramientas seleccionadas para construir software escalable.",
+    "categories": {
+      "frontend": "Frontend",
+      "backend": "Backend",
+      "tooling": "Tooling"
+    }
+  },
+  "CertificationsCTA": {
+    "kicker": "Certificaciones",
+    "titlePart1": "Validado por los",
+    "titleHighlight": "líderes",
+    "titlePart2": "de la industria",
+    "description": "Explora mi colección de certificaciones profesionales de AWS, Google Cloud, Meta y más — evidencia de aprendizaje continuo y dominio técnico.",
+    "cta": "Ver todas las certificaciones",
+    "stats": {
+      "certifications": "Certificaciones",
+      "providers": "Proveedores",
+      "hours": "Horas",
+      "skills": "Skills"
+    }
+  },
+  "Certifications": {
+    "title": "Cursos & Certificaciones",
+    "subtitle": "Aprendizaje continuo y validación de habilidades técnicas por organizaciones líderes de la industria.",
+    "count": "{count} Certificaciones Profesionales",
+    "filters": {
+      "all": "Todas",
+      "frontend": "Frontend",
+      "cloud": "Cloud",
+      "architecture": "Arquitectura",
+      "testing": "Testing"
+    },
+    "levels": {
+      "professional": "Profesional",
+      "expert": "Experto",
+      "specialist": "Especialista"
+    },
+    "credentialId": "ID",
+    "verify": "Verificar Credencial",
+    "statsLabels": {
+      "certifications": "Certificaciones",
+      "providers": "Proveedores",
+      "hours": "Horas de Estudio",
+      "skills": "Skills Validadas"
+    },
+    "items": {
+      "1": {
+        "title": "AWS Certified Solutions Architect – Professional",
+        "issuer": "Amazon Web Services",
+        "date": "Marzo 2025"
+      },
+      "2": {
+        "title": "Meta Front-End Developer Professional Certificate",
+        "issuer": "Meta (Facebook)",
+        "date": "Enero 2025"
+      },
+      "3": {
+        "title": "Google Cloud Professional Cloud Architect",
+        "issuer": "Google Cloud",
+        "date": "Noviembre 2024"
+      },
+      "4": {
+        "title": "Advanced React Patterns & Performance",
+        "issuer": "Frontend Masters",
+        "date": "Septiembre 2024"
+      },
+      "5": {
+        "title": "System Design & Architecture Specialization",
+        "issuer": "Coursera",
+        "date": "Julio 2024"
+      },
+      "6": {
+        "title": "Cypress End-to-End Testing Certification",
+        "issuer": "Cypress.io",
+        "date": "Mayo 2024"
+      }
+    }
+  },
+  "PersonalProjects": {
+    "pageTitle": "Proyectos Personales",
+    "pageLead": "Exploración técnica y experimentación con nuevas tecnologías fuera del entorno corporativo. Estos proyectos demuestran curiosidad, aprendizaje continuo y pasión por el desarrollo.",
+    "sectionTitle": "Proyectos Personales",
+    "sectionSubtitle": "Experimentación y exploración técnica fuera del entorno corporativo",
+    "stackLabel": "Stack",
+    "demo": "Demo",
+    "code": "Código",
+    "items": {
+      "devmetrics": {
+        "name": "DevMetrics Dashboard",
+        "description": "Dashboard para visualizar métricas de GitHub: commits, PRs, issues. Integración con GitHub API y gráficas interactivas."
+      },
+      "taskmaster": {
+        "name": "Task Master Pro",
+        "description": "Gestor de tareas con drag & drop, categorías personalizadas, filtros avanzados y modo offline-first con sync."
+      },
+      "perfmonitor": {
+        "name": "Performance Monitor",
+        "description": "Herramienta CLI para analizar performance de aplicaciones web. Genera reports detallados de Core Web Vitals."
+      },
+      "componentlib": {
+        "name": "Component Library",
+        "description": "Sistema de diseño personal con componentes reutilizables, documentación interactiva y theming customizable."
+      },
+      "ratelimiter": {
+        "name": "API Rate Limiter",
+        "description": "Middleware configurable de rate limiting para APIs con diferentes estrategias (token bucket, sliding window)."
+      },
+      "snippets": {
+        "name": "Code Snippet Manager",
+        "description": "Aplicación para guardar, organizar y buscar snippets de código con syntax highlighting y etiquetas."
+      }
+    }
+  },
+  "ProfessionalProjects": {
+    "title": "Proyectos Profesionales",
+    "subtitle": "Casos de estudio de proyectos desarrollados en entorno corporativo con impacto medible en negocio. Esta sección contiene información detallada de proyectos reales.",
+    "labels": {
+      "context": "Contexto",
+      "problem": "Problema",
+      "role": "Mi Rol",
+      "solution": "Solución",
+      "result": "Resultado"
+    },
+    "caseStudyCta": "Ver caso de estudio completo",
+    "backToProjects": "Volver a proyectos",
+    "moreProjects": "Ver más proyectos",
+    "detail": {
+      "contextHeading": "Contexto del Proyecto",
+      "problemHeading": "Problema",
+      "roleHeading": "Mi Rol",
+      "solutionHeading": "Solución Implementada",
+      "resultHeading": "Resultados e Impacto"
+    },
+    "items": {
+      "analytics-tiempo-real": {
+        "title": "Sistema de Analíticas en Tiempo Real",
+        "context": "Plataforma SaaS B2B con +10k usuarios empresariales necesitaba mejorar su sistema de reporting",
+        "problem": "Los usuarios tardaban hasta 5 minutos en obtener reports actualizados, generando fricción y abandono de la feature",
+        "role": "Tech Lead Frontend — Coordinación con backend y diseño de arquitectura cliente",
+        "solution": "Implementación de dashboard con actualizaciones en tiempo real usando WebSockets, optimización de queries y virtualización de listas grandes",
+        "result": "Tiempo de carga reducido a <2s. Engagement con la feature incrementó 180%. Procesamiento de hasta 100k datapoints sin lag"
+      },
+      "checkout-redesign": {
+        "title": "Rediseño de Checkout Flow",
+        "context": "E-commerce de retail con abandono del 68% en proceso de compra",
+        "problem": "Flujo de pago complejo con 7 pasos, múltiples validaciones lentas y UX confusa en mobile",
+        "role": "Full Stack Developer — Desarrollo end-to-end del nuevo flujo",
+        "solution": "Simplificación a 3 pasos, validaciones asíncronas optimizadas, persistencia de datos en sesión, diseño mobile-first y integración con Stripe",
+        "result": "Abandono reducido al 32%. Conversión aumentó 45%. Tiempo promedio de compra de 8min a 3min. +$2M adicionales en revenue anual"
+      },
+      "monolito-microfrontends": {
+        "title": "Migración de Monolito a Microfrontends",
+        "context": "Aplicación legacy de 5 años con codebase de +200k líneas difícil de mantener",
+        "problem": "Deploys arriesgados, equipos bloqueados entre sí, testing lento, onboarding de nuevos devs de 3+ semanas",
+        "role": "Senior Developer — Arquitectura y migración incremental",
+        "solution": "Implementación de Module Federation (Webpack 5), CI/CD independiente por módulo, migración progresiva sin downtime",
+        "result": "Tiempo de deploy de 2h a 15min. Velocidad de features +60%. Onboarding reducido a 1 semana. 0 incidents críticos durante migración"
+      }
+    }
+  },
+  "Contact": {
+    "heroTitle": "Contacto",
+    "heroLead": "Disponible para nuevas oportunidades, colaboraciones y proyectos freelance. Escríbeme por el formulario o directamente al email — respondo en menos de 24 horas.",
+    "title": "Hablemos",
+    "subtitle": "Abierto a nuevas oportunidades y colaboraciones. Si buscas un desarrollador comprometido con la calidad, conectemos.",
+    "emailLabel": "Email",
+    "githubLabel": "Username",
+    "nameLabel": "Name",
+    "form": {
+      "name": "Nombre",
+      "email": "Email",
+      "message": "Mensaje",
+      "submit": "Enviar mensaje",
+      "successAlert": "¡Mensaje recibido! Me pondré en contacto contigo pronto."
+    }
+  },
+  "Footer": {
+    "navigation": "Navegación",
+    "contact": "Contacto",
+    "follow": "Sígueme",
+    "copy": "© {year} Jaime Sebastián"
+  },
+  "Login": {
+    "signIn": "Iniciar sesión",
+    "signUp": "Crear cuenta",
+    "signInSubtitle": "Accede a contenido exclusivo de proyectos profesionales",
+    "signUpSubtitle": "Regístrate para acceder a los proyectos profesionales",
+    "name": "Nombre completo",
+    "namePlaceholder": "Tu nombre",
+    "email": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "password": "Contraseña",
+    "passwordHint": "Mínimo 6 caracteres",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "toggleToSignIn": "¿Ya tienes cuenta? Inicia sesión",
+    "toggleToSignUp": "¿No tienes cuenta? Regístrate",
+    "disclaimer": "Los proyectos profesionales contienen información sensible y requieren autenticación para su visualización.",
+    "notImplementedError": "La autenticación aún no está conectada."
+  },
+  "Minesweeper": {
+    "title": "Buscaminas.exe",
+    "win": "¡Victoria! 🎉",
+    "gameOver": "Game Over 💀"
+  },
+  "LanguageSwitcher": {
+    "label": "Cambiar idioma",
+    "es": "Español",
+    "en": "English"
+  },
+  "Metadata": {
+    "siteName": "Portfolio — Jaime Sebastián",
+    "contactPage": {
+      "title": "Contacto | Jaime Sebastián — Desarrollador Front-End",
+      "description": "Contacta con Jaime Sebastián, desarrollador front-end especializado en React, Next.js y TypeScript. Disponible para nuevas oportunidades, colaboraciones y proyectos freelance.",
+      "ogTitle": "Contacto — Jaime Sebastián",
+      "ogDescription": "Hablemos. Disponible para nuevas oportunidades, colaboraciones y proyectos freelance."
+    }
+  }
+}

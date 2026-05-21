@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Calendar, Briefcase } from 'lucide-react';
+import { Calendar } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from '@/styles/Experience.module.css';
 
 interface ExperienceItem {
@@ -12,35 +13,11 @@ interface ExperienceItem {
   responsibilities: string[];
 }
 
-const experiences: ExperienceItem[] = [
-  {
-    company: 'Tech Solutions Inc.',
-    role: 'Senior Frontend Developer',
-    period: '2022 - Presente',
-    description: 'Liderazgo técnico en el desarrollo de plataformas SaaS B2B enfocadas en la gestión de proyectos de gran escala.',
-    responsibilities: [
-      'Arquitectura y desarrollo del nuevo dashboard con React y TypeScript',
-      'Implementación de sistema de diseño compartido entre productos',
-      'Liderazgo técnico de un equipo de 4 desarrolladores frontend',
-      'Optimización de rendimiento y mejora de Core Web Vitals',
-    ],
-  },
-  {
-    company: 'Digital Ventures',
-    role: 'Full Stack Developer',
-    period: '2020 - 2022',
-    description: 'Desarrollo integral de soluciones e-commerce de alto tráfico para retail multicanal.',
-    responsibilities: [
-      'Desarrollo full stack con Next.js y Node.js',
-      'Integración con APIs de terceros (pasarelas de pago, CRM)',
-      'Implementación de testing automatizado (Jest, Cypress)',
-      'Colaboración directa con UX/UI en iteraciones de producto',
-    ],
-  },
-  // Añade más aquí...
-];
-
 export default function Experience() {
+  const t = useTranslations('Experience');
+  const experiences = t.raw('items') as ExperienceItem[];
+  const presentLabel = t('presentLabel').toLowerCase();
+
   return (
     <section className={styles.experience} id="experiencia">
       <div className="container-custom">
@@ -51,14 +28,14 @@ export default function Experience() {
           transition={{ duration: 0.8 }}
         >
           <header className={styles.header}>
-            <h2 className={styles.title}>Experiencia</h2>
-            <p className={styles.subtitle}>Trayectoria profesional enfocada en la excelencia técnica.</p>
+            <h2 className={styles.title}>{t('title')}</h2>
+            <p className={styles.subtitle}>{t('subtitle')}</p>
           </header>
-          
+
           <div className={styles.timeline}>
             {experiences.map((exp, index) => {
-              const isCurrent = exp.period.toLowerCase().includes('presente');
-              
+              const isCurrent = exp.period.toLowerCase().includes(presentLabel);
+
               return (
                 <motion.div
                   key={index}
@@ -77,12 +54,10 @@ export default function Experience() {
                       <Calendar size={14} className={styles.icon} />
                       <span>{exp.period}</span>
                     </div>
-                    {isCurrent && <span className={styles.badge}>Actual</span>}
+                    {isCurrent && <span className={styles.badge}>{t('currentBadge')}</span>}
                   </div>
 
                   <div className={styles.mainContent}>
-           
-
                     <p className={styles.description}>{exp.description}</p>
 
                     <ul className={styles.list}>

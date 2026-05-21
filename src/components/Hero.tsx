@@ -2,11 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
+import { Link } from '@/i18n/navigation';
 import styles from '@/styles/Hero.module.css';
 
 export default function Hero() {
+  const t = useTranslations('Hero');
+  const tCommon = useTranslations('Common');
+
   return (
     <section className={styles.hero}>
       {/* Video Background */}
@@ -26,7 +30,6 @@ export default function Hero() {
         <div className={styles.videoOverlay} />
       </div>
 
-      {/* Grid & Noise Patterns */}
       <div className={styles.noiseOverlay} />
       <div className={styles.gridPattern} />
 
@@ -34,39 +37,40 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
           className={styles.content}
         >
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className={styles.kicker}
           >
             <span className={styles.kickerLine}></span>
-            Desarrollador Web Full Stack
+            {t('kicker')}
           </motion.p>
-          
-          <motion.h1 
+
+          <motion.h1
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4, duration: 1 }}
             className={styles.title}
           >
-            Building the <span className={styles.titleGradient}>digital</span> future.
+            {t('titlePart1')} <span className={styles.titleGradient}>{t('titleHighlight')}</span> {t('titlePart2')}
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.6, duration: 0.8 }}
             className={styles.description}
           >
-            Especializado en aplicaciones escalables con un enfoque implacable en el 
-            <span className={styles.highlight}> rendimiento</span> y la experiencia de usuario.
+            {t('description')}{' '}
+            <span className={styles.highlight}>{t('descriptionHighlight')}</span>{' '}
+            {t('descriptionEnd')}
           </motion.p>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8, duration: 0.6 }}
@@ -74,31 +78,30 @@ export default function Hero() {
           >
             <Button asChild size="lg" className={styles.mainBtn}>
               <Link href="/proyectos-profesionales">
-                Ver proyectos profesionales
+                {t('ctaProfessional')}
                 <ArrowRight className={styles.arrow} />
               </Link>
             </Button>
-            
+
             <Button variant="outline" size="lg" asChild className={styles.secondaryBtn}>
               <Link href="/proyectos-personales">
-                Proyectos personales
+                {t('ctaPersonal')}
               </Link>
             </Button>
           </motion.div>
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5, duration: 1 }}
         className={styles.scrollIndicator}
       >
-        <span className={styles.scrollText}>Scroll</span>
+        <span className={styles.scrollText}>{tCommon('scroll')}</span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
         >
           <ChevronDown size={20} />
         </motion.div>

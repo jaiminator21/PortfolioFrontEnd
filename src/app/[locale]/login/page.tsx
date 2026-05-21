@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Lock, Mail, User, Eye, EyeOff } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from '@/styles/Login.module.css';
 
 export default function LoginPage() {
+  const t = useTranslations('Login');
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +16,7 @@ export default function LoginPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError('La autenticación aún no está conectada.');
+    setError(t('notImplementedError'));
   };
 
   return (
@@ -22,12 +24,10 @@ export default function LoginPage() {
       <div className={styles.card}>
         <div className={styles.header}>
           <h1 className={styles.title}>
-            {isSignUp ? 'Crear cuenta' : 'Iniciar sesión'}
+            {isSignUp ? t('signUp') : t('signIn')}
           </h1>
           <p className={styles.subtitle}>
-            {isSignUp
-              ? 'Regístrate para acceder a los proyectos profesionales'
-              : 'Accede a contenido exclusivo de proyectos profesionales'}
+            {isSignUp ? t('signUpSubtitle') : t('signInSubtitle')}
           </p>
         </div>
 
@@ -36,9 +36,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className={styles.form}>
           {isSignUp && (
             <div className={styles.field}>
-              <label htmlFor="name" className={styles.label}>
-                Nombre completo
-              </label>
+              <label htmlFor="name" className={styles.label}>{t('name')}</label>
               <div className={styles.inputWrap}>
                 <User size={20} className={styles.inputIcon} />
                 <input
@@ -48,14 +46,14 @@ export default function LoginPage() {
                   onChange={(e) => setName(e.target.value)}
                   required={isSignUp}
                   className={styles.input}
-                  placeholder="Tu nombre"
+                  placeholder={t('namePlaceholder')}
                 />
               </div>
             </div>
           )}
 
           <div className={styles.field}>
-            <label htmlFor="email" className={styles.label}>Email</label>
+            <label htmlFor="email" className={styles.label}>{t('email')}</label>
             <div className={styles.inputWrap}>
               <Mail size={20} className={styles.inputIcon} />
               <input
@@ -65,13 +63,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 className={styles.input}
-                placeholder="tu@email.com"
+                placeholder={t('emailPlaceholder')}
               />
             </div>
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="password" className={styles.label}>Contraseña</label>
+            <label htmlFor="password" className={styles.label}>{t('password')}</label>
             <div className={styles.inputWrap}>
               <Lock size={20} className={styles.inputIcon} />
               <input
@@ -88,16 +86,16 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className={styles.toggleBtn}
-                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                aria-label={showPassword ? t('hidePassword') : t('showPassword')}
               >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
-            {isSignUp && <p className={styles.hint}>Mínimo 6 caracteres</p>}
+            {isSignUp && <p className={styles.hint}>{t('passwordHint')}</p>}
           </div>
 
           <button type="submit" className={styles.submitBtn}>
-            {isSignUp ? 'Crear cuenta' : 'Iniciar sesión'}
+            {isSignUp ? t('signUp') : t('signIn')}
           </button>
         </form>
 
@@ -109,14 +107,12 @@ export default function LoginPage() {
             }}
             className={styles.toggleModeBtn}
           >
-            {isSignUp ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
+            {isSignUp ? t('toggleToSignIn') : t('toggleToSignUp')}
           </button>
         </div>
 
         <div className={styles.disclaimer}>
-          <p className={styles.disclaimerText}>
-            Los proyectos profesionales contienen información sensible y requieren autenticación para su visualización.
-          </p>
+          <p className={styles.disclaimerText}>{t('disclaimer')}</p>
         </div>
       </div>
     </div>

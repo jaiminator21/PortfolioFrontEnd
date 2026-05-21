@@ -1,18 +1,21 @@
 "use client";
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Award, ArrowRight, Trophy, Star } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import styles from '@/styles/CertificationsCTA.module.css';
 
-const stats = [
-  { icon: Award, value: '6+', label: 'Certificaciones', grad: styles.gradBlueCyan },
-  { icon: Trophy, value: '4', label: 'Proveedores', grad: styles.gradPurplePink },
-  { icon: Star, value: '500+', label: 'Horas', grad: styles.gradAmberOrange },
-  { icon: Award, value: '20+', label: 'Skills', grad: styles.gradGreenEmerald },
-];
-
 export default function CertificationsCTA() {
+  const t = useTranslations('CertificationsCTA');
+
+  const stats = [
+    { icon: Award, value: '6+', label: t('stats.certifications'), grad: styles.gradBlueCyan },
+    { icon: Trophy, value: '4', label: t('stats.providers'), grad: styles.gradPurplePink },
+    { icon: Star, value: '500+', label: t('stats.hours'), grad: styles.gradAmberOrange },
+    { icon: Award, value: '20+', label: t('stats.skills'), grad: styles.gradGreenEmerald },
+  ];
+
   return (
     <section className={styles.section}>
       <div className={styles.blobPurple} />
@@ -40,7 +43,6 @@ export default function CertificationsCTA() {
         >
           <div className={styles.card}>
             <div className={styles.cardGrid}>
-              {/* Left: content */}
               <div className={styles.content}>
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -55,7 +57,7 @@ export default function CertificationsCTA() {
                       <Trophy size={32} />
                     </div>
                   </div>
-                  <span className={styles.kicker}>Certificaciones</span>
+                  <span className={styles.kicker}>{t('kicker')}</span>
                 </motion.div>
 
                 <motion.h3
@@ -65,9 +67,9 @@ export default function CertificationsCTA() {
                   transition={{ delay: 0.1, duration: 0.6 }}
                   className={styles.title}
                 >
-                  Validado por los{' '}
-                  <span className={styles.titleHighlight}>líderes</span>{' '}
-                  de la industria
+                  {t('titlePart1')}{' '}
+                  <span className={styles.titleHighlight}>{t('titleHighlight')}</span>
+                  {t('titlePart2') ? <> {t('titlePart2')}</> : null}
                 </motion.h3>
 
                 <motion.p
@@ -77,7 +79,7 @@ export default function CertificationsCTA() {
                   transition={{ delay: 0.2, duration: 0.6 }}
                   className={styles.description}
                 >
-                  Explora mi colección de certificaciones profesionales de AWS, Google Cloud, Meta y más — evidencia de aprendizaje continuo y dominio técnico.
+                  {t('description')}
                 </motion.p>
 
                 <motion.div
@@ -87,14 +89,13 @@ export default function CertificationsCTA() {
                   transition={{ delay: 0.3, duration: 0.6 }}
                 >
                   <Link href="/certificaciones" className={styles.ctaButton}>
-                    <span>Ver todas las certificaciones</span>
+                    <span>{t('cta')}</span>
                     <ArrowRight size={16} className={styles.ctaArrow} />
                     <span className={styles.ctaShine} />
                   </Link>
                 </motion.div>
               </div>
 
-              {/* Right: stats */}
               <div className={styles.statsGrid}>
                 {stats.map((stat, index) => {
                   const Icon = stat.icon;

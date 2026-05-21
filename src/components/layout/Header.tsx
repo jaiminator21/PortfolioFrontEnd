@@ -1,19 +1,28 @@
 "use client";
 
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Menu, X, Sun, Moon, Download, Github, Linkedin, InstagramIcon } from 'lucide-react';
+import { useParams } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
+import { Menu, X, Sun, Moon, Download, Github, Linkedin, InstagramIcon, ChevronDown, Check } from 'lucide-react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
+import { Link, usePathname, useRouter } from '@/i18n/navigation';
+import { routing } from '@/i18n/routing';
 import styles from '@/styles/Header.module.css';
 
-const NAV_ITEMS = [
-  { label: 'Inicio', path: '/' },
-  { label: 'Proyectos Personales', path: '/proyectos-personales' },
-  { label: 'Certificaciones', path: '/certificaciones' },
-  { label: 'Proyectos Profesionales', path: '/proyectos-profesionales' },
-  { label: 'Contacto', path: '/contacto' },
+type NavPath =
+  | '/proyectos-personales'
+  | '/certificaciones'
+  | '/proyectos-profesionales'
+  | '/contacto';
+
+// `widthHolder` reserves the layout width of the longest locale variant
+// (always Spanish in our case) so the nav doesn't reflow when switching language.
+const NAV_ITEMS: { key: string; path: NavPath; widthHolder: string }[] = [
+  { key: 'personalProjects', path: '/proyectos-personales', widthHolder: 'Proyectos Personales' },
+  { key: 'certifications', path: '/certificaciones', widthHolder: 'Certificaciones' },
+  { key: 'professionalProjects', path: '/proyectos-profesionales', widthHolder: 'Proyectos Profesionales' },
+  { key: 'contact', path: '/contacto', widthHolder: 'Contacto' },
 ];
 
 const SOCIAL_LINKS = [
@@ -49,13 +58,17 @@ const menuItemVariants: Variants = {
 };
 
 export default function Header() {
+  const t = useTranslations();
+  const locale = useLocale();
   const pathname = usePathname();
+  const router = useRouter();
+  const params = useParams();
   const { isDark, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   const linksRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+  const itemRefs = useRef<Record<string, HTMLSpanElement | null>>({});
   const [underline, setUnderline] = useState<{ left: number; width: number; visible: boolean }>({
     left: 0,
     width: 0,
@@ -68,7 +81,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll while mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       const previous = document.body.style.overflow;
@@ -79,7 +91,6 @@ export default function Header() {
     }
   }, [mobileMenuOpen]);
 
-  // Close menu when route changes
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
@@ -105,10 +116,21 @@ export default function Header() {
     window.addEventListener('resize', measure);
     return () => window.removeEventListener('resize', measure);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname]);
+  }, [pathname, locale]);
 
   const isActive = (path: string) => pathname === path;
   const closeMenu = () => setMobileMenuOpen(false);
+
+  const switchLocale = (nextLocale: string) => {
+    if (nextLocale === locale) return;
+    // Strip the locale param since the router adds it back via the options arg.
+    const { locale: _localeParam, ...rest } = params as Record<string, string | string[]>;
+    router.replace(
+      // @ts-expect-error -- pathname matches one of the declared route patterns at runtime
+      { pathname, params: rest },
+      { locale: nextLocale as 'es' | 'en' }
+    );
+  };
 
   return (
     <header className={`${styles.navbar} ${scrolled || mobileMenuOpen ? styles.navbarScrolled : ''}`}>
@@ -129,12 +151,19 @@ export default function Header() {
                 <Link
                   key={item.path}
                   href={item.path}
-                  ref={(el) => {
-                    itemRefs.current[item.path] = el;
-                  }}
                   className={`${styles.navLink} ${isActive(item.path) ? styles.navLinkActive : ''}`}
                 >
-                  {item.label}
+                  <span
+                    ref={(el) => {
+                      itemRefs.current[item.path] = el;
+                    }}
+                    className={styles.navLinkLabel}
+                  >
+                    {t(`Nav.${item.key}`)}
+                  </span>
+                  <span aria-hidden className={styles.navLinkGhost}>
+                    {item.widthHolder}
+                  </span>
                 </Link>
               ))}
               <span
@@ -151,30 +180,33 @@ export default function Header() {
             <div className={styles.divider} />
 
             <div className={styles.actions}>
+              <LanguageSwitcher locale={locale} onChange={switchLocale} />
+
               <button
                 onClick={toggleTheme}
                 className={styles.themeBtn}
-                aria-label="Cambiar tema"
+                aria-label={t('Common.toggleTheme')}
               >
                 {isDark ? <Moon size={16} /> : <Sun size={16} />}
               </button>
 
               <a href="/cv.pdf" download className={styles.loginBtn}>
                 <Download size={14} />
-                Descargar CV
+                <span className={styles.cvLong}>{t('Common.downloadCV')}</span>
+                <span className={styles.cvShort} aria-hidden>CV</span>
               </a>
             </div>
           </nav>
 
           {/* Mobile Toggle */}
           <div className={styles.mobileToggle}>
-            <button onClick={toggleTheme} className={styles.mobileIconBtn} aria-label="Cambiar tema">
+            <button onClick={toggleTheme} className={styles.mobileIconBtn} aria-label={t('Common.toggleTheme')}>
               {isDark ? <Moon size={20} /> : <Sun size={20} />}
             </button>
             <button
               className={styles.menuBtn}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+              aria-label={mobileMenuOpen ? t('Common.closeMenu') : t('Common.openMenu')}
               aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -202,12 +234,16 @@ export default function Header() {
                     onClick={closeMenu}
                     className={`${styles.mobileLink} ${isActive(item.path) ? styles.mobileLinkActive : ''}`}
                   >
-                    {item.label}
+                    {t(`Nav.${item.key}`)}
                   </Link>
                 </motion.div>
               ))}
 
               <motion.div variants={menuItemVariants} className={styles.mobileSeparator} />
+
+              <motion.div variants={menuItemVariants} className={styles.mobileLangSwitcher}>
+                <LanguageSwitcher locale={locale} onChange={switchLocale} variant="buttons" />
+              </motion.div>
 
               <motion.a
                 variants={menuItemVariants}
@@ -217,7 +253,7 @@ export default function Header() {
                 className={styles.mobileLoginBtn}
               >
                 <Download size={16} />
-                Descargar CV
+                {t('Common.downloadCV')}
               </motion.a>
 
               <motion.div variants={menuItemVariants} className={styles.mobileSocial}>
@@ -239,5 +275,104 @@ export default function Header() {
         )}
       </AnimatePresence>
     </header>
+  );
+}
+
+function LanguageSwitcher({
+  locale,
+  onChange,
+  variant = 'dropdown',
+}: {
+  locale: string;
+  onChange: (next: string) => void;
+  variant?: 'dropdown' | 'buttons';
+}) {
+  const t = useTranslations('LanguageSwitcher');
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleClick = (e: MouseEvent) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    document.addEventListener('mousedown', handleClick);
+    document.addEventListener('keydown', handleKey);
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+      document.removeEventListener('keydown', handleKey);
+    };
+  }, [open]);
+
+  if (variant === 'buttons') {
+    return (
+      <div className={styles.langSwitcher} role="group" aria-label={t('label')}>
+        {routing.locales.map((loc) => (
+          <button
+            key={loc}
+            type="button"
+            onClick={() => onChange(loc)}
+            className={`${styles.langBtn} ${loc === locale ? styles.langBtnActive : ''}`}
+            aria-pressed={loc === locale}
+          >
+            {loc.toUpperCase()}
+          </button>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div ref={wrapperRef} className={styles.langDropdown}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        className={styles.langTrigger}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        aria-label={t('label')}
+      >
+        <span>{locale.toUpperCase()}</span>
+        <ChevronDown
+          size={14}
+          className={`${styles.langChevron} ${open ? styles.langChevronOpen : ''}`}
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.ul
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -4 }}
+            transition={{ duration: 0.15 }}
+            className={styles.langMenu}
+            role="listbox"
+          >
+            {routing.locales.map((loc) => (
+              <li key={loc} role="option" aria-selected={loc === locale}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    onChange(loc);
+                  }}
+                  className={`${styles.langMenuItem} ${loc === locale ? styles.langMenuItemActive : ''}`}
+                >
+                  <span className={styles.langMenuCode}>{loc.toUpperCase()}</span>
+                  <span className={styles.langMenuName}>{t(loc as 'es' | 'en')}</span>
+                  {loc === locale && <Check size={14} className={styles.langMenuCheck} />}
+                </button>
+              </li>
+            ))}
+          </motion.ul>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

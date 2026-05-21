@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Github, Linkedin, Send } from "lucide-react";
+import { Mail, Github, Send } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/Contact.module.css";
 
 export default function Contact() {
+  const t = useTranslations("Contact");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -16,7 +18,7 @@ export default function Contact() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    alert("¡Mensaje recibido! Me pondré en contacto contigo pronto.");
+    alert(t("form.successAlert"));
     setFormData({ name: "", email: "", message: "" });
   };
 
@@ -36,37 +38,28 @@ export default function Contact() {
           transition={{ duration: 0.6 }}
         >
           <header className={styles.header}>
-            <h2 className={styles.title}>Hablemos</h2>
-            <p className={styles.subtitle}>
-              Abierto a nuevas oportunidades y colaboraciones. Si buscas un
-              desarrollador comprometido con la calidad, conectemos.
-            </p>
+            <h2 className={styles.title}>{t("title")}</h2>
+            <p className={styles.subtitle}>{t("subtitle")}</p>
           </header>
 
           <div className={styles.grid}>
             <div className={styles.infoSide}>
               <div className={styles.socialList}>
-                <a
-                  href="mailto:jaiminator21@gmail.com"
-                  className={styles.contactLink}
-                >
+                <a href="mailto:jaiminator21@gmail.com" className={styles.contactLink}>
                   <div className={styles.iconWrapper}>
                     <Mail size={20} />
                   </div>
                   <div className={styles.linkText}>
-                    <span>Email</span>
+                    <span>{t("emailLabel")}</span>
                     <p>jaiminator21@gmail.com</p>
                   </div>
                 </a>
-                <a
-                  href="https://github.com/jaiminator21"
-                  className={styles.contactLink}
-                >
+                <a href="https://github.com/jaiminator21" className={styles.contactLink}>
                   <div className={styles.iconWrapper}>
                     <Github size={20} />
                   </div>
                   <div className={styles.linkText}>
-                    <span>Username</span>
+                    <span>{t("githubLabel")}</span>
                     <p>jaiminator21</p>
                   </div>
                 </a>
@@ -78,7 +71,7 @@ export default function Contact() {
                     <Mail size={20} />
                   </div>
                   <div className={styles.linkText}>
-                    <span>Name</span>
+                    <span>{t("nameLabel")}</span>
                     <p>Jaime Sebastián</p>
                   </div>
                 </a>
@@ -87,60 +80,56 @@ export default function Contact() {
 
             <div className={styles.formSide}>
               <form onSubmit={handleSubmit} className={styles.form}>
-                {/* INPUT NOMBRE */}
                 <div className={styles.inputGroup}>
                   <input
                     type="text"
                     id="name"
                     name="name"
-                    placeholder=" " // Mantenlo con un espacio
-                    className={styles.input} // Clase añadida
+                    placeholder=" "
+                    className={styles.input}
                     value={formData.name}
                     onChange={handleChange}
                     required
                   />
                   <label htmlFor="name" className={styles.label}>
-                    Nombre
+                    {t("form.name")}
                   </label>
-                  {/* Label ahora está DESPUÉS del input */}
                 </div>
 
-                {/* INPUT EMAIL */}
                 <div className={styles.inputGroup}>
                   <input
                     type="email"
                     id="email"
                     name="email"
                     placeholder=" "
-                    className={styles.input} // Clase añadida
+                    className={styles.input}
                     value={formData.email}
                     onChange={handleChange}
                     required
                   />
                   <label htmlFor="email" className={styles.label}>
-                    Email
+                    {t("form.email")}
                   </label>
                 </div>
 
-                {/* TEXTAREA MENSAJE */}
                 <div className={styles.inputGroup}>
                   <textarea
                     id="message"
                     name="message"
                     placeholder=" "
-                    className={styles.input} // Clase añadida
+                    className={styles.input}
                     value={formData.message}
                     onChange={handleChange}
                     required
                     rows={4}
                   />
                   <label htmlFor="message" className={styles.label}>
-                    Mensaje
+                    {t("form.message")}
                   </label>
                 </div>
 
                 <Button type="submit" size="lg" className={styles.submitBtn}>
-                  <span>Enviar mensaje</span>
+                  <span>{t("form.submit")}</span>
                   <Send className={styles.sendIcon} size={16} />
                 </Button>
               </form>

@@ -1,10 +1,13 @@
 "use client";
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import PersonalProjects from '@/components/PersonalProjects';
 import styles from '@/styles/SecondaryPage.module.css';
 
 export default function PersonalProjectsPage() {
+  const t = useTranslations('PersonalProjects');
+
   return (
     <div className={styles.wrapper}>
       <section className={styles.pageHero}>
@@ -14,11 +17,8 @@ export default function PersonalProjectsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className={styles.pageHeroTitle}>Proyectos Personales</h1>
-            <p className={styles.pageHeroLead}>
-              Exploración técnica y experimentación con nuevas tecnologías fuera del entorno corporativo.
-              Estos proyectos demuestran curiosidad, aprendizaje continuo y pasión por el desarrollo.
-            </p>
+            <h1 className={styles.pageHeroTitle}>{t('pageTitle')}</h1>
+            <p className={styles.pageHeroLead}>{t('pageLead')}</p>
           </motion.div>
         </div>
       </section>

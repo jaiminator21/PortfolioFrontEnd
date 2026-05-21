@@ -1,13 +1,16 @@
 "use client";
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ExternalLink, ArrowRight } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/navigation';
 import { ImageWithFallback } from '@/components/figma/ImageWithFallback';
 import { professionalProjects } from '@/data/professionalProjects';
 import styles from '@/styles/ProfessionalProjects.module.css';
 
 export default function ProfessionalProjects() {
+  const t = useTranslations('ProfessionalProjects');
+
   return (
     <section className={styles.section} id="proyectos-profesionales">
       <div className="container-custom">
@@ -17,11 +20,8 @@ export default function ProfessionalProjects() {
           transition={{ duration: 0.6 }}
         >
           <div className={styles.intro}>
-            <h1 className={styles.title}>Proyectos Profesionales</h1>
-            <p className={styles.subtitle}>
-              Casos de estudio de proyectos desarrollados en entorno corporativo con impacto medible en negocio.
-              Esta sección contiene información detallada de proyectos reales.
-            </p>
+            <h1 className={styles.title}>{t('title')}</h1>
+            <p className={styles.subtitle}>{t('subtitle')}</p>
           </div>
 
           <div className={styles.list}>
@@ -38,7 +38,7 @@ export default function ProfessionalProjects() {
                     {project.imageUrl ? (
                       <ImageWithFallback
                         src={project.imageUrl}
-                        alt={project.title}
+                        alt={t(`items.${project.id}.title`)}
                         className={styles.image}
                       />
                     ) : (
@@ -49,7 +49,7 @@ export default function ProfessionalProjects() {
                   </div>
 
                   <div className={styles.cardBody}>
-                    <h2 className={styles.cardTitle}>{project.title}</h2>
+                    <h2 className={styles.cardTitle}>{t(`items.${project.id}.title`)}</h2>
 
                     <div className={styles.tagRow}>
                       {project.tags.map((tag, i) => (
@@ -59,18 +59,18 @@ export default function ProfessionalProjects() {
 
                     <div className={styles.metaBlocks}>
                       <div>
-                        <p className={styles.metaLabel}>Contexto</p>
-                        <p className={styles.metaText}>{project.context}</p>
+                        <p className={styles.metaLabel}>{t('labels.context')}</p>
+                        <p className={styles.metaText}>{t(`items.${project.id}.context`)}</p>
                       </div>
 
                       <div>
-                        <p className={styles.metaLabel}>Resultado</p>
-                        <p className={styles.metaResult}>{project.result}</p>
+                        <p className={styles.metaLabel}>{t('labels.result')}</p>
+                        <p className={styles.metaResult}>{t(`items.${project.id}.result`)}</p>
                       </div>
                     </div>
 
-                    <Link href={`/proyecto/${project.id}`} className={styles.cta}>
-                      Ver caso de estudio completo
+                    <Link href={{ pathname: '/proyecto/[id]', params: { id: project.id } }} className={styles.cta}>
+                      {t('caseStudyCta')}
                       <ArrowRight size={20} />
                     </Link>
                   </div>

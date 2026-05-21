@@ -11,111 +11,56 @@ import {
   Star,
   Sparkles,
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from '@/styles/Certifications.module.css';
+
+type CertCategory = 'frontend' | 'backend' | 'cloud' | 'architecture' | 'testing' | 'general';
+type CertLevel = 'professional' | 'expert' | 'specialist';
 
 interface Certification {
   id: string;
-  title: string;
-  issuer: string;
-  date: string;
   credentialId?: string;
   verifyUrl?: string;
-  category: 'frontend' | 'backend' | 'cloud' | 'architecture' | 'testing' | 'general';
+  category: CertCategory;
   skills: string[];
-  level: 'professional' | 'expert' | 'specialist';
+  level: CertLevel;
 }
 
 const certifications: Certification[] = [
-  {
-    id: '1',
-    title: 'AWS Certified Solutions Architect – Professional',
-    issuer: 'Amazon Web Services',
-    date: 'Marzo 2025',
-    credentialId: 'AWS-PSA-2025-12345',
-    verifyUrl: '#',
-    category: 'cloud',
-    skills: ['AWS', 'Cloud Architecture', 'Infrastructure', 'Security'],
-    level: 'professional',
-  },
-  {
-    id: '2',
-    title: 'Meta Front-End Developer Professional Certificate',
-    issuer: 'Meta (Facebook)',
-    date: 'Enero 2025',
-    credentialId: 'META-FE-2025-67890',
-    verifyUrl: '#',
-    category: 'frontend',
-    skills: ['React', 'JavaScript', 'HTML/CSS', 'UI/UX'],
-    level: 'professional',
-  },
-  {
-    id: '3',
-    title: 'Google Cloud Professional Cloud Architect',
-    issuer: 'Google Cloud',
-    date: 'Noviembre 2024',
-    credentialId: 'GCP-PCA-2024-11223',
-    verifyUrl: '#',
-    category: 'cloud',
-    skills: ['GCP', 'Kubernetes', 'Terraform', 'DevOps'],
-    level: 'professional',
-  },
-  {
-    id: '4',
-    title: 'Advanced React Patterns & Performance',
-    issuer: 'Frontend Masters',
-    date: 'Septiembre 2024',
-    category: 'frontend',
-    skills: ['React', 'Performance', 'Design Patterns', 'Optimization'],
-    level: 'expert',
-  },
-  {
-    id: '5',
-    title: 'System Design & Architecture Specialization',
-    issuer: 'Coursera',
-    date: 'Julio 2024',
-    credentialId: 'COURSERA-SDA-2024-44556',
-    verifyUrl: '#',
-    category: 'architecture',
-    skills: ['System Design', 'Microservices', 'Scalability', 'Databases'],
-    level: 'specialist',
-  },
-  {
-    id: '6',
-    title: 'Cypress End-to-End Testing Certification',
-    issuer: 'Cypress.io',
-    date: 'Mayo 2024',
-    category: 'testing',
-    skills: ['Cypress', 'E2E Testing', 'Test Automation', 'CI/CD'],
-    level: 'professional',
-  },
+  { id: '1', credentialId: 'AWS-PSA-2025-12345', verifyUrl: '#', category: 'cloud', skills: ['AWS', 'Cloud Architecture', 'Infrastructure', 'Security'], level: 'professional' },
+  { id: '2', credentialId: 'META-FE-2025-67890', verifyUrl: '#', category: 'frontend', skills: ['React', 'JavaScript', 'HTML/CSS', 'UI/UX'], level: 'professional' },
+  { id: '3', credentialId: 'GCP-PCA-2024-11223', verifyUrl: '#', category: 'cloud', skills: ['GCP', 'Kubernetes', 'Terraform', 'DevOps'], level: 'professional' },
+  { id: '4', category: 'frontend', skills: ['React', 'Performance', 'Design Patterns', 'Optimization'], level: 'expert' },
+  { id: '5', credentialId: 'COURSERA-SDA-2024-44556', verifyUrl: '#', category: 'architecture', skills: ['System Design', 'Microservices', 'Scalability', 'Databases'], level: 'specialist' },
+  { id: '6', category: 'testing', skills: ['Cypress', 'E2E Testing', 'Test Automation', 'CI/CD'], level: 'professional' },
 ];
 
-const categories = [
-  { value: 'all', label: 'Todas', icon: Sparkles },
-  { value: 'frontend', label: 'Frontend', icon: Award },
-  { value: 'cloud', label: 'Cloud', icon: Trophy },
-  { value: 'architecture', label: 'Arquitectura', icon: Star },
-  { value: 'testing', label: 'Testing', icon: CheckCircle2 },
+const FILTER_KEYS: ReadonlyArray<{ value: 'all' | CertCategory; icon: typeof Sparkles }> = [
+  { value: 'all', icon: Sparkles },
+  { value: 'frontend', icon: Award },
+  { value: 'cloud', icon: Trophy },
+  { value: 'architecture', icon: Star },
+  { value: 'testing', icon: CheckCircle2 },
 ];
 
-const levelClass: Record<Certification['level'], string> = {
+const levelClass: Record<CertLevel, string> = {
   professional: styles.levelProfessional,
   expert: styles.levelExpert,
   specialist: styles.levelSpecialist,
 };
 
-const levelLabels: Record<Certification['level'], string> = {
-  professional: 'Profesional',
-  expert: 'Experto',
-  specialist: 'Especialista',
-};
-
 export default function Certifications() {
-  const [activeFilter, setActiveFilter] = useState<string>('all');
+  const t = useTranslations('Certifications');
+  const [activeFilter, setActiveFilter] = useState<'all' | CertCategory>('all');
 
   const filtered = activeFilter === 'all'
     ? certifications
     : certifications.filter(c => c.category === activeFilter);
+
+  const uniqueIssuers = new Set(
+    certifications.map((c) => t(`items.${c.id}.issuer`))
+  ).size;
+  const uniqueSkills = new Set(certifications.flatMap((c) => c.skills)).size;
 
   return (
     <section className={styles.section}>
@@ -130,7 +75,6 @@ export default function Certifications() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {/* Header */}
           <div className={styles.header}>
             <motion.div
               initial={{ scale: 0 }}
@@ -146,16 +90,14 @@ export default function Certifications() {
             </motion.div>
 
             <h2 className={styles.title}>
-              <span className={styles.titleHighlight}>Cursos &amp; Certificaciones</span>
+              <span className={styles.titleHighlight}>{t('title')}</span>
             </h2>
 
             <div className={styles.titleAccent}>
               <div className={styles.titleAccentGlow} />
             </div>
 
-            <p className={styles.lead}>
-              Aprendizaje continuo y validación de habilidades técnicas por organizaciones líderes de la industria.
-            </p>
+            <p className={styles.lead}>{t('subtitle')}</p>
 
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -166,7 +108,7 @@ export default function Certifications() {
             >
               <CheckCircle2 size={20} className={styles.check} />
               <span className={styles.countText}>
-                {certifications.length} Certificaciones Profesionales
+                {t('count', { count: certifications.length })}
               </span>
             </motion.div>
           </div>
@@ -179,7 +121,7 @@ export default function Certifications() {
             transition={{ delay: 0.2 }}
             className={styles.filters}
           >
-            {categories.map((category, index) => {
+            {FILTER_KEYS.map((category, index) => {
               const Icon = category.icon;
               const isActive = activeFilter === category.value;
               return (
@@ -194,7 +136,7 @@ export default function Certifications() {
                 >
                   <span className={styles.filterContent}>
                     <Icon size={16} />
-                    {category.label}
+                    {t(`filters.${category.value}`)}
                   </span>
                   {isActive && (
                     <motion.div
@@ -232,7 +174,7 @@ export default function Certifications() {
                 <div className={`${styles.cardBgGradient} ${levelClass[cert.level]}`} />
 
                 <div className={`${styles.levelBadge} ${levelClass[cert.level]}`}>
-                  {levelLabels[cert.level]}
+                  {t(`levels.${cert.level}`)}
                 </div>
 
                 <div className={styles.cardContent}>
@@ -243,11 +185,11 @@ export default function Certifications() {
                   </div>
 
                   <div>
-                    <h3 className={styles.cardTitle}>{cert.title}</h3>
-                    <p className={styles.cardIssuer}>{cert.issuer}</p>
+                    <h3 className={styles.cardTitle}>{t(`items.${cert.id}.title`)}</h3>
+                    <p className={styles.cardIssuer}>{t(`items.${cert.id}.issuer`)}</p>
                     <div className={styles.cardDate}>
                       <Calendar size={14} />
-                      <span>{cert.date}</span>
+                      <span>{t(`items.${cert.id}.date`)}</span>
                     </div>
                   </div>
 
@@ -259,7 +201,7 @@ export default function Certifications() {
 
                   {cert.credentialId && (
                     <div className={styles.credentialBlock}>
-                      <div className={styles.credentialId}>ID: {cert.credentialId}</div>
+                      <div className={styles.credentialId}>{t('credentialId')}: {cert.credentialId}</div>
                       {cert.verifyUrl && (
                         <a
                           href={cert.verifyUrl}
@@ -267,7 +209,7 @@ export default function Certifications() {
                           rel="noopener noreferrer"
                           className={styles.verifyLink}
                         >
-                          <span>Verificar Credencial</span>
+                          <span>{t('verify')}</span>
                           <ExternalLink size={14} />
                         </a>
                       )}
@@ -287,10 +229,10 @@ export default function Certifications() {
             className={styles.statsFooter}
           >
             {[
-              { label: 'Certificaciones', value: certifications.length, icon: Award },
-              { label: 'Proveedores', value: new Set(certifications.map(c => c.issuer)).size, icon: Trophy },
-              { label: 'Horas de Estudio', value: '500+', icon: Star },
-              { label: 'Skills Validadas', value: new Set(certifications.flatMap(c => c.skills)).size, icon: Sparkles },
+              { label: t('statsLabels.certifications'), value: certifications.length, icon: Award },
+              { label: t('statsLabels.providers'), value: uniqueIssuers, icon: Trophy },
+              { label: t('statsLabels.hours'), value: '500+', icon: Star },
+              { label: t('statsLabels.skills'), value: uniqueSkills, icon: Sparkles },
             ].map((stat, index) => {
               const Icon = stat.icon;
               return (

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Bomb, Flag } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 import styles from './Minesweeper.module.css';
 
 interface Cell {
@@ -13,6 +14,7 @@ interface Cell {
 }
 
 export default function Minesweeper({ rows = 12, cols = 12, mines = 20 }) {
+  const t = useTranslations('Minesweeper');
   const [board, setBoard] = useState<Cell[][]>([]);
   const [gameOver, setGameOver] = useState(false);
   const [win, setWin] = useState(false);
@@ -152,7 +154,7 @@ export default function Minesweeper({ rows = 12, cols = 12, mines = 20 }) {
             animate={{ opacity: 1, y: 0 }} 
             className={styles.status}
           >
-            {win ? "¡Victoria! 🎉" : "Game Over 💀"}
+            {win ? t('win') : t('gameOver')}
           </motion.div>
         )}
       </AnimatePresence>
