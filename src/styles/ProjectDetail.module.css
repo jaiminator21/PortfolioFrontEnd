@@ -1,0 +1,149 @@
+.wrapper {
+  padding: 6rem 0 6rem 0;
+  background-color: var(--background);
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .container { padding: 0 3rem; }
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  margin-bottom: 2rem;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--foreground);
+}
+
+.heroImage {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background-color: var(--secondary);
+  margin-bottom: 3rem;
+  overflow: hidden;
+}
+
+.heroImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 1.5rem 0;
+  color: var(--foreground);
+}
+
+@media (min-width: 768px) {
+  .title { font-size: 3rem; }
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  padding: 0.5rem 1rem;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  border: 1px solid var(--border);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  color: var(--foreground);
+}
+
+.sectionText {
+  font-size: 1.125rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.resultBlock {
+  background-color: var(--secondary);
+  padding: 2rem;
+}
+
+@media (min-width: 768px) {
+  .resultBlock { padding: 3rem; }
+}
+
+.resultText {
+  font-size: 1.125rem;
+  color: var(--foreground);
+  font-weight: 600;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.footerCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: var(--foreground);
+  color: var(--background);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footerCta:hover {
+  opacity: 0.9;
+}
+
+.notFound {
+  padding: 8rem 1.5rem;
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+.notFoundBox {
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 1.5rem;
+  color: #b91c1c;
+  margin-bottom: 1.5rem;
+}
+
+:global(.dark) .notFoundBox {
+  color: #f87171;
+}

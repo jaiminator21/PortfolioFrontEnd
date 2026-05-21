@@ -1,0 +1,58 @@
+.wrapper {
+  padding-top: 5rem;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.backWrap {
+  padding: 2rem 0;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--foreground);
+}
+
+.backArrow {
+  transition: transform 0.2s ease;
+}
+
+.backLink:hover .backArrow {
+  transform: translateX(-4px);
+}
+
+.pageHero {
+  padding: 4rem 0 2rem 0;
+}
+
+.pageHeroTitle {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 1rem 0;
+  color: var(--foreground);
+}
+
+@media (min-width: 768px) {
+  .pageHeroTitle { font-size: 3rem; }
+}
+
+.pageHeroLead {
+  color: var(--muted-foreground);
+  font-size: 1.125rem;
+  max-width: 42rem;
+  line-height: 1.6;
+  margin: 0;
+}
