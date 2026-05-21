@@ -1,17 +1,11 @@
 "use client";
 
+import Link from 'next/link';
 import { Github, Linkedin, InstagramIcon } from 'lucide-react';
 import styles from '@/styles/Footer.module.css';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-
-  const scrollToSection = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <footer className={styles.footer}>
@@ -21,27 +15,24 @@ export default function Footer() {
           <div>
             <h3 className={styles.title}>Navegación</h3>
             <nav className={styles.navStack}>
-              <button 
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="footer-link"
-              >
+              <Link href="/" className="footer-link">
                 Inicio
-              </button>
-              <button 
-                onClick={() => scrollToSection('proyectos-profesionales')}
-                className="footer-link"
-              >
-                Proyectos
-              </button>
-              <button 
-                onClick={() => scrollToSection('contacto')}
-                className="footer-link"
-              >
+              </Link>
+              <Link href="/proyectos-personales" className="footer-link">
+                Proyectos Personales
+              </Link>
+              <Link href="/proyectos-profesionales" className="footer-link">
+                Proyectos Profesionales
+              </Link>
+              <Link href="/certificaciones" className="footer-link">
+                Certificaciones
+              </Link>
+              <Link href="/contacto" className="footer-link">
                 Contacto
-              </button>
+              </Link>
             </nav>
           </div>
-          
+
           {/* Contacto */}
           <div>
             <h3 className={styles.title}>Contacto</h3>
@@ -51,7 +42,7 @@ export default function Footer() {
               </a>
             </div>
           </div>
-          
+
           {/* Social */}
           <div>
             <h3 className={styles.title}>Sígueme</h3>
@@ -68,7 +59,7 @@ export default function Footer() {
             </div>
           </div>
         </div>
-        
+
         {/* Bottom Bar */}
         <div className={styles.bottomBar}>
           <p className={styles.copy}>
