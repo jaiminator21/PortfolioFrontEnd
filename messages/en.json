@@ -104,13 +104,6 @@
     "title": "Courses & Certifications",
     "subtitle": "Continuous learning and validation of technical skills by leading industry organizations.",
     "count": "{count} Professional Certifications",
-    "filters": {
-      "all": "All",
-      "frontend": "Frontend",
-      "cloud": "Cloud",
-      "architecture": "Architecture",
-      "testing": "Testing"
-    },
     "levels": {
       "professional": "Professional",
       "expert": "Expert",

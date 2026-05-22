@@ -104,13 +104,6 @@
     "title": "Cursos & Certificaciones",
     "subtitle": "Aprendizaje continuo y validación de habilidades técnicas por organizaciones líderes de la industria.",
     "count": "{count} Certificaciones Profesionales",
-    "filters": {
-      "all": "Todas",
-      "frontend": "Frontend",
-      "cloud": "Cloud",
-      "architecture": "Arquitectura",
-      "testing": "Testing"
-    },
     "levels": {
       "professional": "Profesional",
       "expert": "Experto",

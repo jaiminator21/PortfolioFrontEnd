@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   Award,
@@ -14,33 +13,23 @@ import {
 import { useTranslations } from 'next-intl';
 import styles from '@/styles/Certifications.module.css';
 
-type CertCategory = 'frontend' | 'backend' | 'cloud' | 'architecture' | 'testing' | 'general';
 type CertLevel = 'professional' | 'expert' | 'specialist';
 
 interface Certification {
   id: string;
   credentialId?: string;
   verifyUrl?: string;
-  category: CertCategory;
   skills: string[];
   level: CertLevel;
 }
 
 const certifications: Certification[] = [
-  { id: '1', credentialId: 'AWS-PSA-2025-12345', verifyUrl: '#', category: 'cloud', skills: ['AWS', 'Cloud Architecture', 'Infrastructure', 'Security'], level: 'professional' },
-  { id: '2', credentialId: 'META-FE-2025-67890', verifyUrl: '#', category: 'frontend', skills: ['React', 'JavaScript', 'HTML/CSS', 'UI/UX'], level: 'professional' },
-  { id: '3', credentialId: 'GCP-PCA-2024-11223', verifyUrl: '#', category: 'cloud', skills: ['GCP', 'Kubernetes', 'Terraform', 'DevOps'], level: 'professional' },
-  { id: '4', category: 'frontend', skills: ['React', 'Performance', 'Design Patterns', 'Optimization'], level: 'expert' },
-  { id: '5', credentialId: 'COURSERA-SDA-2024-44556', verifyUrl: '#', category: 'architecture', skills: ['System Design', 'Microservices', 'Scalability', 'Databases'], level: 'specialist' },
-  { id: '6', category: 'testing', skills: ['Cypress', 'E2E Testing', 'Test Automation', 'CI/CD'], level: 'professional' },
-];
-
-const FILTER_KEYS: ReadonlyArray<{ value: 'all' | CertCategory; icon: typeof Sparkles }> = [
-  { value: 'all', icon: Sparkles },
-  { value: 'frontend', icon: Award },
-  { value: 'cloud', icon: Trophy },
-  { value: 'architecture', icon: Star },
-  { value: 'testing', icon: CheckCircle2 },
+  { id: '1', credentialId: 'AWS-PSA-2025-12345', verifyUrl: '#', skills: ['AWS', 'Cloud Architecture', 'Infrastructure', 'Security'], level: 'professional' },
+  { id: '2', credentialId: 'META-FE-2025-67890', verifyUrl: '#', skills: ['React', 'JavaScript', 'HTML/CSS', 'UI/UX'], level: 'professional' },
+  { id: '3', credentialId: 'GCP-PCA-2024-11223', verifyUrl: '#', skills: ['GCP', 'Kubernetes', 'Terraform', 'DevOps'], level: 'professional' },
+  { id: '4', skills: ['React', 'Performance', 'Design Patterns', 'Optimization'], level: 'expert' },
+  { id: '5', credentialId: 'COURSERA-SDA-2024-44556', verifyUrl: '#', skills: ['System Design', 'Microservices', 'Scalability', 'Databases'], level: 'specialist' },
+  { id: '6', skills: ['Cypress', 'E2E Testing', 'Test Automation', 'CI/CD'], level: 'professional' },
 ];
 
 const levelClass: Record<CertLevel, string> = {
@@ -51,11 +40,6 @@ const levelClass: Record<CertLevel, string> = {
 
 export default function Certifications() {
   const t = useTranslations('Certifications');
-  const [activeFilter, setActiveFilter] = useState<'all' | CertCategory>('all');
-
-  const filtered = activeFilter === 'all'
-    ? certifications
-    : certifications.filter(c => c.category === activeFilter);
 
   const uniqueIssuers = new Set(
     certifications.map((c) => t(`items.${c.id}.issuer`))
@@ -113,43 +97,6 @@ export default function Certifications() {
             </motion.div>
           </div>
 
-          {/* Filters */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className={styles.filters}
-          >
-            {FILTER_KEYS.map((category, index) => {
-              const Icon = category.icon;
-              const isActive = activeFilter === category.value;
-              return (
-                <motion.button
-                  key={category.value}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                  onClick={() => setActiveFilter(category.value)}
-                  className={`${styles.filterBtn} ${isActive ? styles.filterBtnActive : ''}`}
-                >
-                  <span className={styles.filterContent}>
-                    <Icon size={16} />
-                    {t(`filters.${category.value}`)}
-                  </span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeFilter"
-                      className={styles.filterUnderline}
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                </motion.button>
-              );
-            })}
-          </motion.div>
-
           {/* Grid */}
           <motion.div
             initial="hidden"
@@ -161,7 +108,7 @@ export default function Certifications() {
             }}
             className={styles.grid}
           >
-            {filtered.map((cert) => (
+            {certifications.map((cert) => (
               <motion.div
                 key={cert.id}
                 variants={{
