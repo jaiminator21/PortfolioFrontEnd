@@ -19,11 +19,6 @@ export default function ProfessionalProjects() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <div className={styles.intro}>
-            <h1 className={styles.title}>{t('title')}</h1>
-            <p className={styles.subtitle}>{t('subtitle')}</p>
-          </div>
-
           <div className={styles.list}>
             {professionalProjects.map((project, index) => (
               <motion.article

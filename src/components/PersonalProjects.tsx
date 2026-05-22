@@ -35,11 +35,6 @@ export default function PersonalProjects() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className={styles.intro}>
-            <h2 className={styles.title}>{t('sectionTitle')}</h2>
-            <p className={styles.subtitle}>{t('sectionSubtitle')}</p>
-          </div>
-
           <div className={styles.grid}>
             {projects.map((project, index) => (
               <motion.div

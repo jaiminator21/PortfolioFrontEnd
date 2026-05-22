@@ -7,13 +7,13 @@ export const routing = defineRouting({
   localeDetection: true,
   pathnames: {
     '/': '/',
-    '/proyectos-personales': {
-      es: '/proyectos-personales',
-      en: '/personal-projects',
+    '/sobre-mi': {
+      es: '/sobre-mi',
+      en: '/about',
     },
-    '/proyectos-profesionales': {
-      es: '/proyectos-profesionales',
-      en: '/professional-projects',
+    '/proyectos': {
+      es: '/proyectos',
+      en: '/projects',
     },
     '/proyecto/[id]': {
       es: '/proyecto/[id]',

@@ -10,6 +10,8 @@
   },
   "Nav": {
     "home": "Inicio",
+    "about": "Sobre mí",
+    "projects": "Proyectos",
     "personalProjects": "Proyectos Personales",
     "certifications": "Certificaciones",
     "professionalProjects": "Proyectos Profesionales",
@@ -23,10 +25,12 @@
     "description": "Especializado en aplicaciones escalables con un enfoque implacable en el",
     "descriptionHighlight": "rendimiento",
     "descriptionEnd": "y la experiencia de usuario.",
-    "ctaProfessional": "Ver proyectos profesionales",
-    "ctaPersonal": "Proyectos personales"
+    "ctaProjects": "Ver proyectos",
+    "ctaAbout": "Sobre mí"
   },
   "About": {
+    "pageTitle": "Sobre mí",
+    "pageLead": "Desarrollador front-end con más de 5 años construyendo productos digitales. Aquí cuento quién soy, qué hago y cómo trabajo.",
     "sideText": "ABOUT ME",
     "title": "Sobre mí",
     "lead1Pre": "Soy un",
@@ -151,6 +155,14 @@
         "issuer": "Cypress.io",
         "date": "Mayo 2024"
       }
+    }
+  },
+  "Projects": {
+    "pageTitle": "Proyectos",
+    "pageLead": "Una selección de proyectos profesionales con impacto medible en negocio y proyectos personales de exploración técnica.",
+    "tabs": {
+      "professional": "Profesionales",
+      "personal": "Personales"
     }
   },
   "PersonalProjects": {
@@ -292,6 +304,18 @@
       "description": "Contacta con Jaime Sebastián, desarrollador front-end especializado en React, Next.js y TypeScript. Disponible para nuevas oportunidades, colaboraciones y proyectos freelance.",
       "ogTitle": "Contacto — Jaime Sebastián",
       "ogDescription": "Hablemos. Disponible para nuevas oportunidades, colaboraciones y proyectos freelance."
+    },
+    "aboutPage": {
+      "title": "Sobre mí | Jaime Sebastián — Desarrollador Front-End",
+      "description": "Conoce a Jaime Sebastián, arquitecto de experiencias digitales con sede en España. Más de 5 años desarrollando productos con React, Next.js y TypeScript.",
+      "ogTitle": "Sobre Jaime Sebastián",
+      "ogDescription": "Arquitecto de experiencias digitales especializado en React, Next.js y TypeScript."
+    },
+    "projectsPage": {
+      "title": "Proyectos | Jaime Sebastián — Desarrollador Front-End",
+      "description": "Explora los proyectos profesionales y personales de Jaime Sebastián. Casos de estudio con impacto medible en negocio y exploraciones técnicas con tecnologías modernas.",
+      "ogTitle": "Proyectos — Jaime Sebastián",
+      "ogDescription": "Casos de estudio profesionales y proyectos personales: React, Next.js, TypeScript y arquitectura web."
     }
   }
 }

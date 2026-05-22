@@ -1,0 +1,41 @@
+.tabsBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 3rem;
+}
+
+.tab {
+  position: relative;
+  padding: 0.875rem 1.75rem;
+  font-weight: 700;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  background-color: var(--secondary);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.tab:hover {
+  background-color: color-mix(in oklab, var(--secondary) 80%, var(--foreground));
+  color: var(--foreground);
+}
+
+.tabActive {
+  background-color: var(--foreground);
+  color: var(--background);
+  border-color: var(--foreground);
+}
+
+.tabActive:hover {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.panel {
+  position: relative;
+}
