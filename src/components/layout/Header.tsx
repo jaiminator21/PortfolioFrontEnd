@@ -11,17 +11,17 @@ import { routing } from '@/i18n/routing';
 import styles from '@/styles/Header.module.css';
 
 type NavPath =
-  | '/proyectos-personales'
+  | '/sobre-mi'
+  | '/proyectos'
   | '/certificaciones'
-  | '/proyectos-profesionales'
   | '/contacto';
 
 // `widthHolder` reserves the layout width of the longest locale variant
 // (always Spanish in our case) so the nav doesn't reflow when switching language.
 const NAV_ITEMS: { key: string; path: NavPath; widthHolder: string }[] = [
-  { key: 'personalProjects', path: '/proyectos-personales', widthHolder: 'Proyectos Personales' },
+  { key: 'about', path: '/sobre-mi', widthHolder: 'Sobre mí' },
+  { key: 'projects', path: '/proyectos', widthHolder: 'Proyectos' },
   { key: 'certifications', path: '/certificaciones', widthHolder: 'Certificaciones' },
-  { key: 'professionalProjects', path: '/proyectos-profesionales', widthHolder: 'Proyectos Profesionales' },
   { key: 'contact', path: '/contacto', widthHolder: 'Contacto' },
 ];
 

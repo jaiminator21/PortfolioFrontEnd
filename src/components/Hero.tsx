@@ -77,15 +77,15 @@ export default function Hero() {
             className={styles.buttonGroup}
           >
             <Button asChild size="lg" className={styles.mainBtn}>
-              <Link href="/proyectos-profesionales">
-                {t('ctaProfessional')}
+              <Link href="/proyectos">
+                {t('ctaProjects')}
                 <ArrowRight className={styles.arrow} />
               </Link>
             </Button>
 
             <Button variant="outline" size="lg" asChild className={styles.secondaryBtn}>
-              <Link href="/proyectos-personales">
-                {t('ctaPersonal')}
+              <Link href="/sobre-mi">
+                {t('ctaAbout')}
               </Link>
             </Button>
           </motion.div>

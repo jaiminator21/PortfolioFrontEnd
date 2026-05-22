@@ -16,11 +16,11 @@ export default function Footer() {
           <div>
             <h3 className={styles.title}>{t('Footer.navigation')}</h3>
             <nav className={styles.navStack}>
-              <Link href="/proyectos-personales" className="footer-link">
-                {t('Nav.personalProjects')}
+              <Link href="/sobre-mi" className="footer-link">
+                {t('Nav.about')}
               </Link>
-              <Link href="/proyectos-profesionales" className="footer-link">
-                {t('Nav.professionalProjects')}
+              <Link href="/proyectos" className="footer-link">
+                {t('Nav.projects')}
               </Link>
               <Link href="/certificaciones" className="footer-link">
                 {t('Nav.certifications')}

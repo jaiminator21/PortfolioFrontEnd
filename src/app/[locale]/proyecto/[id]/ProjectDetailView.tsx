@@ -26,7 +26,7 @@ export default function ProjectDetailView({ projectId, tags, imageUrl }: Props) 
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Link href="/proyectos-profesionales" className={styles.backLink}>
+          <Link href="/proyectos" className={styles.backLink}>
             <ArrowLeft size={16} />
             {t('backToProjects')}
           </Link>
@@ -74,7 +74,7 @@ export default function ProjectDetailView({ projectId, tags, imageUrl }: Props) 
           </div>
 
           <div className={styles.footer}>
-            <Link href="/proyectos-profesionales" className={styles.footerCta}>
+            <Link href="/proyectos" className={styles.footerCta}>
               {t('moreProjects')}
               <ExternalLink size={16} />
             </Link>
