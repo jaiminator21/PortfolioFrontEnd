@@ -1,32 +1,44 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Mail, Github, Send } from "lucide-react";
-import { useState } from "react";
+import {
+  CalendarClock,
+  Github,
+  Globe,
+  Linkedin,
+  Mail,
+  Twitter,
+} from "lucide-react";
+import type { ComponentType } from "react";
 import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/Button";
+import { AvailabilityBadge } from "@/components/recruiter/AvailabilityBadge";
+import { ContactForm } from "@/components/ContactForm";
+import { CvDownload } from "@/components/recruiter/CvDownload";
+import type { Profile } from "@/sanity/types";
 import styles from "@/styles/Contact.module.css";
 
-export default function Contact() {
+const PLATFORM_ICONS: Record<string, ComponentType<{ size?: number }>> = {
+  github: Github,
+  linkedin: Linkedin,
+  x: Twitter,
+  email: Mail,
+  website: Globe,
+  other: Globe,
+};
+
+/**
+ * Contact routes, ordered by how little friction they cost the recruiter:
+ * scheduling link first, then email, then social. The form is last because it
+ * gives the sender no confirmation they can act on.
+ */
+export default function Contact({
+  profile,
+  locale,
+}: {
+  profile: Profile;
+  locale: string;
+}) {
   const t = useTranslations("Contact");
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert(t("form.successAlert"));
-    setFormData({ name: "", email: "", message: "" });
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
   return (
     <section id="contacto" className={styles.contact}>
@@ -40,100 +52,76 @@ export default function Contact() {
           <header className={styles.header}>
             <h2 className={styles.title}>{t("title")}</h2>
             <p className={styles.subtitle}>{t("subtitle")}</p>
+            <div className={styles.availabilityRow}>
+              <AvailabilityBadge
+                status={profile.availability?.status}
+                note={profile.availability?.headline}
+              />
+            </div>
           </header>
 
           <div className={styles.grid}>
             <div className={styles.infoSide}>
               <div className={styles.socialList}>
-                <a href="mailto:jaiminator21@gmail.com" className={styles.contactLink}>
+                {profile.schedulingUrl ? (
+                  <a
+                    href={profile.schedulingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.contactLink}
+                  >
+                    <div className={styles.iconWrapper}>
+                      <CalendarClock size={20} />
+                    </div>
+                    <div className={styles.linkText}>
+                      <span>{t("scheduleLabel")}</span>
+                      <p>{t("scheduleCall")}</p>
+                    </div>
+                  </a>
+                ) : null}
+
+                <a href={`mailto:${profile.email}`} className={styles.contactLink}>
                   <div className={styles.iconWrapper}>
                     <Mail size={20} />
                   </div>
                   <div className={styles.linkText}>
                     <span>{t("emailLabel")}</span>
-                    <p>jaiminator21@gmail.com</p>
+                    <p>{profile.email}</p>
                   </div>
                 </a>
-                <a href="https://github.com/jaiminator21" className={styles.contactLink}>
-                  <div className={styles.iconWrapper}>
-                    <Github size={20} />
-                  </div>
-                  <div className={styles.linkText}>
-                    <span>{t("githubLabel")}</span>
-                    <p>jaiminator21</p>
-                  </div>
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/jaime-sebasti%C3%A1n-9b4426205/"
-                  className={styles.contactLink}
-                >
-                  <div className={styles.iconWrapper}>
-                    <Mail size={20} />
-                  </div>
-                  <div className={styles.linkText}>
-                    <span>{t("nameLabel")}</span>
-                    <p>Jaime Sebastián</p>
-                  </div>
-                </a>
+
+                {profile.socials?.map((social) => {
+                  const Icon = PLATFORM_ICONS[social.platform] ?? Globe;
+                  return (
+                    <a
+                      key={social._key}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.contactLink}
+                    >
+                      <div className={styles.iconWrapper}>
+                        <Icon size={20} />
+                      </div>
+                      <div className={styles.linkText}>
+                        <span>{t(`platform.${social.platform}`)}</span>
+                        <p>{social.label ?? social.url}</p>
+                      </div>
+                    </a>
+                  );
+                })}
+              </div>
+
+              <div className={styles.cvRow}>
+                <CvDownload
+                  cv={profile.cv}
+                  locale={locale}
+                  fullName={profile.fullName}
+                />
               </div>
             </div>
 
-            <div className={styles.formSide}>
-              <form onSubmit={handleSubmit} className={styles.form}>
-                <div className={styles.inputGroup}>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder=" "
-                    className={styles.input}
-                    value={formData.name}
-                    onChange={handleChange}
-                    required
-                  />
-                  <label htmlFor="name" className={styles.label}>
-                    {t("form.name")}
-                  </label>
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder=" "
-                    className={styles.input}
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                  <label htmlFor="email" className={styles.label}>
-                    {t("form.email")}
-                  </label>
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <textarea
-                    id="message"
-                    name="message"
-                    placeholder=" "
-                    className={styles.input}
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={4}
-                  />
-                  <label htmlFor="message" className={styles.label}>
-                    {t("form.message")}
-                  </label>
-                </div>
-
-                <Button type="submit" size="lg" className={styles.submitBtn}>
-                  <span>{t("form.submit")}</span>
-                  <Send className={styles.sendIcon} size={16} />
-                </Button>
-              </form>
-            </div>
+            <ContactForm fallbackEmail={profile.email} />
           </div>
         </motion.div>
       </div>

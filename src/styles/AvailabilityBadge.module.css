@@ -1,0 +1,56 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: color-mix(in oklab, var(--card) 85%, transparent);
+  backdrop-filter: blur(8px);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  flex-wrap: wrap;
+}
+
+.dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.open .dot {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px color-mix(in oklab, #22c55e 25%, transparent);
+}
+
+.selective .dot {
+  background: #f59e0b;
+  box-shadow: 0 0 0 3px color-mix(in oklab, #f59e0b 25%, transparent);
+}
+
+/* The pulse is a live signal; respect users who opt out of motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .open .dot {
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px color-mix(in oklab, #22c55e 25%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in oklab, #22c55e 6%, transparent);
+  }
+}
+
+.label {
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.note {
+  color: var(--muted-foreground);
+}

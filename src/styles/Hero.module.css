@@ -93,7 +93,16 @@
   line-height: 1.6;
   color: var(--muted-foreground);
   max-width: 45rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Sits between the bio and the CTAs: seen right after "what do they do". */
+.availabilityRow {
   margin-bottom: 2rem;
+}
+
+.availabilityRow:empty {
+  margin-bottom: 0;
 }
 
 .highlight {
@@ -107,6 +116,7 @@
 .buttonGroup {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 1.5rem;
 }
 

@@ -170,3 +170,106 @@ textarea.input {
 .submitBtn:hover .sendIcon {
   transform: translate(6px, -6px);
 }
+/* --- Sanity rewire additions --- */
+
+.availabilityRow {
+  margin-top: 1.25rem;
+}
+
+.cvRow {
+  margin-top: 2rem;
+}
+
+/* --- Web3Forms submission states --- */
+
+/*
+ * Honeypot. Kept out of the layout and the a11y tree without display:none,
+ * which some bots detect and skip.
+ */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.errorBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid color-mix(in oklab, var(--destructive) 40%, transparent);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--destructive) 10%, transparent);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.errorBanner svg {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  color: var(--destructive);
+}
+
+.errorLink {
+  color: inherit;
+  font-weight: var(--font-weight-medium);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  white-space: nowrap;
+}
+
+.fieldError {
+  margin: 0.4rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--destructive);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--destructive);
+}
+
+.successPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 18rem;
+  padding: 2.5rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in oklab, var(--card) 60%, transparent);
+  text-align: center;
+}
+
+.successIcon {
+  color: #22c55e;
+}
+
+.successTitle {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.successText {
+  margin: 0;
+  max-width: 26rem;
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .spinner {
+    animation: contactSpin 0.9s linear infinite;
+  }
+}
+
+@keyframes contactSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}

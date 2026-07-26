@@ -4,10 +4,26 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
+import { AvailabilityBadge } from '@/components/recruiter/AvailabilityBadge';
+import { CvDownload } from '@/components/recruiter/CvDownload';
 import { Link } from '@/i18n/navigation';
+import { withHighlight } from '@/lib/highlight';
+import type { Page, Profile } from '@/sanity/types';
 import styles from '@/styles/Hero.module.css';
 
-export default function Hero() {
+/**
+ * The one screen every visitor sees. It has to answer, in order: who is this,
+ * what do they do, are they available, and how do I get their CV.
+ */
+export default function Hero({
+  profile,
+  page,
+  locale,
+}: {
+  profile: Profile;
+  page: Page | null;
+  locale: string;
+}) {
   const t = useTranslations('Hero');
   const tCommon = useTranslations('Common');
 
@@ -47,7 +63,7 @@ export default function Hero() {
             className={styles.kicker}
           >
             <span className={styles.kickerLine}></span>
-            {t('kicker')}
+            {profile.headline}
           </motion.p>
 
           <motion.h1
@@ -56,19 +72,31 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 1 }}
             className={styles.title}
           >
-            {t('titlePart1')} <span className={styles.titleGradient}>{t('titleHighlight')}</span> {t('titlePart2')}
+            {withHighlight(page?.title, styles.titleGradient)}
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            className={styles.description}
+          {profile.shortBio ? (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              className={styles.description}
+            >
+              {profile.shortBio}
+            </motion.p>
+          ) : null}
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7, duration: 0.6 }}
+            className={styles.availabilityRow}
           >
-            {t('description')}{' '}
-            <span className={styles.highlight}>{t('descriptionHighlight')}</span>{' '}
-            {t('descriptionEnd')}
-          </motion.p>
+            <AvailabilityBadge
+              status={profile.availability?.status}
+              note={profile.availability?.headline}
+            />
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -88,6 +116,8 @@ export default function Hero() {
                 {t('ctaAbout')}
               </Link>
             </Button>
+
+            <CvDownload cv={profile.cv} locale={locale} fullName={profile.fullName} />
           </motion.div>
         </motion.div>
       </div>

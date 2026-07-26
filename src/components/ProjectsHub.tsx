@@ -5,13 +5,20 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import PersonalProjects from '@/components/PersonalProjects';
 import ProfessionalProjects from '@/components/ProfessionalProjects';
+import type { ProjectCard } from '@/sanity/types';
 import styles from '@/styles/ProjectsHub.module.css';
 
 type Tab = 'professional' | 'personal';
 
 const TABS: Tab[] = ['professional', 'personal'];
 
-export default function ProjectsHub() {
+export default function ProjectsHub({
+  professional,
+  personal,
+}: {
+  professional: ProjectCard[];
+  personal: ProjectCard[];
+}) {
   const t = useTranslations('Projects');
   const [active, setActive] = useState<Tab>('professional');
 
@@ -22,6 +29,11 @@ export default function ProjectsHub() {
       setActive('personal');
     }
   }, []);
+
+  const counts: Record<Tab, number> = {
+    professional: professional.length,
+    personal: personal.length,
+  };
 
   return (
     <>
@@ -44,6 +56,9 @@ export default function ProjectsHub() {
                 className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
               >
                 {t(`tabs.${tab}`)}
+                {counts[tab] > 0 ? (
+                  <span className={styles.tabCount}>{counts[tab]}</span>
+                ) : null}
               </button>
             );
           })}
@@ -59,7 +74,11 @@ export default function ProjectsHub() {
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
           >
-            {active === 'professional' ? <ProfessionalProjects /> : <PersonalProjects />}
+            {active === 'professional' ? (
+              <ProfessionalProjects projects={professional} />
+            ) : (
+              <PersonalProjects projects={personal} />
+            )}
           </motion.div>
         </AnimatePresence>
       </div>

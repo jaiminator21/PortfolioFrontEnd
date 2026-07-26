@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
-import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { getPathname } from '@/i18n/navigation';
-import { routing } from '@/i18n/routing';
+import { setRequestLocale } from 'next-intl/server';
 import About from '@/components/About';
 import Experience from '@/components/Experience';
 import Skills from '@/components/Skills';
+import { JsonLd } from '@/components/sanity/JsonLd';
+import { SITE_URL, buildMetadata } from '@/lib/metadata';
+import {
+  getExperience,
+  getPage,
+  getPageForMetadata,
+  getProfile,
+  getProfileForMetadata,
+  getSkills,
+} from '@/sanity/fetch';
 import styles from '@/styles/SecondaryPage.module.css';
 
 export async function generateMetadata({
@@ -13,35 +21,18 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Metadata.aboutPage' });
+  const [page, profile] = await Promise.all([
+    getPageForMetadata(locale, 'about'),
+    getProfileForMetadata(locale),
+  ]);
 
-  const canonical = getPathname({ href: '/sobre-mi', locale: locale as 'es' | 'en' });
-  const languages = Object.fromEntries(
-    routing.locales.map((loc) => [loc, getPathname({ href: '/sobre-mi', locale: loc })])
-  );
-
-  return {
-    title: t('title'),
-    description: t('description'),
-    alternates: {
-      canonical,
-      languages,
-    },
-    openGraph: {
-      title: t('ogTitle'),
-      description: t('ogDescription'),
-      url: canonical,
-      siteName: 'Portfolio — Jaime Sebastián',
-      locale: locale === 'es' ? 'es_ES' : 'en_US',
-      type: 'profile',
-    },
-    twitter: {
-      card: 'summary',
-      title: t('ogTitle'),
-      description: t('ogDescription'),
-    },
-    robots: { index: true, follow: true },
-  };
+  return buildMetadata({
+    seo: page?.seo ?? profile?.seo,
+    locale,
+    href: '/sobre-mi',
+    siteName: profile?.fullName ?? '',
+    type: 'profile',
+  });
 }
 
 export default async function AboutPage({
@@ -51,55 +42,41 @@ export default async function AboutPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: 'About' });
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'AboutPage',
-    inLanguage: locale,
-    mainEntity: {
-      '@type': 'Person',
-      name: 'Jaime Sebastián',
-      jobTitle: locale === 'es' ? 'Desarrollador Front-End' : 'Front-End Developer',
-      description:
-        locale === 'es'
-          ? 'Arquitecto de experiencias digitales con sede en España, especializado en React, Next.js y TypeScript.'
-          : 'Digital experience architect based in Spain, specialized in React, Next.js and TypeScript.',
-      url: 'https://github.com/jaiminator21',
-      email: 'jaiminator21@gmail.com',
-      knowsAbout: [
-        'React',
-        'Next.js',
-        'TypeScript',
-        'Node.js',
-        'Web Performance',
-        'UI/UX',
-      ],
-      sameAs: [
-        'https://github.com/jaiminator21',
-        'https://www.linkedin.com/in/jaime-sebasti%C3%A1n-9b4426205/',
-        'https://www.instagram.com/jaiminator21/',
-      ],
-    },
-  };
+  const [profile, page, experience, skills] = await Promise.all([
+    getProfile(locale),
+    getPage(locale, 'about'),
+    getExperience(locale),
+    getSkills(locale),
+  ]);
+
+  if (!profile) return null;
 
   return (
     <div className={styles.wrapper}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      {/*
+        AboutPage points at the Person defined once in the layout via @id, rather
+        than restating the identity and risking two conflicting descriptions.
+      */}
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'AboutPage',
+          inLanguage: locale,
+          mainEntity: { '@id': `${SITE_URL}/#person` },
+        }}
       />
 
       <section className={styles.pageHero}>
         <div className="container-custom">
-          <h1 className={styles.pageHeroTitle}>{t('pageTitle')}</h1>
-          <p className={styles.pageHeroLead}>{t('pageLead')}</p>
+          <h1 className={styles.pageHeroTitle}>{page?.title}</h1>
+          {page?.lead ? <p className={styles.pageHeroLead}>{page.lead}</p> : null}
         </div>
       </section>
 
-      <About />
-      <Experience />
-      <Skills />
+      <About profile={profile} />
+      <Experience items={experience} />
+      <Skills skills={skills} />
     </div>
   );
 }

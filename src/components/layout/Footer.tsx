@@ -1,11 +1,22 @@
 "use client";
 
 import { useTranslations } from 'next-intl';
-import { Github, Linkedin, InstagramIcon } from 'lucide-react';
+import { Github, Globe, InstagramIcon, Linkedin, Mail, Twitter } from 'lucide-react';
+import type { ComponentType } from 'react';
 import { Link } from '@/i18n/navigation';
+import type { Profile } from '@/sanity/types';
 import styles from '@/styles/Footer.module.css';
 
-export default function Footer() {
+const PLATFORM_ICONS: Record<string, ComponentType<{ size?: number }>> = {
+  github: Github,
+  linkedin: Linkedin,
+  x: Twitter,
+  email: Mail,
+  website: Globe,
+  other: InstagramIcon,
+};
+
+export default function Footer({ profile }: { profile: Profile | null }) {
   const t = useTranslations();
   const currentYear = new Date().getFullYear();
 
@@ -34,30 +45,52 @@ export default function Footer() {
           <div>
             <h3 className={styles.title}>{t('Footer.contact')}</h3>
             <div className={styles.navStack}>
-              <a href="mailto:jaiminator21@gmail.com" className="footer-link">
-                jaiminator21@gmail.com
-              </a>
+              {profile?.email ? (
+                <a href={`mailto:${profile.email}`} className="footer-link">
+                  {profile.email}
+                </a>
+              ) : null}
+              {profile?.schedulingUrl ? (
+                <a
+                  href={profile.schedulingUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="footer-link"
+                >
+                  {t('Contact.scheduleCall')}
+                </a>
+              ) : null}
             </div>
           </div>
 
-          <div>
-            <h3 className={styles.title}>{t('Footer.follow')}</h3>
-            <div className={styles.socialFlex}>
-              <a href="https://github.com/jaiminator21" target="_blank" rel="noopener" className="social-icon" aria-label="GitHub">
-                <Github size={20} />
-              </a>
-              <a href="https://www.linkedin.com/in/jaime-sebasti%C3%A1n-9b4426205/" target="_blank" rel="noopener" className="social-icon" aria-label="LinkedIn">
-                <Linkedin size={20} />
-              </a>
-              <a href="https://www.instagram.com/jaiminator21/" target="_blank" rel="noopener" className="social-icon" aria-label="Instagram">
-                <InstagramIcon size={20} />
-              </a>
+          {profile?.socials?.length ? (
+            <div>
+              <h3 className={styles.title}>{t('Footer.follow')}</h3>
+              <div className={styles.socialFlex}>
+                {profile.socials.map((social) => {
+                  const Icon = PLATFORM_ICONS[social.platform] ?? Globe;
+                  return (
+                    <a
+                      key={social._key}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-icon"
+                      aria-label={social.label ?? social.platform}
+                    >
+                      <Icon size={20} />
+                    </a>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          ) : null}
         </div>
 
         <div className={styles.bottomBar}>
-          <p className={styles.copy}>{t('Footer.copy', { year: currentYear })}</p>
+          <p className={styles.copy}>
+            {t('Footer.copy', { year: currentYear, name: profile?.fullName ?? '' })}
+          </p>
         </div>
       </div>
     </footer>

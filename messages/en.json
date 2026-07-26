@@ -17,73 +17,65 @@
     "professionalProjects": "Professional Projects",
     "contact": "Contact"
   },
+  "Availability": {
+    "status": {
+      "open": "Open to new opportunities",
+      "selective": "Open to the right role",
+      "closed": "Not available"
+    },
+    "workMode": {
+      "remote": "Remote",
+      "hybrid": "Hybrid",
+      "onsite": "On-site"
+    },
+    "contractType": {
+      "fulltime": "Full-time",
+      "parttime": "Part-time",
+      "freelance": "Freelance"
+    }
+  },
   "Hero": {
-    "kicker": "Full Stack Web Developer",
-    "titlePart1": "Building the",
-    "titleHighlight": "digital",
-    "titlePart2": "future.",
-    "description": "Specialized in scalable applications with a relentless focus on",
-    "descriptionHighlight": "performance",
-    "descriptionEnd": "and user experience.",
     "ctaProjects": "View projects",
     "ctaAbout": "About me"
   },
   "About": {
-    "pageTitle": "About me",
-    "pageLead": "Front-end developer with 5+ years building digital products. Here's who I am, what I do and how I work.",
     "sideText": "ABOUT ME",
     "title": "About me",
-    "lead1Pre": "I'm a",
-    "lead1Highlight": "digital experience architect",
-    "lead1Post": "based in Spain, dedicated to merging technical aesthetics with flawless performance.",
-    "lead2Pre": "My approach goes beyond code; I understand that every line should serve a business purpose and improve the user's life. I specialize in the",
-    "lead2Tech": "React / Next.js / TypeScript",
-    "philosophyLabel": "Philosophy",
-    "philosophyText": "Less is more, but better.",
-    "focusLabel": "Approach",
-    "focusText": "Product-centric and modular.",
-    "experienceNumber": "5+",
+    "languagesLabel": "Languages",
+    "workModeLabel": "Work mode",
+    "locationLabel": "Location",
+    "targetRolesLabel": "Target roles",
     "experienceLabel": "Years building products"
   },
   "Experience": {
     "title": "Experience",
-    "subtitle": "Professional journey focused on technical excellence.",
+    "subtitle": "A career focused on technical excellence.",
     "currentBadge": "Current",
     "presentLabel": "Present",
-    "items": [
-      {
-        "company": "Tech Solutions Inc.",
-        "role": "Senior Frontend Developer",
-        "period": "2022 - Present",
-        "description": "Technical leadership in the development of B2B SaaS platforms focused on large-scale project management.",
-        "responsibilities": [
-          "Architecture and development of the new dashboard with React and TypeScript",
-          "Implementation of a design system shared across products",
-          "Technical leadership of a team of 4 frontend developers",
-          "Performance optimization and Core Web Vitals improvements"
-        ]
-      },
-      {
-        "company": "Digital Ventures",
-        "role": "Full Stack Developer",
-        "period": "2020 - 2022",
-        "description": "End-to-end development of high-traffic e-commerce solutions for multichannel retail.",
-        "responsibilities": [
-          "Full stack development with Next.js and Node.js",
-          "Integration with third-party APIs (payment gateways, CRM)",
-          "Implementation of automated testing (Jest, Cypress)",
-          "Direct collaboration with UX/UI on product iterations"
-        ]
-      }
-    ]
+    "teamSize": "Team of {count}",
+    "workMode": {
+      "remote": "Remote",
+      "hybrid": "Hybrid",
+      "onsite": "On-site"
+    }
   },
   "Skills": {
     "title": "Tech Stack",
-    "subtitle": "Carefully chosen tools to build scalable software.",
+    "subtitle": "Tools chosen to build scalable software.",
     "categories": {
       "frontend": "Frontend",
       "backend": "Backend",
-      "tooling": "Tooling"
+      "databases": "Databases",
+      "cloud": "Cloud & DevOps",
+      "testing": "Testing",
+      "tooling": "Tooling",
+      "design": "Design"
+    },
+    "proficiency": {
+      "learning": "Learning",
+      "working": "Working knowledge",
+      "proficient": "Proficient",
+      "expert": "Expert"
     }
   },
   "CertificationsCTA": {
@@ -91,7 +83,7 @@
     "titlePart1": "Validated by industry",
     "titleHighlight": "leaders",
     "titlePart2": "",
-    "description": "Explore my collection of professional certifications from AWS, Google Cloud, Meta and more — evidence of continuous learning and technical mastery.",
+    "description": "Explore my professional certifications — verifiable evidence of continuous learning and technical depth.",
     "cta": "View all certifications",
     "stats": {
       "certifications": "Certifications",
@@ -102,100 +94,46 @@
   },
   "Certifications": {
     "title": "Courses & Certifications",
-    "subtitle": "Continuous learning and validation of technical skills by leading industry organizations.",
+    "subtitle": "Continuous learning and technical skills validated by leading industry organisations.",
     "count": "{count} Professional Certifications",
+    "credentialId": "ID",
+    "verify": "Verify Credential",
+    "expired": "Expired",
+    "empty": "No certifications published yet.",
     "levels": {
+      "foundational": "Foundational",
+      "associate": "Associate",
       "professional": "Professional",
       "expert": "Expert",
       "specialist": "Specialist"
     },
-    "credentialId": "ID",
-    "verify": "Verify Credential",
     "statsLabels": {
       "certifications": "Certifications",
+      "verifiable": "Verifiable",
       "providers": "Providers",
       "hours": "Study Hours",
-      "skills": "Validated Skills"
-    },
-    "items": {
-      "1": {
-        "title": "AWS Certified Solutions Architect – Professional",
-        "issuer": "Amazon Web Services",
-        "date": "March 2025"
-      },
-      "2": {
-        "title": "Meta Front-End Developer Professional Certificate",
-        "issuer": "Meta (Facebook)",
-        "date": "January 2025"
-      },
-      "3": {
-        "title": "Google Cloud Professional Cloud Architect",
-        "issuer": "Google Cloud",
-        "date": "November 2024"
-      },
-      "4": {
-        "title": "Advanced React Patterns & Performance",
-        "issuer": "Frontend Masters",
-        "date": "September 2024"
-      },
-      "5": {
-        "title": "System Design & Architecture Specialization",
-        "issuer": "Coursera",
-        "date": "July 2024"
-      },
-      "6": {
-        "title": "Cypress End-to-End Testing Certification",
-        "issuer": "Cypress.io",
-        "date": "May 2024"
-      }
+      "skills": "Skills Validated"
     }
   },
   "Projects": {
-    "pageTitle": "Projects",
-    "pageLead": "A selection of professional projects with measurable business impact and personal projects focused on technical exploration.",
     "tabs": {
       "professional": "Professional",
       "personal": "Personal"
     }
   },
   "PersonalProjects": {
-    "pageTitle": "Personal Projects",
-    "pageLead": "Technical exploration and experimentation with new technologies outside the corporate environment. These projects show curiosity, continuous learning and a passion for development.",
-    "sectionTitle": "Personal Projects",
-    "sectionSubtitle": "Technical experimentation and exploration outside the corporate environment",
     "stackLabel": "Stack",
     "demo": "Demo",
     "code": "Code",
-    "items": {
-      "devmetrics": {
-        "name": "DevMetrics Dashboard",
-        "description": "Dashboard to visualize GitHub metrics: commits, PRs, issues. Integration with the GitHub API and interactive charts."
-      },
-      "taskmaster": {
-        "name": "Task Master Pro",
-        "description": "Task manager with drag & drop, custom categories, advanced filters and offline-first mode with sync."
-      },
-      "perfmonitor": {
-        "name": "Performance Monitor",
-        "description": "CLI tool to analyze web app performance. Generates detailed Core Web Vitals reports."
-      },
-      "componentlib": {
-        "name": "Component Library",
-        "description": "Personal design system with reusable components, interactive documentation and customizable theming."
-      },
-      "ratelimiter": {
-        "name": "API Rate Limiter",
-        "description": "Configurable rate limiting middleware for APIs with different strategies (token bucket, sliding window)."
-      },
-      "snippets": {
-        "name": "Code Snippet Manager",
-        "description": "App to save, organize and search code snippets with syntax highlighting and tags."
-      }
-    }
+    "empty": "No personal projects published yet."
   },
   "ProfessionalProjects": {
-    "title": "Professional Projects",
-    "subtitle": "Case studies of projects developed in corporate environments with measurable business impact. This section contains detailed information from real projects.",
+    "builtAt": "At",
+    "confidential": "Project under NDA",
+    "empty": "No professional projects published yet.",
+    "ongoing": "Ongoing",
+    "viewLive": "View live",
+    "viewCode": "View code",
     "labels": {
       "context": "Context",
       "problem": "Problem",
@@ -203,86 +141,66 @@
       "solution": "Solution",
       "result": "Result"
     },
-    "caseStudyCta": "View full case study",
+    "caseStudyCta": "Read the full case study",
     "backToProjects": "Back to projects",
-    "moreProjects": "View more projects",
+    "moreProjects": "More projects",
     "detail": {
       "contextHeading": "Project Context",
       "problemHeading": "Problem",
       "roleHeading": "My Role",
-      "solutionHeading": "Implemented Solution",
+      "solutionHeading": "Solution",
       "resultHeading": "Results & Impact"
-    },
-    "items": {
-      "analytics-tiempo-real": {
-        "title": "Real-Time Analytics System",
-        "context": "A B2B SaaS platform with 10k+ enterprise users needed to improve its reporting system",
-        "problem": "Users were waiting up to 5 minutes for updated reports, causing friction and feature abandonment",
-        "role": "Frontend Tech Lead — Backend coordination and client-side architecture design",
-        "solution": "Implemented a dashboard with real-time updates using WebSockets, query optimization and virtualization of large lists",
-        "result": "Load time reduced to <2s. Feature engagement grew 180%. Handles up to 100k datapoints without lag"
-      },
-      "checkout-redesign": {
-        "title": "Checkout Flow Redesign",
-        "context": "Retail e-commerce with 68% cart abandonment during purchase",
-        "problem": "Complex 7-step payment flow with slow validations and confusing mobile UX",
-        "role": "Full Stack Developer — End-to-end development of the new flow",
-        "solution": "Simplified to 3 steps, optimized async validations, session-based data persistence, mobile-first design and Stripe integration",
-        "result": "Abandonment dropped to 32%. Conversion grew 45%. Avg purchase time went from 8min to 3min. +$2M extra annual revenue"
-      },
-      "monolito-microfrontends": {
-        "title": "Monolith to Microfrontends Migration",
-        "context": "5-year-old legacy app with a 200k+ line codebase that was hard to maintain",
-        "problem": "Risky deploys, teams blocking each other, slow testing, new-dev onboarding of 3+ weeks",
-        "role": "Senior Developer — Architecture and incremental migration",
-        "solution": "Module Federation (Webpack 5) implementation, independent CI/CD per module, progressive migration with zero downtime",
-        "result": "Deploy time from 2h to 15min. Feature velocity +60%. Onboarding reduced to 1 week. 0 critical incidents during migration"
-      }
     }
   },
   "Contact": {
-    "heroTitle": "Contact",
-    "heroLead": "Available for new opportunities, collaborations and freelance projects. Reach out via the form or directly by email — I respond within 24 hours.",
     "title": "Let's talk",
-    "subtitle": "Open to new opportunities and collaborations. If you're looking for a developer committed to quality, let's connect.",
+    "subtitle": "Open to new opportunities and collaborations. If you are looking for a developer who cares about quality, let's connect.",
     "emailLabel": "Email",
-    "githubLabel": "Username",
-    "nameLabel": "Name",
+    "scheduleLabel": "Schedule",
+    "scheduleCall": "Book a call",
+    "platform": {
+      "github": "GitHub",
+      "linkedin": "LinkedIn",
+      "x": "X",
+      "email": "Email",
+      "website": "Website",
+      "other": "Profile"
+    },
     "form": {
       "name": "Name",
       "email": "Email",
       "message": "Message",
       "submit": "Send message",
-      "successAlert": "Message received! I'll get back to you soon."
+      "sending": "Sending..."
+    },
+    "status": {
+      "successTitle": "Message sent!",
+      "success": "Thanks for reaching out. I'll reply within 24 hours.",
+      "validationFailed": "Please check the highlighted fields. If the problem persists, email me at",
+      "sendFailed": "The message could not be sent. Please email me directly at",
+      "timeout": "The request took too long. Try again, or email me at",
+      "notConfigured": "The form is not configured yet. Please email me at"
+    },
+    "errors": {
+      "nameRequired": "Please enter your name.",
+      "nameTooShort": "That name is too short.",
+      "nameTooLong": "That name is too long.",
+      "emailRequired": "Please enter your email.",
+      "emailInvalid": "That email doesn't look valid.",
+      "messageRequired": "Please write a message.",
+      "messageTooShort": "Tell me a bit more (10 characters minimum).",
+      "messageTooLong": "That message is too long (5000 characters maximum)."
     }
   },
   "Footer": {
     "navigation": "Navigation",
     "contact": "Contact",
     "follow": "Follow me",
-    "copy": "© {year} Jaime Sebastián"
-  },
-  "Login": {
-    "signIn": "Sign in",
-    "signUp": "Create account",
-    "signInSubtitle": "Access exclusive professional projects content",
-    "signUpSubtitle": "Sign up to access the professional projects",
-    "name": "Full name",
-    "namePlaceholder": "Your name",
-    "email": "Email",
-    "emailPlaceholder": "you@email.com",
-    "password": "Password",
-    "passwordHint": "Minimum 6 characters",
-    "showPassword": "Show password",
-    "hidePassword": "Hide password",
-    "toggleToSignIn": "Already have an account? Sign in",
-    "toggleToSignUp": "Don't have an account? Sign up",
-    "disclaimer": "Professional projects contain sensitive information and require authentication to view.",
-    "notImplementedError": "Authentication is not connected yet."
+    "copy": "© {year} {name}"
   },
   "Minesweeper": {
     "title": "Minesweeper.exe",
-    "win": "Victory! 🎉",
+    "win": "You win! 🎉",
     "gameOver": "Game Over 💀"
   },
   "LanguageSwitcher": {
@@ -291,24 +209,6 @@
     "en": "English"
   },
   "Metadata": {
-    "siteName": "Portfolio — Jaime Sebastián",
-    "contactPage": {
-      "title": "Contact | Jaime Sebastián — Front-End Developer",
-      "description": "Get in touch with Jaime Sebastián, front-end developer specialized in React, Next.js and TypeScript. Available for new opportunities, collaborations and freelance projects.",
-      "ogTitle": "Contact — Jaime Sebastián",
-      "ogDescription": "Let's talk. Available for new opportunities, collaborations and freelance projects."
-    },
-    "aboutPage": {
-      "title": "About | Jaime Sebastián — Front-End Developer",
-      "description": "Meet Jaime Sebastián, digital experience architect based in Spain. 5+ years building products with React, Next.js and TypeScript.",
-      "ogTitle": "About Jaime Sebastián",
-      "ogDescription": "Digital experience architect specialized in React, Next.js and TypeScript."
-    },
-    "projectsPage": {
-      "title": "Projects | Jaime Sebastián — Front-End Developer",
-      "description": "Explore Jaime Sebastián's professional and personal projects. Case studies with measurable business impact and technical explorations with modern technologies.",
-      "ogTitle": "Projects — Jaime Sebastián",
-      "ogDescription": "Professional case studies and personal projects: React, Next.js, TypeScript and web architecture."
-    }
+    "siteName": "Portfolio — Jaime Sebastián"
   }
 }

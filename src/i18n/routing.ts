@@ -27,7 +27,6 @@ export const routing = defineRouting({
       es: '/contacto',
       en: '/contact',
     },
-    '/login': '/login',
     '/buscaminas': {
       es: '/buscaminas',
       en: '/minesweeper',

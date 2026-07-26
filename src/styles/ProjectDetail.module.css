@@ -147,3 +147,126 @@
 :global(.dark) .notFoundBox {
   color: #f87171;
 }
+
+/* --- Sanity rewire additions --- */
+
+.metaRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.metaRow a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.confidential {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.linkRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.projectLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.projectLink:hover {
+  background: var(--accent);
+}
+
+.metricsBlock {
+  margin: 3rem 0;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 1.5rem;
+  margin: 3rem 0;
+}
+
+.galleryItem {
+  margin: 0;
+}
+
+.galleryItem img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.galleryItem figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+}
+
+.related {
+  margin: 4rem 0 0;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.relatedCard {
+  display: block;
+  padding: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.relatedCard:hover {
+  border-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+  transform: translateY(-2px);
+}
+
+.relatedCard h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}
+
+.relatedCard p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.heroImage img {
+  width: 100%;
+  height: auto;
+  display: block;
+}

@@ -4,16 +4,49 @@ import { motion } from 'framer-motion';
 import { Award, ArrowRight, Trophy, Star } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import type { CertificationStats } from '@/sanity/types';
 import styles from '@/styles/CertificationsCTA.module.css';
 
-export default function CertificationsCTA() {
+/**
+ * Homepage teaser for the certifications page. The counts come from GROQ
+ * aggregates over the actual documents, so they cannot overstate the collection.
+ */
+export default function CertificationsCTA({ stats }: { stats: CertificationStats }) {
   const t = useTranslations('CertificationsCTA');
 
-  const stats = [
-    { icon: Award, value: '6+', label: t('stats.certifications'), grad: styles.gradBlueCyan },
-    { icon: Trophy, value: '4', label: t('stats.providers'), grad: styles.gradPurplePink },
-    { icon: Star, value: '500+', label: t('stats.hours'), grad: styles.gradAmberOrange },
-    { icon: Award, value: '20+', label: t('stats.skills'), grad: styles.gradGreenEmerald },
+  // Nothing to tease when there are no published certifications.
+  if (!stats.total) return null;
+
+  const tiles = [
+    {
+      icon: Award,
+      value: stats.total,
+      label: t('stats.certifications'),
+      grad: styles.gradBlueCyan,
+    },
+    {
+      icon: Trophy,
+      value: stats.issuers,
+      label: t('stats.providers'),
+      grad: styles.gradPurplePink,
+    },
+    {
+      icon: Award,
+      value: stats.skills,
+      label: t('stats.skills'),
+      grad: styles.gradGreenEmerald,
+    },
+    // Study hours are only shown when the user has actually tracked them.
+    ...(stats.studyHours
+      ? [
+          {
+            icon: Star,
+            value: stats.studyHours,
+            label: t('stats.hours'),
+            grad: styles.gradAmberOrange,
+          },
+        ]
+      : []),
   ];
 
   return (
@@ -97,11 +130,11 @@ export default function CertificationsCTA() {
               </div>
 
               <div className={styles.statsGrid}>
-                {stats.map((stat, index) => {
+                {tiles.map((stat, index) => {
                   const Icon = stat.icon;
                   return (
                     <motion.div
-                      key={index}
+                      key={stat.label}
                       initial={{ opacity: 0, scale: 0.8 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}

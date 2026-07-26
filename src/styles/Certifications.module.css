@@ -392,3 +392,31 @@
 .levelProfessional { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
 .levelExpert { background: linear-gradient(90deg, #a855f7, #ec4899); }
 .levelSpecialist { background: linear-gradient(90deg, #f59e0b, #f97316); }
+
+/* --- Sanity rewire additions --- */
+
+.cardIssuer a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* Expiry is stated plainly rather than left for the recruiter to discover. */
+.expiredTag {
+  margin-left: 0.5rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--destructive) 15%, transparent);
+  color: var(--destructive);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.emptyState {
+  padding: 4rem 0;
+  text-align: center;
+  color: var(--muted-foreground);
+}

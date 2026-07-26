@@ -112,3 +112,11 @@
 .actionLink:hover {
   color: var(--foreground);
 }
+
+/* --- Sanity rewire additions --- */
+
+.emptyState {
+  padding: 3rem 0;
+  text-align: center;
+  color: var(--muted-foreground);
+}
