@@ -10,6 +10,8 @@
   font-size: 0.8125rem;
   line-height: 1.2;
   flex-wrap: wrap;
+  /* Sin esto .label hereda el negro del user-agent y no se ve en modo oscuro. */
+  color: var(--foreground);
 }
 
 .dot {
