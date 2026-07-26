@@ -1,30 +1,63 @@
 "use client";
 
 import { motion } from 'framer-motion';
-import { Code2, Database, Wrench } from 'lucide-react';
+import {
+  Cloud,
+  Code2,
+  Database,
+  FlaskConical,
+  Palette,
+  Server,
+  ShoppingBag,
+  Sparkles,
+  Wrench,
+} from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import type { ComponentType } from 'react';
+import type { Skill, SkillCategory } from '@/sanity/types';
 import styles from '@/styles/Skills.module.css';
 
-const skillCategories = [
-  {
-    key: 'frontend' as const,
-    icon: <Code2 size={24} />,
-    skills: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS'],
-  },
-  {
-    key: 'backend' as const,
-    icon: <Database size={24} />,
-    skills: ['Node.js', 'Express', 'MongoDB', 'MySQL'],
-  },
-  {
-    key: 'tooling' as const,
-    icon: <Wrench size={24} />,
-    skills: ['Git', 'Docker', 'GitHub Actions', 'Vercel', 'AWS', 'Vite'],
-  },
+/**
+ * Categories are declared here in display order rather than read from the data:
+ * the order is a presentation choice, and an empty category simply drops out.
+ */
+const CATEGORY_ORDER: SkillCategory[] = [
+  'frontend',
+  'backend',
+  'databases',
+  'platforms',
+  'cloud',
+  'ai',
+  'testing',
+  'tooling',
+  'design',
 ];
 
-export default function Skills() {
+const CATEGORY_ICONS: Record<SkillCategory, ComponentType<{ size?: number }>> = {
+  frontend: Code2,
+  backend: Server,
+  databases: Database,
+  cloud: Cloud,
+  platforms: ShoppingBag,
+  ai: Sparkles,
+  testing: FlaskConical,
+  tooling: Wrench,
+  design: Palette,
+};
+
+export default function Skills({ skills }: { skills: Skill[] }) {
   const t = useTranslations('Skills');
+
+  // Only the featured stack goes on the homepage; the rest stays on the CV.
+  const featured = skills.filter((s) => s.featured);
+  const pool = featured.length ? featured : skills;
+
+  const grouped = CATEGORY_ORDER.map((category) => ({
+    category,
+    skills: pool.filter((s) => s.category === category),
+  })).filter((group) => group.skills.length > 0);
+
+  if (!grouped.length) return null;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -51,37 +84,55 @@ export default function Skills() {
           </header>
 
           <div className={styles.grid}>
-            {skillCategories.map((category, index) => (
-              <motion.div
-                key={category.key}
-                className={styles.card}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className={styles.cardHeader}>
-                  <div className={styles.iconBox}>{category.icon}</div>
-                  <span className={styles.cardNumber}>0{index + 1}</span>
-                </div>
-
-                <h3 className={styles.categoryTitle}>{t(`categories.${category.key}`)}</h3>
-
+            {grouped.map((group, index) => {
+              const Icon = CATEGORY_ICONS[group.category];
+              return (
                 <motion.div
-                  className={styles.tagCloud}
-                  variants={containerVariants}
-                  initial="hidden"
-                  whileInView="show"
+                  key={group.category}
+                  className={styles.card}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
                 >
-                  {category.skills.map((skill, i) => (
-                    <motion.span key={i} className={styles.tag} variants={itemVariants}>
-                      {skill}
-                    </motion.span>
-                  ))}
+                  <div className={styles.cardHeader}>
+                    <div className={styles.iconBox}>
+                      <Icon size={24} />
+                    </div>
+                    <span className={styles.cardNumber}>
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+                  </div>
+
+                  <h3 className={styles.categoryTitle}>
+                    {t(`categories.${group.category}`)}
+                  </h3>
+
+                  <motion.div
+                    className={styles.tagCloud}
+                    variants={containerVariants}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                  >
+                    {group.skills.map((skill) => (
+                      <motion.span
+                        key={skill._id}
+                        className={styles.tag}
+                        variants={itemVariants}
+                        title={
+                          skill.proficiency
+                            ? t(`proficiency.${skill.proficiency}`)
+                            : undefined
+                        }
+                      >
+                        {skill.name}
+                      </motion.span>
+                    ))}
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            ))}
+              );
+            })}
           </div>
         </motion.div>
       </div>

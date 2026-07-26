@@ -1,8 +1,15 @@
 import type { Metadata } from 'next';
-import { setRequestLocale, getTranslations } from 'next-intl/server';
-import { getPathname } from '@/i18n/navigation';
-import { routing } from '@/i18n/routing';
+import { setRequestLocale } from 'next-intl/server';
 import ProjectsHub from '@/components/ProjectsHub';
+import { JsonLd } from '@/components/sanity/JsonLd';
+import { projectListSchema } from '@/lib/jsonld';
+import { SITE_URL, buildMetadata } from '@/lib/metadata';
+import {
+  getPage,
+  getPageForMetadata,
+  getProfileForMetadata,
+  getProjectsByKind,
+} from '@/sanity/fetch';
 import styles from '@/styles/SecondaryPage.module.css';
 
 export async function generateMetadata({
@@ -11,35 +18,17 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'Metadata.projectsPage' });
+  const [page, profile] = await Promise.all([
+    getPageForMetadata(locale, 'projects'),
+    getProfileForMetadata(locale),
+  ]);
 
-  const canonical = getPathname({ href: '/proyectos', locale: locale as 'es' | 'en' });
-  const languages = Object.fromEntries(
-    routing.locales.map((loc) => [loc, getPathname({ href: '/proyectos', locale: loc })])
-  );
-
-  return {
-    title: t('title'),
-    description: t('description'),
-    alternates: {
-      canonical,
-      languages,
-    },
-    openGraph: {
-      title: t('ogTitle'),
-      description: t('ogDescription'),
-      url: canonical,
-      siteName: 'Portfolio — Jaime Sebastián',
-      locale: locale === 'es' ? 'es_ES' : 'en_US',
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary',
-      title: t('ogTitle'),
-      description: t('ogDescription'),
-    },
-    robots: { index: true, follow: true },
-  };
+  return buildMetadata({
+    seo: page?.seo,
+    locale,
+    href: '/proyectos',
+    siteName: profile?.fullName ?? '',
+  });
 }
 
 export default async function ProjectsPage({
@@ -49,18 +38,29 @@ export default async function ProjectsPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: 'Projects' });
+
+  const [page, professional, personal] = await Promise.all([
+    getPage(locale, 'projects'),
+    getProjectsByKind(locale, 'professional'),
+    getProjectsByKind(locale, 'personal'),
+  ]);
 
   return (
     <div className={styles.wrapper}>
       <section className={styles.pageHero}>
         <div className="container-custom">
-          <h1 className={styles.pageHeroTitle}>{t('pageTitle')}</h1>
-          <p className={styles.pageHeroLead}>{t('pageLead')}</p>
+          <h1 className={styles.pageHeroTitle}>{page?.title}</h1>
+          {page?.lead ? <p className={styles.pageHeroLead}>{page.lead}</p> : null}
         </div>
       </section>
 
-      <ProjectsHub />
+      <ProjectsHub professional={professional} personal={personal} />
+
+      {professional.length ? (
+        <JsonLd
+          data={projectListSchema({ projects: professional, siteUrl: SITE_URL, locale })}
+        />
+      ) : null}
     </div>
   );
 }

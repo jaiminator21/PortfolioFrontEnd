@@ -1,0 +1,52 @@
+{
+  "//": "This repo has two node_modules (root + studio/) — ~94k files, 1.4 GB. Without these excludes VS Code's file watcher and search index crawl all of it.",
+
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/.next/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/studio/dist/**": true,
+    "**/studio/.sanity/**": true,
+    "**/.turbo/**": true,
+    "**/out/**": true,
+    "**/build/**": true
+  },
+
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/.next": true,
+    "**/studio/dist": true,
+    "**/studio/.sanity": true,
+    "**/out": true,
+    "**/build": true,
+    "**/package-lock.json": true
+  },
+
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.next": true,
+    "**/studio/.sanity": true
+  },
+
+  "//typescript": "Two workspaces means two TS servers. Use the repo's TypeScript rather than the bundled one, and stop the server following imports into node_modules typings it does not need.",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsserver.maxTsServerMemory": 4096,
+  "typescript.preferences.includePackageJsonAutoImports": "off",
+
+  "//formatting": "Biome is the formatter and linter for this repo.",
+  "editor.defaultFormatter": "biomejs.biome",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports.biome": "explicit"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  }
+}

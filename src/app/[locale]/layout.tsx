@@ -7,7 +7,19 @@ import '../globals.css';
 import { ThemeProvider } from '@/context/ThemeContext';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { JsonLd } from '@/components/sanity/JsonLd';
 import { routing } from '@/i18n/routing';
+import { personSchema } from '@/lib/jsonld';
+import { SITE_URL } from '@/lib/metadata';
+import {
+  getCertifications,
+  getEducation,
+  getExperience,
+  getProfile,
+  getProfileForMetadata,
+  getSkills,
+} from '@/sanity/fetch';
+import { SanityLive } from '@/sanity/lib/live';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -23,16 +35,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'Metadata' });
+  const profile = await getProfileForMetadata(locale);
+
+  const siteName = profile?.fullName
+    ? `${profile.fullName} — ${profile.headline ?? ''}`.trim().replace(/—\s*$/, '').trim()
+    : t('siteName');
 
   return {
+    // metadataBase lets Next resolve the relative URLs in OG tags and sitemaps.
+    metadataBase: new URL(SITE_URL),
     title: {
-      default: t('siteName'),
-      template: `%s | ${t('siteName')}`,
+      default: siteName,
+      template: `%s | ${profile?.fullName ?? t('siteName')}`,
     },
-    description:
-      locale === 'es'
-        ? 'Portfolio de Jaime Sebastián — desarrollador front-end especializado en React, Next.js y TypeScript.'
-        : 'Portfolio of Jaime Sebastián — front-end developer specialized in React, Next.js and TypeScript.',
+    description: profile?.shortBio ?? undefined,
+    authors: profile?.fullName ? [{ name: profile.fullName, url: SITE_URL }] : undefined,
+    creator: profile?.fullName,
   };
 }
 
@@ -51,16 +69,45 @@ export default async function LocaleLayout({
 
   setRequestLocale(locale);
 
+  /**
+   * The Person graph lives in the layout so it appears on every page: search
+   * engines consolidate the identity across the whole site rather than seeing a
+   * separate entity per route.
+   */
+  const [profile, experience, skills, certifications, education] = await Promise.all([
+    getProfile(locale),
+    getExperience(locale),
+    getSkills(locale),
+    getCertifications(locale),
+    getEducation(locale),
+  ]);
+
   return (
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <NextIntlClientProvider>
           <ThemeProvider>
-            <Header />
+            <Header profile={profile} />
             {children}
-            <Footer />
+            <Footer profile={profile} />
           </ThemeProvider>
         </NextIntlClientProvider>
+
+        {profile ? (
+          <JsonLd
+            data={personSchema({
+              profile,
+              experience,
+              skills,
+              certifications,
+              education,
+              siteUrl: SITE_URL,
+            })}
+          />
+        ) : null}
+
+        {/* Subscribes to Sanity so published edits appear without a redeploy. */}
+        <SanityLive />
       </body>
     </html>
   );

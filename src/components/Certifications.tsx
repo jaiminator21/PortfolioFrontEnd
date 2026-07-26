@@ -3,48 +3,62 @@
 import { motion } from 'framer-motion';
 import {
   Award,
+  BadgeCheck,
   Calendar,
   CheckCircle2,
   ExternalLink,
-  Trophy,
-  Star,
   Sparkles,
+  Star,
+  Trophy,
 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
+import { formatMonthYear, isExpired } from '@/lib/dates';
+import type { Certification, CertificationLevel, CertificationStats } from '@/sanity/types';
 import styles from '@/styles/Certifications.module.css';
 
-type CertLevel = 'professional' | 'expert' | 'specialist';
-
-interface Certification {
-  id: string;
-  credentialId?: string;
-  verifyUrl?: string;
-  skills: string[];
-  level: CertLevel;
-}
-
-const certifications: Certification[] = [
-  { id: '1', credentialId: 'AWS-PSA-2025-12345', verifyUrl: '#', skills: ['AWS', 'Cloud Architecture', 'Infrastructure', 'Security'], level: 'professional' },
-  { id: '2', credentialId: 'META-FE-2025-67890', verifyUrl: '#', skills: ['React', 'JavaScript', 'HTML/CSS', 'UI/UX'], level: 'professional' },
-  { id: '3', credentialId: 'GCP-PCA-2024-11223', verifyUrl: '#', skills: ['GCP', 'Kubernetes', 'Terraform', 'DevOps'], level: 'professional' },
-  { id: '4', skills: ['React', 'Performance', 'Design Patterns', 'Optimization'], level: 'expert' },
-  { id: '5', credentialId: 'COURSERA-SDA-2024-44556', verifyUrl: '#', skills: ['System Design', 'Microservices', 'Scalability', 'Databases'], level: 'specialist' },
-  { id: '6', skills: ['Cypress', 'E2E Testing', 'Test Automation', 'CI/CD'], level: 'professional' },
-];
-
-const levelClass: Record<CertLevel, string> = {
+const levelClass: Record<CertificationLevel, string | undefined> = {
+  foundational: undefined,
+  associate: undefined,
   professional: styles.levelProfessional,
   expert: styles.levelExpert,
   specialist: styles.levelSpecialist,
 };
 
-export default function Certifications() {
+/**
+ * A certification is only worth what a recruiter can verify, so the verification
+ * link is the card's primary action and expired credentials are labelled rather
+ * than quietly presented as current.
+ */
+export default function Certifications({
+  certifications,
+  stats,
+}: {
+  certifications: Certification[];
+  stats: CertificationStats;
+}) {
   const t = useTranslations('Certifications');
+  const locale = useLocale();
 
-  const uniqueIssuers = new Set(
-    certifications.map((c) => t(`items.${c.id}.issuer`))
-  ).size;
-  const uniqueSkills = new Set(certifications.flatMap((c) => c.skills)).size;
+  if (!certifications.length) {
+    return (
+      <section className={styles.section}>
+        <div className={`container-custom ${styles.inner}`}>
+          <p className={styles.emptyState}>{t('empty')}</p>
+        </div>
+      </section>
+    );
+  }
+
+  const statTiles = [
+    { label: t('statsLabels.certifications'), value: stats.total, icon: Award },
+    { label: t('statsLabels.verifiable'), value: stats.verifiable, icon: BadgeCheck },
+    { label: t('statsLabels.providers'), value: stats.issuers, icon: Trophy },
+    { label: t('statsLabels.skills'), value: stats.skills, icon: Sparkles },
+    // Study hours only appear when actually tracked.
+    ...(stats.studyHours
+      ? [{ label: t('statsLabels.hours'), value: stats.studyHours, icon: Star }]
+      : []),
+  ];
 
   return (
     <section className={styles.section}>
@@ -108,63 +122,99 @@ export default function Certifications() {
             }}
             className={styles.grid}
           >
-            {certifications.map((cert) => (
-              <motion.div
-                key={cert.id}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  show: { opacity: 1, y: 0 },
-                }}
-                whileHover={{ y: -8 }}
-                className={styles.card}
-              >
-                <div className={`${styles.cardBgGradient} ${levelClass[cert.level]}`} />
+            {certifications.map((cert) => {
+              const expired = isExpired(cert.expiryDate);
+              return (
+                <motion.div
+                  key={cert._id}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    show: { opacity: 1, y: 0 },
+                  }}
+                  whileHover={{ y: -8 }}
+                  className={styles.card}
+                >
+                  <div
+                    className={`${styles.cardBgGradient} ${
+                      (cert.level && levelClass[cert.level]) ?? ''
+                    }`}
+                  />
 
-                <div className={`${styles.levelBadge} ${levelClass[cert.level]}`}>
-                  {t(`levels.${cert.level}`)}
-                </div>
-
-                <div className={styles.cardContent}>
-                  <div className={styles.cardHeader}>
-                    <div className={styles.cardIconBox}>
-                      <Award size={24} />
+                  {cert.level ? (
+                    <div
+                      className={`${styles.levelBadge} ${
+                        levelClass[cert.level] ?? ''
+                      }`}
+                    >
+                      {t(`levels.${cert.level}`)}
                     </div>
-                  </div>
+                  ) : null}
 
-                  <div>
-                    <h3 className={styles.cardTitle}>{t(`items.${cert.id}.title`)}</h3>
-                    <p className={styles.cardIssuer}>{t(`items.${cert.id}.issuer`)}</p>
-                    <div className={styles.cardDate}>
-                      <Calendar size={14} />
-                      <span>{t(`items.${cert.id}.date`)}</span>
+                  <div className={styles.cardContent}>
+                    <div className={styles.cardHeader}>
+                      <div className={styles.cardIconBox}>
+                        <Award size={24} />
+                      </div>
                     </div>
-                  </div>
 
-                  <div className={styles.skillsList}>
-                    {cert.skills.map((skill, i) => (
-                      <span key={i} className={styles.skillTag}>{skill}</span>
-                    ))}
-                  </div>
-
-                  {cert.credentialId && (
-                    <div className={styles.credentialBlock}>
-                      <div className={styles.credentialId}>{t('credentialId')}: {cert.credentialId}</div>
-                      {cert.verifyUrl && (
-                        <a
-                          href={cert.verifyUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={styles.verifyLink}
-                        >
-                          <span>{t('verify')}</span>
-                          <ExternalLink size={14} />
-                        </a>
-                      )}
+                    <div>
+                      <h3 className={styles.cardTitle}>{cert.title}</h3>
+                      <p className={styles.cardIssuer}>
+                        {cert.issuerUrl ? (
+                          <a
+                            href={cert.issuerUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {cert.issuer}
+                          </a>
+                        ) : (
+                          cert.issuer
+                        )}
+                      </p>
+                      <div className={styles.cardDate}>
+                        <Calendar size={14} />
+                        <span>{formatMonthYear(cert.issueDate, locale)}</span>
+                        {expired ? (
+                          <span className={styles.expiredTag}>{t('expired')}</span>
+                        ) : null}
+                      </div>
                     </div>
-                  )}
-                </div>
-              </motion.div>
-            ))}
+
+                    {cert.skills?.length ? (
+                      <div className={styles.skillsList}>
+                        {cert.skills.map((skill) => (
+                          <span key={skill._id} className={styles.skillTag}>
+                            {skill.name}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+
+                    {cert.credentialId || cert.verifyUrl ? (
+                      <div className={styles.credentialBlock}>
+                        {cert.credentialId ? (
+                          <div className={styles.credentialId}>
+                            {t('credentialId')}: {cert.credentialId}
+                          </div>
+                        ) : null}
+                        {cert.verifyUrl ? (
+                          <a
+                            href={cert.verifyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.verifyLink}
+                          >
+                            <span>{t('verify')}</span>
+                            <ExternalLink size={14} />
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
 
           {/* Stats Footer */}
@@ -175,16 +225,11 @@ export default function Certifications() {
             transition={{ delay: 0.5 }}
             className={styles.statsFooter}
           >
-            {[
-              { label: t('statsLabels.certifications'), value: certifications.length, icon: Award },
-              { label: t('statsLabels.providers'), value: uniqueIssuers, icon: Trophy },
-              { label: t('statsLabels.hours'), value: '500+', icon: Star },
-              { label: t('statsLabels.skills'), value: uniqueSkills, icon: Sparkles },
-            ].map((stat, index) => {
+            {statTiles.map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <motion.div
-                  key={index}
+                  key={stat.label}
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}

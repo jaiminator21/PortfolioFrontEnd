@@ -154,3 +154,39 @@
   letter-spacing: 0.1em;
   color: var(--muted-foreground);
 }
+/* --- Sanity rewire additions --- */
+
+/* Wraps Portable Text, so selectors target the generated paragraphs. */
+.bioProse p {
+  margin: 0 0 1.25rem;
+  line-height: 1.7;
+}
+
+.bioProse p:first-child {
+  font-size: 1.25rem;
+}
+
+.bioProse p:last-child {
+  margin-bottom: 0;
+}
+
+.bioProse a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.photoWrap {
+  position: relative;
+  width: 100%;
+  max-width: 20rem;
+  margin-bottom: 2rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+}

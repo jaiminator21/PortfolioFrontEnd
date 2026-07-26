@@ -3,11 +3,12 @@
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
-import { Menu, X, Sun, Moon, Download, Github, Linkedin, InstagramIcon, ChevronDown, Check } from 'lucide-react';
+import { Menu, X, Sun, Moon, Download, Github, Globe, Linkedin, Mail, InstagramIcon, Twitter, ChevronDown, Check } from 'lucide-react';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
 import { Link, usePathname, useRouter } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import type { Profile } from '@/sanity/types';
 import styles from '@/styles/Header.module.css';
 
 type NavPath =
@@ -25,11 +26,14 @@ const NAV_ITEMS: { key: string; path: NavPath; widthHolder: string }[] = [
   { key: 'contact', path: '/contacto', widthHolder: 'Contacto' },
 ];
 
-const SOCIAL_LINKS = [
-  { Icon: Github, href: 'https://github.com/jaiminator21', label: 'GitHub' },
-  { Icon: Linkedin, href: 'https://www.linkedin.com/in/jaime-sebasti%C3%A1n-9b4426205/', label: 'LinkedIn' },
-  { Icon: InstagramIcon, href: 'https://www.instagram.com/jaiminator21/', label: 'Instagram' },
-];
+const PLATFORM_ICONS: Record<string, typeof Github> = {
+  github: Github,
+  linkedin: Linkedin,
+  x: Twitter,
+  email: Mail,
+  website: Globe,
+  other: InstagramIcon,
+};
 
 const menuContainerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -57,7 +61,7 @@ const menuItemVariants: Variants = {
   },
 };
 
-export default function Header() {
+export default function Header({ profile }: { profile: Profile | null }) {
   const t = useTranslations();
   const locale = useLocale();
   const pathname = usePathname();
@@ -66,6 +70,13 @@ export default function Header() {
   const { isDark, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // CV for the active language, falling back to whatever is uploaded. Null means
+  // no CV exists yet, and the button is hidden rather than linking to a 404.
+  const cv = profile?.cv?.find((doc) => doc.language === locale) ?? profile?.cv?.[0];
+  const cvFilename = profile
+    ? `${profile.fullName.replace(/\s+/g, '-')}-CV-${cv?.language ?? locale}.pdf`
+    : 'CV.pdf';
 
   const linksRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Record<string, HTMLSpanElement | null>>({});
@@ -190,11 +201,17 @@ export default function Header() {
                 {isDark ? <Moon size={16} /> : <Sun size={16} />}
               </button>
 
-              <a href="/cv.pdf" download className={styles.loginBtn}>
-                <Download size={14} />
-                <span className={styles.cvLong}>{t('Common.downloadCV')}</span>
-                <span className={styles.cvShort} aria-hidden>CV</span>
-              </a>
+              {cv?.url ? (
+                <a
+                  href={`${cv.url}?dl=${encodeURIComponent(cvFilename)}`}
+                  download={cvFilename}
+                  className={styles.loginBtn}
+                >
+                  <Download size={14} />
+                  <span className={styles.cvLong}>{t('Common.downloadCV')}</span>
+                  <span className={styles.cvShort} aria-hidden>CV</span>
+                </a>
+              ) : null}
             </div>
           </nav>
 
@@ -245,31 +262,38 @@ export default function Header() {
                 <LanguageSwitcher locale={locale} onChange={switchLocale} variant="buttons" />
               </motion.div>
 
-              <motion.a
-                variants={menuItemVariants}
-                href="/cv.pdf"
-                download
-                onClick={closeMenu}
-                className={styles.mobileLoginBtn}
-              >
-                <Download size={16} />
-                {t('Common.downloadCV')}
-              </motion.a>
+              {cv?.url ? (
+                <motion.a
+                  variants={menuItemVariants}
+                  href={`${cv.url}?dl=${encodeURIComponent(cvFilename)}`}
+                  download={cvFilename}
+                  onClick={closeMenu}
+                  className={styles.mobileLoginBtn}
+                >
+                  <Download size={16} />
+                  {t('Common.downloadCV')}
+                </motion.a>
+              ) : null}
 
-              <motion.div variants={menuItemVariants} className={styles.mobileSocial}>
-                {SOCIAL_LINKS.map(({ Icon, href, label }) => (
-                  <a
-                    key={label}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={label}
-                    className={styles.mobileSocialIcon}
-                  >
-                    <Icon size={22} />
-                  </a>
-                ))}
-              </motion.div>
+              {profile?.socials?.length ? (
+                <motion.div variants={menuItemVariants} className={styles.mobileSocial}>
+                  {profile.socials.map((social) => {
+                    const Icon = PLATFORM_ICONS[social.platform] ?? Globe;
+                    return (
+                      <a
+                        key={social._key}
+                        href={social.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={social.label ?? social.platform}
+                        className={styles.mobileSocialIcon}
+                      >
+                        <Icon size={22} />
+                      </a>
+                    );
+                  })}
+                </motion.div>
+              ) : null}
             </nav>
           </motion.div>
         )}
