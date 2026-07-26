@@ -1,6 +1,12 @@
+/*
+ * El color se fija aquí y no en cada hijo: el `body` no llega a tener uno
+ * propio, asi que sin esto todo el texto que no declara color explicito hereda
+ * el negro del user-agent y desaparece en modo oscuro.
+ */
 .section {
   padding: 6rem 0;
   position: relative;
+  color: var(--foreground);
 }
 
 .header {
