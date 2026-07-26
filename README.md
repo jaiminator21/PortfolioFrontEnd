@@ -40,6 +40,30 @@ npx sanity login             # one-time
 npm run deploy               # → https://<name>.sanity.studio
 ```
 
+## Seeding a dataset
+
+`studio/scripts/seed.mjs` populates an empty dataset. It needs a write token with
+Editor rights (create one at `https://sanity.io/manage/project/<id>/api`):
+
+```bash
+SANITY_WRITE_TOKEN=sk... npm run seed --prefix studio
+```
+
+It writes in two tiers, which is the point of it:
+
+- **Published** — content that is genuinely yours: name, contact, the tech stack,
+  page copy. 29 documents.
+- **Drafts** — the employers, project case studies and certifications carried over
+  from the original template. 17 documents. They appear in the Studio ready to
+  edit but are not part of the published dataset, so the live site never asserts
+  an employer you did not work for or a credential that cannot be verified.
+  Replace the content, then publish.
+
+It uses `createOrReplace`, so re-running overwrites those documents — meant for a
+fresh dataset, not for syncing one you have already edited.
+
+Override the target with `SANITY_PROJECT_ID` and `SANITY_DATASET`.
+
 ## Content model
 
 | Type            | Notes |
@@ -102,6 +126,27 @@ metadata so they never appear in a search result.
   uploaded, instead of linking to a 404.
 - Empty states everywhere: an unpublished section shortens the page rather than
   rendering empty headings.
+
+## Contact form (Web3Forms)
+
+Set `NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY` — get a key at
+[web3forms.com](https://web3forms.com) by entering the address you want messages
+delivered to. Until it is set the form renders a clear error and offers your
+email address instead of failing silently.
+
+**The key is public on purpose.** Web3Forms returns `403 — "Use our API in client
+side"` for server-side POSTs on the free plan, so the browser has to submit
+directly. The key only grants permission to send to the address it was issued
+for, which is why Web3Forms documents it as safe to expose. Server-side
+submission needs the Pro plan plus an IP allowlist.
+
+The `<form>` keeps a real `action` and `method`, so with JavaScript disabled the
+browser posts natively and the message still arrives; with JavaScript the submit
+is intercepted for inline validation and status states. `replyto` is set to the
+sender's address so hitting reply in your inbox reaches them. A hidden `botcheck`
+honeypot filters bots.
+
+Free tier is 250 submissions/month.
 
 ## Verification
 

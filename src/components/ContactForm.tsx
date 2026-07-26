@@ -2,53 +2,129 @@
 
 import { AlertCircle, CheckCircle2, Loader2, Send } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useActionState } from 'react';
-import { useFormStatus } from 'react-dom';
+import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import {
-  initialContactState,
-  submitContactForm,
-} from '@/app/actions/contact';
+  WEB3FORMS_ENDPOINT,
+  buildContactPayload,
+  validateContact,
+  type ContactFieldErrors,
+  type ContactValues,
+} from '@/lib/contactForm';
 import styles from '@/styles/Contact.module.css';
 
 /**
- * Split out of Contact so the submit button can read `useFormStatus`, which only
- * reports the pending state of the form it is rendered inside.
- */
-function SubmitButton() {
-  const t = useTranslations('Contact');
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      type="submit"
-      size="lg"
-      className={styles.submitBtn}
-      disabled={pending}
-      aria-disabled={pending}
-    >
-      <span>{pending ? t('form.sending') : t('form.submit')}</span>
-      {pending ? (
-        <Loader2 className={styles.spinner} size={16} aria-hidden="true" />
-      ) : (
-        <Send className={styles.sendIcon} size={16} aria-hidden="true" />
-      )}
-    </Button>
-  );
-}
-
-/**
- * Posts to Web3Forms through a Server Action, so it works without JavaScript and
- * the access key never reaches the browser.
+ * Web3Forms contact form.
  *
- * On failure the visitor is given the direct email address — a recruiter who
- * cannot reach you is the one outcome this form must never produce silently.
+ * Submits client-side because Web3Forms rejects server-side POSTs on the free
+ * plan (403: "Use our API in client side"). That makes the access key public by
+ * design — which Web3Forms explicitly supports; the key only grants the ability
+ * to send to the address it was issued for.
+ *
+ * The <form> keeps a real `action`/`method`, so with JavaScript disabled the
+ * browser posts natively and the message still arrives. With JavaScript, the
+ * submit is intercepted for inline validation and proper status states.
  */
-export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
-  const t = useTranslations('Contact');
-  const [state, formAction] = useActionState(submitContactForm, initialContactState);
 
-  if (state.status === 'success') {
+const ACCESS_KEY = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ?? '';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? '';
+
+const EMPTY: ContactValues = { name: '', email: '', message: '' };
+
+type Status = 'idle' | 'submitting' | 'success' | 'error';
+
+export function ContactForm({
+  fallbackEmail,
+  locale,
+}: {
+  fallbackEmail: string;
+  locale: string;
+}) {
+  const t = useTranslations('Contact');
+
+  const [values, setValues] = useState<ContactValues>(EMPTY);
+  const [fieldErrors, setFieldErrors] = useState<ContactFieldErrors>({});
+  const [status, setStatus] = useState<Status>('idle');
+  const [errorKey, setErrorKey] = useState<string | null>(null);
+
+  /**
+   * Where Web3Forms sends the browser after a no-JS submit. Web3Forms requires
+   * an absolute https URL, so it is omitted on http (i.e. local development).
+   */
+  const redirectUrl = SITE_URL.startsWith('https://')
+    ? `${SITE_URL}/${locale}/${locale === 'en' ? 'contact' : 'contacto'}?sent=1`
+    : undefined;
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setValues((prev) => ({ ...prev, [name]: value }));
+    // Clear this field's error as soon as the visitor starts fixing it.
+    setFieldErrors((prev) => (prev[name as keyof ContactValues] ? { ...prev, [name]: undefined } : prev));
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const errors = validateContact(values);
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      setStatus('error');
+      setErrorKey('validationFailed');
+      return;
+    }
+
+    if (!ACCESS_KEY) {
+      console.error(
+        'NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY is not set — the contact form cannot deliver messages. Get a key at https://web3forms.com'
+      );
+      setStatus('error');
+      setErrorKey('notConfigured');
+      return;
+    }
+
+    setFieldErrors({});
+    setStatus('submitting');
+    setErrorKey(null);
+
+    try {
+      const response = await fetch(WEB3FORMS_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(buildContactPayload({ values, accessKey: ACCESS_KEY })),
+        // Never let a hanging third party leave the button spinning forever.
+        signal: AbortSignal.timeout(15_000),
+      });
+
+      const result = (await response.json().catch(() => null)) as
+        | { success?: boolean; message?: string }
+        | null;
+
+      if (!response.ok || result?.success === false) {
+        console.error('Web3Forms rejected the submission', {
+          httpStatus: response.status,
+          message: result?.message,
+        });
+        setStatus('error');
+        setErrorKey('sendFailed');
+        return;
+      }
+
+      setValues(EMPTY);
+      setStatus('success');
+    } catch (error) {
+      const timedOut = error instanceof Error && error.name === 'TimeoutError';
+      console.error('Web3Forms request failed', error);
+      setStatus('error');
+      setErrorKey(timedOut ? 'timeout' : 'sendFailed');
+    }
+  };
+
+  if (status === 'success') {
     return (
       <div className={styles.formSide}>
         {/* <output> carries an implicit role="status" live region. */}
@@ -61,16 +137,31 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
     );
   }
 
-  const fieldError = (field: 'name' | 'email' | 'message') =>
-    state.fieldErrors?.[field] ? t(`errors.${state.fieldErrors[field]}`) : null;
+  const submitting = status === 'submitting';
+  const errorFor = (field: keyof ContactValues) =>
+    fieldErrors[field] ? t(`errors.${fieldErrors[field]}`) : null;
 
-  const nameError = fieldError('name');
-  const emailError = fieldError('email');
-  const messageError = fieldError('message');
+  const nameError = errorFor('name');
+  const emailError = errorFor('email');
+  const messageError = errorFor('message');
 
   return (
     <div className={styles.formSide}>
-      <form action={formAction} className={styles.form} noValidate>
+      <form
+        // Real action/method: the no-JavaScript path posts straight to Web3Forms.
+        action={WEB3FORMS_ENDPOINT}
+        method="POST"
+        onSubmit={handleSubmit}
+        className={styles.form}
+        noValidate
+      >
+        <input type="hidden" name="access_key" value={ACCESS_KEY} />
+        <input type="hidden" name="from_name" value="Portfolio" />
+        <input type="hidden" name="subject" value="Portfolio — new message" />
+        {redirectUrl ? (
+          <input type="hidden" name="redirect" value={redirectUrl} />
+        ) : null}
+
         {/* Honeypot: hidden from people, irresistible to bots. */}
         <input
           type="checkbox"
@@ -81,11 +172,11 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
           aria-hidden="true"
         />
 
-        {state.status === 'error' && state.messageKey ? (
+        {status === 'error' && errorKey ? (
           <div className={styles.errorBanner} role="alert">
             <AlertCircle size={18} aria-hidden="true" />
             <span>
-              {t(`status.${state.messageKey}`)}{' '}
+              {t(`status.${errorKey}`)}{' '}
               <a href={`mailto:${fallbackEmail}`} className={styles.errorLink}>
                 {fallbackEmail}
               </a>
@@ -100,7 +191,8 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
             name="name"
             placeholder=" "
             className={styles.input}
-            defaultValue={state.values?.name}
+            value={values.name}
+            onChange={handleChange}
             autoComplete="name"
             required
             aria-invalid={nameError ? true : undefined}
@@ -123,7 +215,8 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
             name="email"
             placeholder=" "
             className={styles.input}
-            defaultValue={state.values?.email}
+            value={values.email}
+            onChange={handleChange}
             autoComplete="email"
             required
             aria-invalid={emailError ? true : undefined}
@@ -145,7 +238,8 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
             name="message"
             placeholder=" "
             className={styles.input}
-            defaultValue={state.values?.message}
+            value={values.message}
+            onChange={handleChange}
             required
             rows={4}
             aria-invalid={messageError ? true : undefined}
@@ -161,7 +255,20 @@ export function ContactForm({ fallbackEmail }: { fallbackEmail: string }) {
           ) : null}
         </div>
 
-        <SubmitButton />
+        <Button
+          type="submit"
+          size="lg"
+          className={styles.submitBtn}
+          disabled={submitting}
+          aria-disabled={submitting}
+        >
+          <span>{submitting ? t('form.sending') : t('form.submit')}</span>
+          {submitting ? (
+            <Loader2 className={styles.spinner} size={16} aria-hidden="true" />
+          ) : (
+            <Send className={styles.sendIcon} size={16} aria-hidden="true" />
+          )}
+        </Button>
       </form>
     </div>
   );

@@ -121,7 +121,7 @@ export default function Contact({
               </div>
             </div>
 
-            <ContactForm fallbackEmail={profile.email} />
+            <ContactForm fallbackEmail={profile.email} locale={locale} />
           </div>
         </motion.div>
       </div>
