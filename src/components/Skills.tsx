@@ -8,6 +8,8 @@ import {
   FlaskConical,
   Palette,
   Server,
+  ShoppingBag,
+  Sparkles,
   Wrench,
 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -23,7 +25,9 @@ const CATEGORY_ORDER: SkillCategory[] = [
   'frontend',
   'backend',
   'databases',
+  'platforms',
   'cloud',
+  'ai',
   'testing',
   'tooling',
   'design',
@@ -34,6 +38,8 @@ const CATEGORY_ICONS: Record<SkillCategory, ComponentType<{ size?: number }>> = 
   backend: Server,
   databases: Database,
   cloud: Cloud,
+  platforms: ShoppingBag,
+  ai: Sparkles,
   testing: FlaskConical,
   tooling: Wrench,
   design: Palette,

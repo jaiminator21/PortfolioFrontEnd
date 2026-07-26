@@ -3,6 +3,7 @@ import type { WithContext, Person, ItemList, CreativeWork, BreadcrumbList } from
 import { toPlainText } from '@/components/sanity/RichText';
 import type {
   Certification,
+  Education,
   Experience,
   Profile,
   ProjectCard,
@@ -24,12 +25,14 @@ export function personSchema({
   experience,
   skills,
   certifications,
+  education = [],
   siteUrl,
 }: {
   profile: Profile;
   experience: Experience[];
   skills: Skill[];
   certifications: Certification[];
+  education?: Education[];
   siteUrl: string;
 }): WithContext<Person> {
   const currentRole = experience.find((e) => !e.endDate);
@@ -78,6 +81,17 @@ export function personSchema({
           knowsLanguage: profile.spokenLanguages
             .map((l) => l.name)
             .filter((n): n is string => Boolean(n)),
+        }
+      : {}),
+    // alumniOf is what lets a search engine connect this person to the
+    // institutions they studied at.
+    ...(education.length
+      ? {
+          alumniOf: education.map((e) => ({
+            '@type': 'EducationalOrganization' as const,
+            name: e.institution,
+            ...(e.institutionUrl ? { url: e.institutionUrl } : {}),
+          })),
         }
       : {}),
     ...verifiableCredentials(certifications),

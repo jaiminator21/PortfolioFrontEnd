@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import Certifications from '@/components/Certifications';
+import Education from '@/components/Education';
 import { buildMetadata } from '@/lib/metadata';
 import {
   getCertificationStats,
   getCertifications,
+  getEducation,
+  getPage,
   getPageForMetadata,
   getProfileForMetadata,
 } from '@/sanity/fetch';
@@ -37,13 +40,23 @@ export default async function CertificationsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [certifications, stats] = await Promise.all([
+  const [page, education, certifications, stats] = await Promise.all([
+    getPage(locale, 'certifications'),
+    getEducation(locale),
     getCertifications(locale),
     getCertificationStats(),
   ]);
 
   return (
     <div className={styles.wrapper}>
+      <section className={styles.pageHero}>
+        <div className="container-custom">
+          <h1 className={styles.pageHeroTitle}>{page?.title}</h1>
+          {page?.lead ? <p className={styles.pageHeroLead}>{page.lead}</p> : null}
+        </div>
+      </section>
+
+      <Education items={education} />
       <Certifications certifications={certifications} stats={stats} />
     </div>
   );

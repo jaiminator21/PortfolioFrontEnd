@@ -69,7 +69,9 @@
       "cloud": "Cloud & DevOps",
       "testing": "Testing",
       "tooling": "Tooling",
-      "design": "Design"
+      "design": "Design",
+      "platforms": "Platforms & eCommerce",
+      "ai": "AI"
     },
     "proficiency": {
       "learning": "Learning",
@@ -210,5 +212,17 @@
   },
   "Metadata": {
     "siteName": "Portfolio — Jaime Sebastián"
+  },
+  "Education": {
+    "title": "Education",
+    "subtitle": "Academic and technical training.",
+    "ongoing": "In progress",
+    "finalProject": "Final project",
+    "levels": {
+      "masters": "Master's",
+      "degree": "Degree",
+      "bootcamp": "Bootcamp",
+      "school": "High school"
+    }
   }
 }

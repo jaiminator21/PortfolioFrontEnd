@@ -13,6 +13,7 @@ import { personSchema } from '@/lib/jsonld';
 import { SITE_URL } from '@/lib/metadata';
 import {
   getCertifications,
+  getEducation,
   getExperience,
   getProfile,
   getProfileForMetadata,
@@ -73,11 +74,12 @@ export default async function LocaleLayout({
    * engines consolidate the identity across the whole site rather than seeing a
    * separate entity per route.
    */
-  const [profile, experience, skills, certifications] = await Promise.all([
+  const [profile, experience, skills, certifications, education] = await Promise.all([
     getProfile(locale),
     getExperience(locale),
     getSkills(locale),
     getCertifications(locale),
+    getEducation(locale),
   ]);
 
   return (
@@ -98,6 +100,7 @@ export default async function LocaleLayout({
               experience,
               skills,
               certifications,
+              education,
               siteUrl: SITE_URL,
             })}
           />

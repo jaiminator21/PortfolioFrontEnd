@@ -181,6 +181,23 @@ export const PROJECT_SLUGS_QUERY = defineQuery(/* groq */ `
   *[_type == "project" && defined(slug.current)]{ "slug": slug.current }
 `);
 
+export const EDUCATION_QUERY = defineQuery(/* groq */ `
+  *[_type == "education"] | order(startDate desc){
+    _id,
+    degree,
+    institution,
+    ${localized('institutionNote')},
+    institutionUrl,
+    level,
+    startDate,
+    endDate,
+    location,
+    ${localized('summary')},
+    ${localized('finalProject')},
+    "skills": skills[]->{ _id, name, category }
+  }
+`);
+
 export const CERTIFICATIONS_QUERY = defineQuery(/* groq */ `
   *[_type == "certification"] | order(issueDate desc){
     _id,

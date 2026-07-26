@@ -1,6 +1,7 @@
 import type { SchemaTypeDefinition } from 'sanity';
 
 import { certificationType } from './documents/certification';
+import { educationType } from './documents/education';
 import { experienceType } from './documents/experience';
 import { localeType } from './documents/locale';
 import { pageType } from './documents/page';
@@ -17,6 +18,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   profileType,
   experienceType,
   projectType,
+  educationType,
   certificationType,
   skillType,
   pageType,

@@ -31,6 +31,10 @@ export const skillType = defineType({
           { title: 'Backend', value: 'backend' },
           { title: 'Databases', value: 'databases' },
           { title: 'Cloud & DevOps', value: 'cloud' },
+          // eCommerce and CMS platforms are a distinct competence from the
+          // language stack, and a large part of agency work.
+          { title: 'Platforms & eCommerce', value: 'platforms' },
+          { title: 'AI', value: 'ai' },
           { title: 'Testing', value: 'testing' },
           { title: 'Tooling', value: 'tooling' },
           { title: 'Design', value: 'design' },

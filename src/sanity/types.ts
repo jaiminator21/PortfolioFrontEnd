@@ -21,9 +21,28 @@ export type SkillCategory =
   | 'backend'
   | 'databases'
   | 'cloud'
+  | 'platforms'
+  | 'ai'
   | 'testing'
   | 'tooling'
   | 'design';
+
+export type EducationLevel = 'masters' | 'degree' | 'bootcamp' | 'school';
+
+export type Education = {
+  _id: string;
+  degree: string;
+  institution: string;
+  institutionNote: string | null;
+  institutionUrl: string | null;
+  level: EducationLevel;
+  startDate: string;
+  endDate: string | null;
+  location: string | null;
+  summary: string | null;
+  finalProject: string | null;
+  skills: Pick<Skill, '_id' | 'name' | 'category'>[] | null;
+};
 
 export type Proficiency = 'learning' | 'working' | 'proficient' | 'expert';
 

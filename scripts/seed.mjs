@@ -1,22 +1,19 @@
 /**
- * Seeds a portfolio dataset from scratch.
+ * Seeds the portfolio dataset from Jaime Sebastián's CV.
  *
- * Split deliberately in two:
- *  - PUBLISHED: content that is genuinely the user's (name, contact, stack,
- *    page copy).
- *  - DRAFTS: content carried over from the original template (invented
- *    employers, unverified metrics, placeholder certifications). It lands in the
- *    Studio ready to edit but never renders publicly until published, so the
- *    live site never claims something that cannot be backed up.
+ * Everything here comes from the CV — no invented employers, metrics or
+ * credentials. Where the CV is silent (project outcomes, screenshots, the OTTO
+ * case study) the field is left empty rather than filled with plausible-sounding
+ * text, because those are exactly the details an interviewer probes.
  *
- * Idempotent: uses createOrReplace, so re-running overwrites rather than
- * duplicating. That also means it will discard Studio edits to these documents —
- * intended for seeding a new/empty dataset, not for syncing an existing one.
+ * Idempotent: uses createOrReplace, so re-running overwrites these documents.
+ * Meant for seeding a fresh dataset, not for syncing one you have edited in the
+ * Studio.
  *
  * Usage:
- *   SANITY_WRITE_TOKEN=sk... node scripts/seed.mjs
+ *   SANITY_WRITE_TOKEN=sk... npm run seed
  *
- * Config via env (falls back to sanity.cli.ts values):
+ * Config via env:
  *   SANITY_PROJECT_ID   default: NEXT_PUBLIC_SANITY_PROJECT_ID from .env
  *   SANITY_DATASET      default: NEXT_PUBLIC_SANITY_DATASET, else production
  *   SANITY_WRITE_TOKEN  required — needs Editor rights
@@ -41,7 +38,7 @@ if (!token) {
   console.error(
     'SANITY_WRITE_TOKEN is not set.\n' +
       `Create one with Editor rights at https://sanity.io/manage/project/${projectId}/api\n` +
-      'then re-run:  SANITY_WRITE_TOKEN=sk... node scripts/seed.mjs'
+      'then re-run:  SANITY_WRITE_TOKEN=sk... npm run seed'
   );
   process.exit(1);
 }
@@ -55,7 +52,7 @@ const client = createClient({
 });
 
 let keyCounter = 0;
-const key = () => `k${(++keyCounter).toString(36)}${Date.now().toString(36)}`;
+const key = () => `k${(++keyCounter).toString(36)}`;
 
 /** Localized string/text: [{_key: 'es', value}, {_key: 'en', value}] */
 const i18n = (kind, es, en) => {
@@ -68,7 +65,6 @@ const i18n = (kind, es, en) => {
 const str = (es, en) => i18n('String', es, en);
 const text = (es, en) => i18n('Text', es, en);
 
-/** Portable Text paragraphs from plain strings. */
 const blocks = (paragraphs) =>
   paragraphs.map((p) => ({
     _type: 'block',
@@ -78,7 +74,6 @@ const blocks = (paragraphs) =>
     children: [{ _type: 'span', _key: key(), text: p, marks: [] }],
   }));
 
-/** Portable Text bullet list from plain strings. */
 const bullets = (items) =>
   items.map((p) => ({
     _type: 'block',
@@ -95,67 +90,64 @@ const richText = (es, en) => [
   { _type: 'internationalizedArraySimpleBlockContentValue', _key: 'en', value: en },
 ];
 
+const ref = (id) => ({ _type: 'reference', _ref: id });
+const weakRef = (id) => ({ _type: 'reference', _ref: id, _weak: true });
+const s = (id) => ref(`skill-${id}`);
+
 /**
- * A metric that came from template copy. `verified: false` keeps it out of the
- * rendered site until the user can stand behind the number.
+ * A quantified outcome. Only mark `verified` for numbers the CV actually states —
+ * the frontend renders nothing that is not verified.
  */
-const metric = (labelEs, labelEn, value) => ({
+const metric = (labelEs, labelEn, value, verified = false) => ({
   _type: 'metric',
   _key: key(),
   label: str(labelEs, labelEn),
   value,
-  direction: 'improvement',
-  verified: false,
+  direction: 'neutral',
+  verified,
 });
 
-const ref = (id) => ({ _type: 'reference', _ref: id });
-/** Weak reference — allowed to point at a document that is not published yet. */
-const weakRef = (id) => ({ _type: 'reference', _ref: id, _weak: true });
-
 // ---------------------------------------------------------------------------
-// Skills — the user's actual stack, taken from the existing components.
+// Skills — exactly the stack the CV lists.
 // ---------------------------------------------------------------------------
 const SKILLS = [
-  ['react', 'React', 'frontend', 'expert', true, 10],
+  // [id, name, category, proficiency, featured, order]
+  ['react', 'React.js', 'frontend', 'expert', true, 10],
   ['nextjs', 'Next.js', 'frontend', 'expert', true, 20],
   ['typescript', 'TypeScript', 'frontend', 'proficient', true, 30],
-  ['tailwind', 'Tailwind CSS', 'frontend', 'proficient', true, 40],
-  ['javascript', 'JavaScript', 'frontend', 'expert', false, 50],
-  ['htmlcss', 'HTML / CSS', 'frontend', 'expert', false, 60],
-  ['nodejs', 'Node.js', 'backend', 'proficient', true, 10],
+  ['javascript', 'JavaScript', 'frontend', 'expert', true, 40],
+  ['html', 'HTML', 'frontend', 'expert', false, 50],
+  ['css', 'CSS', 'frontend', 'expert', false, 60],
+  ['angular', 'Angular', 'frontend', 'working', false, 70],
+  ['uiux', 'UI/UX', 'design', 'proficient', false, 10],
+
+  ['nodejs', 'Node.js', 'backend', 'expert', true, 10],
   ['express', 'Express', 'backend', 'proficient', true, 20],
+  ['php', 'PHP', 'backend', 'working', false, 30],
+  ['websocket', 'WebSocket', 'backend', 'proficient', false, 40],
+  ['nodemailer', 'NodeMailer', 'backend', 'proficient', false, 50],
+  ['restapi', 'REST APIs', 'backend', 'proficient', false, 60],
+
   ['mongodb', 'MongoDB', 'databases', 'proficient', true, 10],
   ['mysql', 'MySQL', 'databases', 'proficient', true, 20],
-  ['postgresql', 'PostgreSQL', 'databases', 'working', false, 30],
-  ['redis', 'Redis', 'databases', 'working', false, 40],
+
+  // Platform work is a large part of the day job, so it gets its own category.
+  ['shopify', 'Shopify', 'platforms', 'expert', true, 10],
+  ['liquid', 'Shopify Liquid', 'platforms', 'proficient', true, 20],
+  ['wordpress', 'WordPress', 'platforms', 'proficient', true, 30],
+  ['elementor', 'Elementor', 'platforms', 'proficient', false, 40],
+
   ['docker', 'Docker', 'cloud', 'working', true, 10],
   ['githubactions', 'GitHub Actions', 'cloud', 'proficient', true, 20],
-  ['vercel', 'Vercel', 'cloud', 'proficient', true, 30],
-  ['aws', 'AWS', 'cloud', 'working', true, 40],
-  ['jest', 'Jest', 'testing', 'proficient', false, 10],
-  ['cypress', 'Cypress', 'testing', 'working', false, 20],
-  ['git', 'Git', 'tooling', 'expert', true, 10],
-  ['vite', 'Vite', 'tooling', 'proficient', true, 20],
-  ['webpack', 'Webpack', 'tooling', 'working', false, 30],
+  ['gitlabci', 'GitLab CI', 'cloud', 'working', false, 30],
+  ['nginx', 'Nginx', 'cloud', 'working', false, 40],
 
-  // Concept-level skills that the certifications validate. Not featured: they
-  // belong on the credential cards and in the Person JSON-LD `knowsAbout`,
-  // not in the homepage stack.
-  ['cloudarchitecture', 'Cloud Architecture', 'cloud', 'working', false, 50],
-  ['infrastructure', 'Infrastructure', 'cloud', 'working', false, 60],
-  ['security', 'Security', 'cloud', 'working', false, 70],
-  ['gcp', 'Google Cloud Platform', 'cloud', 'working', false, 80],
-  ['kubernetes', 'Kubernetes', 'cloud', 'learning', false, 90],
-  ['terraform', 'Terraform', 'cloud', 'learning', false, 100],
-  ['devops', 'DevOps', 'cloud', 'working', false, 110],
-  ['systemdesign', 'System Design', 'backend', 'working', false, 30],
-  ['microservices', 'Microservices', 'backend', 'working', false, 40],
-  ['scalability', 'Scalability', 'backend', 'working', false, 50],
-  ['e2etesting', 'E2E Testing', 'testing', 'proficient', false, 30],
-  ['testautomation', 'Test Automation', 'testing', 'proficient', false, 40],
-  ['performance', 'Web Performance', 'frontend', 'proficient', false, 70],
-  ['designpatterns', 'Design Patterns', 'frontend', 'proficient', false, 80],
-  ['uiux', 'UI/UX', 'design', 'working', false, 10],
+  ['openai', 'OpenAI API', 'ai', 'proficient', true, 10],
+  ['aiagents', 'AI Agents', 'ai', 'working', true, 20],
+
+  ['git', 'Git', 'tooling', 'expert', true, 10],
+  ['jira', 'Jira', 'tooling', 'proficient', false, 20],
+  ['scrum', 'Scrum', 'tooling', 'proficient', false, 30],
 ];
 
 const skillDocs = SKILLS.map(([id, name, category, proficiency, featured, order]) => ({
@@ -168,31 +160,39 @@ const skillDocs = SKILLS.map(([id, name, category, proficiency, featured, order]
   order,
 }));
 
-const s = (id) => ref(`skill-${id}`);
+// ---------------------------------------------------------------------------
+// Locales — the i18n plugin reads its language tabs from these.
+// ---------------------------------------------------------------------------
+const locales = [
+  { _id: 'locale-es', _type: 'locale', name: 'Español', tag: 'es', isDefault: true },
+  { _id: 'locale-en', _type: 'locale', name: 'English', tag: 'en', isDefault: false },
+];
 
 // ---------------------------------------------------------------------------
-// PUBLISHED — profile
+// Profile
 // ---------------------------------------------------------------------------
 const profile = {
   _id: 'profile',
   _type: 'profile',
   fullName: 'Jaime Sebastián',
   headline: str(
-    'Desarrollador Web Full Stack — React, Next.js y TypeScript',
-    'Full Stack Web Developer — React, Next.js and TypeScript'
+    'Full Stack Developer — React / Next.js / Node.js',
+    'Full Stack Developer — React / Next.js / Node.js'
   ),
   shortBio: text(
-    'Construyo aplicaciones web escalables con un enfoque implacable en el rendimiento y la experiencia de usuario. Especializado en el ecosistema React / Next.js / TypeScript.',
-    'I build scalable web applications with a relentless focus on performance and user experience. Specialized in the React / Next.js / TypeScript ecosystem.'
+    'Desarrollador con perfil frontend y experiencia construyendo productos web modernos con JavaScript/TypeScript, React y Node.js. Me manejo de principio a fin: implementación de UI/UX, diseño de APIs, integraciones, testing y despliegue.',
+    'Frontend-leaning developer with strong experience building modern web products using JavaScript/TypeScript, React and Node.js. Comfortable owning features end-to-end: UI/UX implementation, API design, integrations, testing and deployment.'
   ),
   bio: richText(
     blocks([
-      'Soy un arquitecto de experiencias digitales con sede en España, dedicado a fusionar la estética técnica con un rendimiento impecable.',
-      'Mi enfoque va más allá del código: entiendo que cada línea debe servir a un propósito de negocio y mejorar la vida del usuario. Me especializo en el ecosistema React / Next.js / TypeScript.',
+      'Desarrollador con perfil frontend y experiencia construyendo productos web modernos con JavaScript/TypeScript, React y Node.js.',
+      'Asumo funcionalidades de principio a fin: implementación de UI/UX, diseño de APIs, integraciones, testing y despliegue. Trabajo con foco en arquitectura limpia, bases de código mantenibles y entregar funcionalidad fiable en equipos que se mueven rápido.',
+      'En el día a día alterno entre stacks según lo que necesite cada cliente: desde aplicaciones en React y Next.js con backend en Node.js hasta eCommerce a medida sobre Shopify y desarrollos en WordPress.',
     ]),
     blocks([
-      'I am a digital experience architect based in Spain, focused on merging technical craft with impeccable performance.',
-      'My approach goes beyond code: every line should serve a business purpose and improve the user’s life. I specialize in the React / Next.js / TypeScript ecosystem.',
+      'Frontend-leaning developer with strong experience building modern web products using JavaScript/TypeScript, React and Node.js.',
+      'Comfortable owning features end-to-end: UI/UX implementation, API design, integrations, testing and deployment. Focused on clean architecture, maintainable codebases and shipping reliable features in fast-moving teams.',
+      'Day to day I move between stacks depending on what each client needs — from React and Next.js applications with Node.js backends to fully custom Shopify eCommerce and WordPress builds.',
     ])
   ),
   location: {
@@ -202,22 +202,28 @@ const profile = {
     countryCode: 'ES',
     timezone: 'Europe/Madrid',
   },
-  careerStartDate: '2020-01-01',
+  // First professional developer role: ATTOMO Digital, September 2024.
+  careerStartDate: '2024-09-01',
   availability: {
     _type: 'object',
     status: 'open',
     headline: str(
-      'Disponible para nuevas oportunidades — respondo en menos de 24 h',
-      'Available for new opportunities — I reply within 24 hours'
+      'Abierto a nuevas oportunidades — respondo en menos de 24 h',
+      'Open to new opportunities — I reply within 24 hours'
     ),
     workModes: ['remote', 'hybrid'],
-    contractTypes: ['fulltime', 'freelance'],
-    preferredRoles: ['Frontend Developer', 'Full Stack Developer', 'React Developer'],
+    contractTypes: ['fulltime'],
+    preferredRoles: [
+      'Full Stack Developer',
+      'Frontend Developer',
+      'React Developer',
+      'Next.js Developer',
+    ],
     openToRelocation: false,
   },
   spokenLanguages: [
     { _type: 'spokenLanguage', _key: key(), name: str('Español', 'Spanish'), level: 'Native' },
-    { _type: 'spokenLanguage', _key: key(), name: str('Inglés', 'English'), level: 'B2' },
+    { _type: 'spokenLanguage', _key: key(), name: str('Inglés', 'English'), level: 'C1' },
   ],
   email: 'jaiminator21@gmail.com',
   socials: [
@@ -235,28 +241,21 @@ const profile = {
       url: 'https://www.linkedin.com/in/jaime-sebasti%C3%A1n-9b4426205/',
       label: 'Jaime Sebastián',
     },
-    {
-      _type: 'socialLink',
-      _key: key(),
-      platform: 'other',
-      url: 'https://www.instagram.com/jaiminator21/',
-      label: 'Instagram',
-    },
   ],
 };
 
 // ---------------------------------------------------------------------------
-// PUBLISHED — pages
+// Pages
 // ---------------------------------------------------------------------------
 const pages = [
   {
     _id: 'page-home',
     _type: 'page',
     key: 'home',
-    title: str('Building the digital future.', 'Building the digital future.'),
+    title: str('Building the *digital* future.', 'Building the *digital* future.'),
     lead: text(
-      'Especializado en aplicaciones escalables con un enfoque implacable en el rendimiento y la experiencia de usuario.',
-      'Specialized in scalable applications with a relentless focus on performance and user experience.'
+      'Productos web modernos con React, Next.js y Node.js — de la interfaz al despliegue.',
+      'Modern web products with React, Next.js and Node.js — from interface to deployment.'
     ),
   },
   {
@@ -265,8 +264,8 @@ const pages = [
     key: 'about',
     title: str('Sobre mí', 'About me'),
     lead: text(
-      'Desarrollador front-end construyendo productos digitales. Aquí cuento quién soy, qué hago y cómo trabajo.',
-      'Front-end developer building digital products. Here is who I am, what I do and how I work.'
+      'Desarrollador full stack con perfil frontend. Aquí cuento en qué trabajo, con qué stack y cómo me organizo.',
+      'Full stack developer with a frontend lean. Here is what I work on, the stack I use and how I work.'
     ),
   },
   {
@@ -275,18 +274,18 @@ const pages = [
     key: 'projects',
     title: str('Proyectos', 'Projects'),
     lead: text(
-      'Una selección de proyectos profesionales con impacto medible en negocio y proyectos personales de exploración técnica.',
-      'A selection of professional projects with measurable business impact, plus personal projects exploring new technology.'
+      'Proyectos de cliente desarrollados en ATTOMO Digital — CRMs inmobiliarios, eCommerce a medida e integraciones — junto a proyectos personales.',
+      'Client work built at ATTOMO Digital — real estate CRMs, custom eCommerce and integrations — alongside personal projects.'
     ),
   },
   {
     _id: 'page-certifications',
     _type: 'page',
     key: 'certifications',
-    title: str('Cursos & Certificaciones', 'Courses & Certifications'),
+    title: str('Formación', 'Education'),
     lead: text(
-      'Aprendizaje continuo y validación de habilidades técnicas por organizaciones líderes de la industria.',
-      'Continuous learning and technical skills validated by leading industry organisations.'
+      'Máster en producción de videojuegos, bootcamp full stack y grado en diseño y desarrollo de videojuegos.',
+      "Master's in videogame production, a full stack bootcamp and a degree in videogame design and development."
     ),
   },
   {
@@ -295,376 +294,419 @@ const pages = [
     key: 'contact',
     title: str('Contacto', 'Contact'),
     lead: text(
-      'Disponible para nuevas oportunidades, colaboraciones y proyectos freelance. Escríbeme por el formulario o directamente al email — respondo en menos de 24 horas.',
-      'Available for new opportunities, collaborations and freelance work. Use the form or email me directly — I reply within 24 hours.'
+      'Abierto a nuevas oportunidades y colaboraciones. Escríbeme por el formulario o directamente al email — respondo en menos de 24 horas.',
+      'Open to new opportunities and collaborations. Use the form or email me directly — I reply within 24 hours.'
     ),
   },
 ];
 
 // ---------------------------------------------------------------------------
-// DRAFTS — template content the user must replace with their real history
+// Experience
 // ---------------------------------------------------------------------------
 const experiences = [
   {
-    _id: 'experience-tech-solutions',
+    _id: 'experience-attomo',
     _type: 'experience',
-    company: 'Tech Solutions Inc.',
-    role: str('Senior Frontend Developer', 'Senior Frontend Developer'),
-    startDate: '2022-01-01',
+    company: 'ATTOMO Digital',
+    companyUrl: 'https://attomo.digital',
+    role: str('Full Stack Developer', 'Full Stack Developer'),
+    startDate: '2024-09-01',
     employmentType: 'fulltime',
-    workMode: 'hybrid',
     location: 'Madrid, España',
-    teamSize: 4,
     summary: text(
-      'Liderazgo técnico en el desarrollo de plataformas SaaS B2B enfocadas en la gestión de proyectos de gran escala.',
-      'Technical leadership on B2B SaaS platforms for large-scale project management.'
+      'Transformación digital: aplicaciones web y eCommerce. Desarrollo y mantengo componentes de frontend y flujos de usuario para plataformas web y de comercio electrónico.',
+      'Digital transformation: web apps and eCommerce. I build and maintain frontend components and user flows for web and eCommerce platforms.'
     ),
     highlights: richText(
       bullets([
-        'Arquitectura y desarrollo del nuevo dashboard con React y TypeScript',
-        'Implementación de sistema de diseño compartido entre productos',
-        'Liderazgo técnico de un equipo de 4 desarrolladores frontend',
-        'Optimización de rendimiento y mejora de Core Web Vitals',
+        'Desarrollo y mantenimiento de componentes frontend y flujos de usuario para plataformas web y eCommerce, traduciendo requisitos en interfaces limpias y escalables',
+        'Entrega de funcionalidades completas, incluyendo integraciones de API, tratamiento de datos y tareas de backend cuando hace falta',
+        'Implementación y mantenimiento de integraciones de pago, lógica de promociones y campañas, y personalizaciones de plataforma',
+        'Fiabilidad mediante testing, depuración y mantenimiento continuo, mejorando la estabilidad y reduciendo incidencias en producción',
+        'Trabajo sobre múltiples stacks según las necesidades de cada cliente',
       ]),
       bullets([
-        'Architected and built the new dashboard with React and TypeScript',
-        'Shipped a design system shared across products',
-        'Technical lead for a team of 4 frontend developers',
-        'Performance work and Core Web Vitals improvements',
+        'Build and maintain frontend components and user flows for web and eCommerce platforms, translating requirements into clean, scalable UI',
+        'Deliver features end-to-end, including API integrations, data handling and backend-related tasks where needed',
+        'Implement and maintain payment integrations, promotions/campaign logic and platform customisations',
+        'Ensure reliability through testing, debugging and continuous maintenance, improving stability and reducing production issues',
+        'Work across multiple stacks depending on client needs',
       ])
     ),
-    techStack: [s('react'), s('typescript'), s('nextjs'), s('git')],
+    techStack: [
+      s('react'),
+      s('nodejs'),
+      s('nextjs'),
+      s('typescript'),
+      s('shopify'),
+      s('liquid'),
+      s('php'),
+    ],
   },
   {
-    _id: 'experience-digital-ventures',
+    _id: 'experience-flamingdogs',
     _type: 'experience',
-    company: 'Digital Ventures',
-    role: str('Full Stack Developer', 'Full Stack Developer'),
-    startDate: '2020-01-01',
-    endDate: '2022-01-01',
+    company: 'Flaming Dogs Studio',
+    role: str('Game Producer', 'Game Producer'),
+    startDate: '2024-09-01',
+    endDate: '2025-12-01',
     employmentType: 'fulltime',
-    workMode: 'onsite',
     location: 'Madrid, España',
+    teamSize: 18,
     summary: text(
-      'Desarrollo integral de soluciones e-commerce de alto tráfico para retail multicanal.',
-      'End-to-end development of high-traffic e-commerce solutions for multichannel retail.'
+      'Coordinación y seguimiento de un equipo multidisciplinar de 18 personas entre programación, arte y diseño.',
+      'Coordinated and tracked a multidisciplinary team of 18 across programming, art and design.'
     ),
     highlights: richText(
       bullets([
-        'Desarrollo full stack con Next.js y Node.js',
-        'Integración con APIs de terceros (pasarelas de pago, CRM)',
-        'Implementación de testing automatizado (Jest, Cypress)',
-        'Colaboración directa con UX/UI en iteraciones de producto',
+        'Coordinación y seguimiento de un equipo multidisciplinar de 18 personas (programadores, artistas y diseñadores)',
+        'Gestión de prioridades, asignación de tareas y entrega de hitos',
       ]),
       bullets([
-        'Full stack development with Next.js and Node.js',
-        'Third-party API integrations (payment gateways, CRM)',
-        'Automated testing with Jest and Cypress',
-        'Worked directly with UX/UI through product iterations',
+        'Coordinated and tracked a multidisciplinary team of 18 (programmers, artists and designers)',
+        'Managed priorities, task allocation and milestone delivery',
       ])
     ),
-    techStack: [s('nextjs'), s('nodejs'), s('express'), s('jest'), s('cypress')],
+    metrics: [
+      // Straight from the CV, so safe to publish.
+      metric('Equipo coordinado', 'Team coordinated', '18', true),
+    ],
+    techStack: [s('jira'), s('scrum')],
+  },
+  {
+    _id: 'experience-lmfa',
+    _type: 'experience',
+    company: 'LMFA — Liga Madrileña de Fútbol Americano',
+    role: str('Árbitro de fútbol americano', 'American Football Referee'),
+    startDate: '2021-01-01',
+    endDate: '2022-12-01',
+    employmentType: 'parttime',
+    location: 'Madrid, España',
+    summary: text(
+      'Arbitraje de fútbol americano en modalidades tackle y flag.',
+      'American football refereeing, both tackle and flag.'
+    ),
   },
 ];
 
+// ---------------------------------------------------------------------------
+// Education
+// ---------------------------------------------------------------------------
+const education = [
+  {
+    _id: 'education-master-videogames',
+    _type: 'education',
+    degree:
+      "Master's Degree in Marketing, Communication and Videogame Production (PlayStation Talents)",
+    institution: 'Voxel School — Universidad de Deusto',
+    institutionNote: str(
+      'Universidad de artes digitales adscrita a la Universidad de Deusto.',
+      'Digital arts university affiliated with Deusto University.'
+    ),
+    level: 'masters',
+    startDate: '2024-09-01',
+    endDate: '2025-06-01',
+    location: 'Madrid, España',
+    skills: [s('jira'), s('scrum')],
+  },
+  {
+    _id: 'education-bootcamp-fullstack',
+    _type: 'education',
+    degree: 'Full Stack Development Bootcamp',
+    institution: 'Upgrade Hub',
+    level: 'bootcamp',
+    startDate: '2023-09-01',
+    endDate: '2024-06-01',
+    location: 'Madrid, España',
+    summary: text(
+      'Contenidos: HTML, JavaScript, CSS, Node.js, PHP, MySQL, MongoDB, React y Angular.',
+      'Covered: HTML, JavaScript, CSS, Node.js, PHP, MySQL, MongoDB, React and Angular.'
+    ),
+    skills: [
+      s('html'),
+      s('javascript'),
+      s('css'),
+      s('nodejs'),
+      s('php'),
+      s('mysql'),
+      s('mongodb'),
+      s('react'),
+      s('angular'),
+    ],
+  },
+  {
+    _id: 'education-degree-videogames',
+    _type: 'education',
+    degree: 'Grado en Diseño y Desarrollo de Videojuegos (DDV)',
+    institution: 'UDIT — ESNE',
+    institutionNote: str(
+      'Escuela Universitaria de Diseño, Innovación y Tecnología.',
+      'University School of Design, Innovation and Technology.'
+    ),
+    level: 'degree',
+    startDate: '2019-09-01',
+    endDate: '2024-06-01',
+    location: 'Madrid, España',
+    finalProject: str(
+      'Análisis del impacto de la elección de color del avatar en el rendimiento en videojuegos.',
+      'Analysis of the impact of avatar colour choice on video game performance.'
+    ),
+  },
+  {
+    _id: 'education-school',
+    _type: 'education',
+    degree: 'Educación secundaria y bachillerato',
+    institution: "Saint Anne's School",
+    institutionNote: str(
+      'Colegio británico en Madrid; escolarización íntegramente en inglés.',
+      'British school in Madrid; schooling conducted entirely in English.'
+    ),
+    level: 'school',
+    startDate: '2018-09-01',
+    endDate: '2019-06-01',
+    location: 'Madrid, España',
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Client work at ATTOMO Digital
+// ---------------------------------------------------------------------------
 const professionalProjects = [
   {
-    _id: 'project-analytics-tiempo-real',
-    _type: 'project',
-    kind: 'professional',
-    title: str('Sistema de Analíticas en Tiempo Real', 'Real-Time Analytics System'),
-    slug: { _type: 'slug', current: 'analytics-tiempo-real' },
-    summary: text(
-      'Dashboard de analíticas en tiempo real para una plataforma SaaS B2B con más de 10.000 usuarios empresariales.',
-      'Real-time analytics dashboard for a B2B SaaS platform with over 10,000 enterprise users.'
-    ),
-    employer: weakRef('experience-tech-solutions'),
-    role: str(
-      'Tech Lead Frontend — coordinación con backend y diseño de arquitectura cliente',
-      'Frontend Tech Lead — backend coordination and client architecture design'
-    ),
-    context: text(
-      'Plataforma SaaS B2B con más de 10.000 usuarios empresariales que necesitaba mejorar su sistema de reporting.',
-      'A B2B SaaS platform with 10,000+ enterprise users that needed to improve its reporting system.'
-    ),
-    problem: text(
-      'Los usuarios tardaban hasta 5 minutos en obtener reports actualizados, generando fricción y abandono de la feature.',
-      'Users waited up to 5 minutes for updated reports, causing friction and feature abandonment.'
-    ),
-    solution: richText(
-      blocks([
-        'Implementación de un dashboard con actualizaciones en tiempo real usando WebSockets, optimización de queries y virtualización de listas grandes.',
-      ]),
-      blocks([
-        'Built a dashboard with real-time updates over WebSockets, optimised queries and virtualised large lists.',
-      ])
-    ),
-    result: text(
-      'Tiempo de carga reducido y mayor engagement con la feature.',
-      'Reduced load time and higher engagement with the feature.'
-    ),
-    metrics: [
-      metric('Tiempo de carga', 'Load time', '<2s'),
-      metric('Engagement con la feature', 'Feature engagement', '+180%'),
-      metric('Datapoints procesados', 'Datapoints processed', '100k'),
-    ],
-    techStack: [s('react'), s('typescript'), s('redis')],
+    id: 'otto',
+    title: 'OTTO',
+    slug: 'otto',
+    // Only what is known so far. The case-study fields stay empty rather than
+    // being filled with guesses about a project that is still being described.
+    summaryEs: 'Agente de IA para podcasts.',
+    summaryEn: 'An AI agent for podcasts.',
+    stack: ['aiagents', 'openai', 'nodejs', 'typescript'],
+    featured: true,
+    order: 5,
+    startDate: '2026-01-01',
+  },
+  {
+    id: 'salesprop',
+    title: 'SalesProp',
+    slug: 'salesprop',
+    summaryEs:
+      'CRM inmobiliario con integración del Catastro, login con Microsoft y Google, calendario, automatización de emails y generación de expedientes en PDF.',
+    summaryEn:
+      'A real estate CRM with Spanish Land Registry (Cadastre) integration, Microsoft/Google login, calendar, email automation and PDF records.',
+    stack: ['react', 'nodejs', 'restapi', 'nodemailer'],
     featured: true,
     order: 10,
-    startDate: '2023-01-01',
+    startDate: '2024-09-01',
   },
   {
-    _id: 'project-checkout-redesign',
-    _type: 'project',
-    kind: 'professional',
-    title: str('Rediseño del Checkout Flow', 'Checkout Flow Redesign'),
-    slug: { _type: 'slug', current: 'checkout-redesign' },
-    summary: text(
-      'Rediseño completo del proceso de compra de un e-commerce de retail, de 7 pasos a 3.',
-      'Full redesign of a retail e-commerce checkout, from 7 steps down to 3.'
-    ),
-    employer: weakRef('experience-digital-ventures'),
-    role: str(
-      'Full Stack Developer — desarrollo end-to-end del nuevo flujo',
-      'Full Stack Developer — end-to-end development of the new flow'
-    ),
-    context: text(
-      'E-commerce de retail con un 68% de abandono en el proceso de compra.',
-      'Retail e-commerce with 68% cart abandonment during checkout.'
-    ),
-    problem: text(
-      'Flujo de pago complejo con 7 pasos, múltiples validaciones lentas y UX confusa en mobile.',
-      'A complex 7-step payment flow with slow validations and confusing mobile UX.'
-    ),
-    solution: richText(
-      blocks([
-        'Simplificación a 3 pasos, validaciones asíncronas optimizadas, persistencia de datos en sesión, diseño mobile-first e integración con Stripe.',
-      ]),
-      blocks([
-        'Simplified to 3 steps with optimised async validation, session persistence, a mobile-first design and Stripe integration.',
-      ])
-    ),
-    result: text(
-      'Menor abandono y mayor conversión en el embudo de compra.',
-      'Lower abandonment and higher conversion through the purchase funnel.'
-    ),
-    metrics: [
-      metric('Abandono de carrito', 'Cart abandonment', '68% → 32%'),
-      metric('Conversión', 'Conversion rate', '+45%'),
-      metric('Tiempo medio de compra', 'Average checkout time', '8min → 3min'),
-    ],
-    techStack: [s('nextjs'), s('nodejs'), s('postgresql'), s('tailwind')],
+    id: 'gvre',
+    title: 'GVRE',
+    slug: 'gvre',
+    summaryEs: 'Web inmobiliaria y CRM desarrollados en Next.js, React.js y Node.js.',
+    summaryEn: 'Real estate website and CRM built with Next.js, React.js and Node.js.',
+    stack: ['nextjs', 'react', 'nodejs'],
+    demoUrl: 'https://gvre.es/',
     featured: true,
     order: 20,
-    startDate: '2021-01-01',
+    startDate: '2024-10-01',
   },
   {
-    _id: 'project-monolito-microfrontends',
+    id: 'carmen-navarro',
+    title: 'Carmen Navarro',
+    slug: 'carmen-navarro',
+    summaryEs:
+      'eCommerce completamente personalizado, con integración entre SADPE 3000 y Shopify y un backend propio en Node.js con NodeMailer e integración de la API de ChatGPT.',
+    summaryEn:
+      'Fully customised eCommerce with an integration between SADPE 3000 and Shopify, plus a custom Node.js backend using NodeMailer and the ChatGPT API.',
+    stack: ['shopify', 'liquid', 'nodejs', 'nodemailer', 'openai'],
+    demoUrl: 'https://carmennavarro.com/',
+    order: 30,
+    startDate: '2024-11-01',
+  },
+  {
+    id: 'spherika',
+    title: 'Spherika',
+    slug: 'spherika',
+    summaryEs:
+      'Mantenimiento web y desarrollo de nuevas funcionalidades, más un eCommerce B2B simulado con backend propio en Node.js.',
+    summaryEn:
+      'Website maintenance and new feature development, plus a simulated B2B eCommerce with a custom Node.js backend.',
+    stack: ['nodejs', 'javascript', 'shopify'],
+    demoUrl: 'https://caviarspherika.com/',
+    order: 40,
+    startDate: '2025-01-01',
+  },
+  {
+    id: 'estetic-medic-garvin',
+    title: 'Estetic Medic Garvin',
+    slug: 'estetic-medic-garvin',
+    summaryEs: 'eCommerce completamente personalizado con backend propio en Node.js.',
+    summaryEn: 'Fully customised eCommerce with a custom Node.js backend.',
+    stack: ['shopify', 'liquid', 'nodejs'],
+    demoUrl: 'https://www.esteticmedicgarvin.com/',
+    order: 50,
+    startDate: '2025-03-01',
+  },
+  {
+    id: 'your-optimum',
+    title: 'Your Optimum',
+    slug: 'your-optimum',
+    summaryEs: 'Rediseño completo del sitio web.',
+    summaryEn: 'Complete website redesign.',
+    stack: ['shopify', 'liquid', 'css'],
+    demoUrl: 'https://youroptimum.com/',
+    order: 60,
+    startDate: '2025-10-01',
+    endDate: '2025-10-01',
+  },
+  {
+    id: 'hifas-da-terra',
+    title: 'Hifas da Terra',
+    slug: 'hifas-da-terra',
+    summaryEs:
+      'Mantenimiento del eCommerce y desarrollo de nuevas funcionalidades para las tiendas B2C y B2B.',
+    summaryEn:
+      'eCommerce maintenance and new functionality for both the B2C and B2B stores.',
+    stack: ['shopify', 'liquid', 'nodejs'],
+    demoUrl: 'https://hifasdaterra.com/',
+    order: 70,
+    startDate: '2025-02-01',
+  },
+  {
+    id: 'imereti-dkf',
+    title: 'Imereti · Clínica DKF',
+    slug: 'imereti-clinica-dkf',
+    summaryEs:
+      'Desarrollo a medida en WordPress con Elementor y su mantenimiento posterior.',
+    summaryEn: 'Custom WordPress development using Elementor, and ongoing maintenance.',
+    stack: ['wordpress', 'elementor', 'php', 'css'],
+    demoUrl: 'https://imereti.es/',
+    order: 80,
+    startDate: '2025-05-01',
+  },
+].map((p) => ({
+  _id: `project-${p.id}`,
+  _type: 'project',
+  kind: 'professional',
+  title: str(p.title, p.title),
+  slug: { _type: 'slug', current: p.slug },
+  summary: text(p.summaryEs, p.summaryEn),
+  employer: weakRef('experience-attomo'),
+  techStack: p.stack.map(s),
+  featured: p.featured ?? false,
+  order: p.order,
+  ...(p.startDate ? { startDate: p.startDate } : {}),
+  ...(p.endDate ? { endDate: p.endDate } : {}),
+  ...(p.demoUrl ? { demoUrl: p.demoUrl } : {}),
+}));
+
+// ---------------------------------------------------------------------------
+// Other projects
+// ---------------------------------------------------------------------------
+const otherProjects = [
+  {
+    _id: 'project-lilith',
     _type: 'project',
     kind: 'professional',
-    title: str('Migración de Monolito a Microfrontends', 'Monolith to Microfrontends Migration'),
-    slug: { _type: 'slug', current: 'monolito-microfrontends' },
+    title: str('Lilith: Rise of the Fallen', 'Lilith: Rise of the Fallen'),
+    slug: { _type: 'slug', current: 'lilith-rise-of-the-fallen' },
     summary: text(
-      'Migración incremental de una aplicación legacy de más de 200.000 líneas a una arquitectura de microfrontends, sin downtime.',
-      'Incremental migration of a 200k+ line legacy application to a microfrontend architecture, with zero downtime.'
+      'Videojuego desarrollado en equipo. Mi papel fue de Project Manager.',
+      'Team-built video game. I worked as Project Manager.'
     ),
-    employer: weakRef('experience-tech-solutions'),
-    role: str(
-      'Senior Developer — arquitectura y migración incremental',
-      'Senior Developer — architecture and incremental migration'
-    ),
-    context: text(
-      'Aplicación legacy de 5 años con un codebase de más de 200.000 líneas difícil de mantener.',
-      'A 5-year-old legacy application with a 200k+ line codebase that was hard to maintain.'
-    ),
-    problem: text(
-      'Deploys arriesgados, equipos bloqueados entre sí, testing lento y onboarding de nuevos desarrolladores de más de 3 semanas.',
-      'Risky deploys, teams blocking each other, slow testing and 3+ weeks to onboard a new developer.'
-    ),
-    solution: richText(
-      blocks([
-        'Implementación de Module Federation con Webpack 5, CI/CD independiente por módulo y migración progresiva sin downtime.',
-      ]),
-      blocks([
-        'Module Federation with Webpack 5, independent CI/CD per module and a progressive migration with no downtime.',
-      ])
-    ),
-    result: text(
-      'Deploys más rápidos, mayor velocidad de entrega y onboarding más corto.',
-      'Faster deploys, higher delivery velocity and shorter onboarding.'
-    ),
-    metrics: [
-      metric('Tiempo de deploy', 'Deploy time', '2h → 15min'),
-      metric('Velocidad de features', 'Feature velocity', '+60%'),
-      metric('Onboarding', 'Onboarding time', '3 semanas → 1 semana'),
-    ],
-    techStack: [s('react'), s('webpack'), s('docker'), s('githubactions')],
+    role: str('Project Manager', 'Project Manager'),
+    employer: weakRef('experience-flamingdogs'),
+    techStack: [s('jira'), s('scrum')],
     featured: false,
-    order: 30,
-    startDate: '2022-06-01',
+    order: 90,
+    startDate: '2025-01-01',
+  },
+  {
+    _id: 'project-byd-fitness',
+    _type: 'project',
+    kind: 'personal',
+    title: str('BYD Fitness App', 'BYD Fitness App'),
+    slug: { _type: 'slug', current: 'byd-fitness-app' },
+    summary: text(
+      'Proyecto personal: aplicación de fitness desarrollada en Angular.',
+      'Personal project: a fitness application built with Angular.'
+    ),
+    techStack: [s('angular'), s('typescript')],
+    featured: false,
+    order: 100,
+    startDate: '2024-01-01',
   },
 ];
-
-const personalProjects = [
-  [
-    'devmetrics',
-    'DevMetrics Dashboard',
-    'Dashboard para visualizar métricas de GitHub: commits, PRs e issues. Integración con la GitHub API y gráficas interactivas.',
-    'Dashboard for GitHub metrics: commits, PRs and issues. GitHub API integration with interactive charts.',
-    ['react', 'typescript'],
-  ],
-  [
-    'taskmaster',
-    'Task Master Pro',
-    'Gestor de tareas con drag & drop, categorías personalizadas, filtros avanzados y modo offline-first con sincronización.',
-    'Task manager with drag & drop, custom categories, advanced filters and offline-first sync.',
-    ['react', 'mongodb', 'nodejs'],
-  ],
-  [
-    'perfmonitor',
-    'Performance Monitor',
-    'Herramienta CLI para analizar el rendimiento de aplicaciones web. Genera reports detallados de Core Web Vitals.',
-    'CLI tool for analysing web application performance. Generates detailed Core Web Vitals reports.',
-    ['nodejs', 'typescript'],
-  ],
-  [
-    'componentlib',
-    'Component Library',
-    'Sistema de diseño personal con componentes reutilizables, documentación interactiva y theming personalizable.',
-    'Personal design system with reusable components, interactive docs and customisable theming.',
-    ['react', 'typescript', 'vite'],
-  ],
-  [
-    'ratelimiter',
-    'API Rate Limiter',
-    'Middleware configurable de rate limiting para APIs, con distintas estrategias (token bucket, sliding window).',
-    'Configurable rate-limiting middleware for APIs, with several strategies (token bucket, sliding window).',
-    ['nodejs', 'express', 'redis'],
-  ],
-  [
-    'snippets',
-    'Code Snippet Manager',
-    'Aplicación para guardar, organizar y buscar snippets de código con syntax highlighting y etiquetas.',
-    'App to save, organise and search code snippets with syntax highlighting and tags.',
-    ['nextjs', 'postgresql'],
-  ],
-].map(([id, name, sumEs, sumEn, stack], i) => ({
-  _id: `project-${id}`,
-  _type: 'project',
-  kind: 'personal',
-  title: str(name, name),
-  slug: { _type: 'slug', current: id },
-  summary: text(sumEs, sumEn),
-  techStack: stack.map(s),
-  featured: false,
-  order: 100 + i * 10,
-}));
-
-/**
- * Certifications keep their titles and issuers but NOT the credential IDs or
- * verification URLs from the template — those were placeholders, and a
- * credential a recruiter cannot verify is worse than one you never claimed.
- */
-const certifications = [
-  [
-    'aws-solutions-architect',
-    'AWS Certified Solutions Architect – Professional',
-    'Amazon Web Services',
-    'https://aws.amazon.com/certification/',
-    '2025-03-01',
-    'professional',
-    ['aws', 'cloudarchitecture', 'infrastructure', 'security'],
-  ],
-  [
-    'meta-frontend',
-    'Meta Front-End Developer Professional Certificate',
-    'Meta',
-    'https://www.coursera.org/professional-certificates/meta-front-end-developer',
-    '2025-01-01',
-    'professional',
-    ['react', 'javascript', 'htmlcss', 'uiux'],
-  ],
-  [
-    'gcp-cloud-architect',
-    'Google Cloud Professional Cloud Architect',
-    'Google Cloud',
-    'https://cloud.google.com/learn/certification/cloud-architect',
-    '2024-11-01',
-    'professional',
-    ['gcp', 'kubernetes', 'terraform', 'devops'],
-  ],
-  [
-    'advanced-react',
-    'Advanced React Patterns & Performance',
-    'Frontend Masters',
-    'https://frontendmasters.com/',
-    '2024-09-01',
-    'expert',
-    ['react', 'performance', 'designpatterns'],
-  ],
-  [
-    'system-design',
-    'System Design & Architecture Specialization',
-    'Coursera',
-    'https://www.coursera.org/',
-    '2024-07-01',
-    'specialist',
-    ['systemdesign', 'microservices', 'scalability', 'postgresql'],
-  ],
-  [
-    'cypress-e2e',
-    'Cypress End-to-End Testing Certification',
-    'Cypress.io',
-    'https://www.cypress.io/',
-    '2024-05-01',
-    'professional',
-    ['cypress', 'e2etesting', 'testautomation', 'githubactions'],
-  ],
-].map(([id, title, issuer, issuerUrl, issueDate, level, skills]) => ({
-  _id: `certification-${id}`,
-  _type: 'certification',
-  title,
-  issuer,
-  issuerUrl,
-  issueDate,
-  level,
-  skills: skills.map(s),
-  featured: false,
-}));
 
 // ---------------------------------------------------------------------------
 // Write
 // ---------------------------------------------------------------------------
+/**
+ * Removes documents from an earlier run of THIS script that the current content
+ * no longer includes.
+ *
+ * Scoped by ID prefix on purpose: every document this script writes uses a
+ * deterministic id (`skill-*`, `project-*`, …), while anything created in the
+ * Studio gets a random UUID. That means hand-authored content can never be
+ * caught by the sweep, no matter what is in the dataset.
+ */
+const OWNED_ID = /^(skill|project|experience|education|page|locale)-|^profile$/;
+
+async function cleanupStale(keepIds) {
+  const existing = await client.fetch('*[!(_id in path("system.**"))]._id');
+
+  const stale = existing.filter((id) => {
+    const published = id.replace(/^drafts\./, '');
+    return OWNED_ID.test(published) && !keepIds.has(published);
+  });
+
+  if (!stale.length) return [];
+
+  const tx = client.transaction();
+  for (const id of stale) tx.delete(id);
+  await tx.commit();
+  return stale;
+}
+
 async function run() {
   console.log(`Seeding ${projectId}/${dataset}\n`);
 
-  const published = [...skillDocs, profile, ...pages];
-  const drafts = [
+  const docs = [
+    ...locales,
+    ...skillDocs,
+    profile,
+    ...pages,
     ...experiences,
+    ...education,
     ...professionalProjects,
-    ...personalProjects,
-    ...certifications,
+    ...otherProjects,
   ];
 
   const tx = client.transaction();
-  for (const doc of published) tx.createOrReplace(doc);
-  // Drafts carry the `drafts.` prefix, so they exist in the Studio but are not
-  // part of the published dataset the site reads.
-  for (const doc of drafts) {
-    tx.createOrReplace({ ...doc, _id: `drafts.${doc._id}` });
-  }
-
+  for (const doc of docs) tx.createOrReplace(doc);
   await tx.commit();
 
-  console.log(`published: ${published.length} documents`);
-  console.log(`  - ${skillDocs.length} skills`);
-  console.log(`  - 1 profile`);
-  console.log(`  - ${pages.length} pages`);
-  console.log(`drafts (need real data before publishing): ${drafts.length} documents`);
-  console.log(`  - ${experiences.length} experience`);
-  console.log(`  - ${professionalProjects.length} professional projects`);
-  console.log(`  - ${personalProjects.length} personal projects`);
-  console.log(`  - ${certifications.length} certifications`);
+  const removed = await cleanupStale(new Set(docs.map((d) => d._id)));
+  if (removed.length) {
+    console.log(`Removed ${removed.length} stale documents from a previous seed.\n`);
+  }
+
+  console.log(`Published ${docs.length} documents:`);
+  console.log(`  ${locales.length} locales`);
+  console.log(`  ${skillDocs.length} skills`);
+  console.log('  1 profile');
+  console.log(`  ${pages.length} pages`);
+  console.log(`  ${experiences.length} experience`);
+  console.log(`  ${education.length} education`);
+  console.log(
+    `  ${professionalProjects.length + otherProjects.length} projects` +
+      ` (${professionalProjects.length + 1} professional, 1 personal)`
+  );
+  console.log('\nStill to add by hand in the Studio:');
+  console.log('  - CV PDF (es/en) and a profile photo');
+  console.log('  - OTTO: only a one-line summary so far');
+  console.log('  - Project cover images and screenshots');
+  console.log('  - Scheduling link (Calendly / Cal.com)');
 }
 
 run().catch((err) => {

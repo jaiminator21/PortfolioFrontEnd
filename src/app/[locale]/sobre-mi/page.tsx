@@ -1,11 +1,13 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import About from '@/components/About';
+import Education from '@/components/Education';
 import Experience from '@/components/Experience';
 import Skills from '@/components/Skills';
 import { JsonLd } from '@/components/sanity/JsonLd';
 import { SITE_URL, buildMetadata } from '@/lib/metadata';
 import {
+  getEducation,
   getExperience,
   getPage,
   getPageForMetadata,
@@ -43,10 +45,11 @@ export default async function AboutPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [profile, page, experience, skills] = await Promise.all([
+  const [profile, page, experience, education, skills] = await Promise.all([
     getProfile(locale),
     getPage(locale, 'about'),
     getExperience(locale),
+    getEducation(locale),
     getSkills(locale),
   ]);
 
@@ -76,6 +79,7 @@ export default async function AboutPage({
 
       <About profile={profile} />
       <Experience items={experience} />
+      <Education items={education} />
       <Skills skills={skills} />
     </div>
   );

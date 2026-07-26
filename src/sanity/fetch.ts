@@ -4,6 +4,7 @@ import { sanityFetch } from './lib/live';
 import {
   CERTIFICATION_STATS_QUERY,
   CERTIFICATIONS_QUERY,
+  EDUCATION_QUERY,
   EXPERIENCE_QUERY,
   FEATURED_PROJECTS_QUERY,
   PAGE_QUERY,
@@ -15,6 +16,7 @@ import {
 import type {
   Certification,
   CertificationStats,
+  Education,
   Experience,
   Page,
   PageKey,
@@ -84,6 +86,14 @@ export async function getExperience(locale: string): Promise<Experience[]> {
     params: localeParams(locale),
   });
   return (data as Experience[] | null) ?? [];
+}
+
+export async function getEducation(locale: string): Promise<Education[]> {
+  const { data } = await sanityFetch({
+    query: EDUCATION_QUERY,
+    params: localeParams(locale),
+  });
+  return (data as Education[] | null) ?? [];
 }
 
 export async function getSkills(locale: string): Promise<Skill[]> {
