@@ -14,25 +14,34 @@
  * intended for seeding a new/empty dataset, not for syncing an existing one.
  *
  * Usage:
- *   SANITY_WRITE_TOKEN=sk... node studio/scripts/seed.mjs
+ *   SANITY_WRITE_TOKEN=sk... node scripts/seed.mjs
  *
  * Config via env (falls back to sanity.cli.ts values):
- *   SANITY_PROJECT_ID   default: the studio's configured project
- *   SANITY_DATASET      default: production
+ *   SANITY_PROJECT_ID   default: NEXT_PUBLIC_SANITY_PROJECT_ID from .env
+ *   SANITY_DATASET      default: NEXT_PUBLIC_SANITY_DATASET, else production
  *   SANITY_WRITE_TOKEN  required — needs Editor rights
  */
 
 import { createClient } from '@sanity/client';
 
-const projectId = process.env.SANITY_PROJECT_ID ?? 'eplgy6nk';
-const dataset = process.env.SANITY_DATASET ?? 'production';
+const projectId =
+  process.env.SANITY_PROJECT_ID ?? process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset =
+  process.env.SANITY_DATASET ?? process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production';
 const token = process.env.SANITY_WRITE_TOKEN;
+
+if (!projectId) {
+  console.error(
+    'No Sanity project configured. Set NEXT_PUBLIC_SANITY_PROJECT_ID in .env, or pass SANITY_PROJECT_ID.'
+  );
+  process.exit(1);
+}
 
 if (!token) {
   console.error(
     'SANITY_WRITE_TOKEN is not set.\n' +
       `Create one with Editor rights at https://sanity.io/manage/project/${projectId}/api\n` +
-      'then re-run:  SANITY_WRITE_TOKEN=sk... node studio/scripts/seed.mjs'
+      'then re-run:  SANITY_WRITE_TOKEN=sk... node scripts/seed.mjs'
   );
   process.exit(1);
 }
@@ -128,6 +137,25 @@ const SKILLS = [
   ['git', 'Git', 'tooling', 'expert', true, 10],
   ['vite', 'Vite', 'tooling', 'proficient', true, 20],
   ['webpack', 'Webpack', 'tooling', 'working', false, 30],
+
+  // Concept-level skills that the certifications validate. Not featured: they
+  // belong on the credential cards and in the Person JSON-LD `knowsAbout`,
+  // not in the homepage stack.
+  ['cloudarchitecture', 'Cloud Architecture', 'cloud', 'working', false, 50],
+  ['infrastructure', 'Infrastructure', 'cloud', 'working', false, 60],
+  ['security', 'Security', 'cloud', 'working', false, 70],
+  ['gcp', 'Google Cloud Platform', 'cloud', 'working', false, 80],
+  ['kubernetes', 'Kubernetes', 'cloud', 'learning', false, 90],
+  ['terraform', 'Terraform', 'cloud', 'learning', false, 100],
+  ['devops', 'DevOps', 'cloud', 'working', false, 110],
+  ['systemdesign', 'System Design', 'backend', 'working', false, 30],
+  ['microservices', 'Microservices', 'backend', 'working', false, 40],
+  ['scalability', 'Scalability', 'backend', 'working', false, 50],
+  ['e2etesting', 'E2E Testing', 'testing', 'proficient', false, 30],
+  ['testautomation', 'Test Automation', 'testing', 'proficient', false, 40],
+  ['performance', 'Web Performance', 'frontend', 'proficient', false, 70],
+  ['designpatterns', 'Design Patterns', 'frontend', 'proficient', false, 80],
+  ['uiux', 'UI/UX', 'design', 'working', false, 10],
 ];
 
 const skillDocs = SKILLS.map(([id, name, category, proficiency, featured, order]) => ({
@@ -545,7 +573,7 @@ const certifications = [
     'https://aws.amazon.com/certification/',
     '2025-03-01',
     'professional',
-    ['aws', 'docker'],
+    ['aws', 'cloudarchitecture', 'infrastructure', 'security'],
   ],
   [
     'meta-frontend',
@@ -554,7 +582,7 @@ const certifications = [
     'https://www.coursera.org/professional-certificates/meta-front-end-developer',
     '2025-01-01',
     'professional',
-    ['react', 'javascript', 'htmlcss'],
+    ['react', 'javascript', 'htmlcss', 'uiux'],
   ],
   [
     'gcp-cloud-architect',
@@ -563,7 +591,7 @@ const certifications = [
     'https://cloud.google.com/learn/certification/cloud-architect',
     '2024-11-01',
     'professional',
-    ['docker', 'githubactions'],
+    ['gcp', 'kubernetes', 'terraform', 'devops'],
   ],
   [
     'advanced-react',
@@ -572,7 +600,7 @@ const certifications = [
     'https://frontendmasters.com/',
     '2024-09-01',
     'expert',
-    ['react', 'typescript'],
+    ['react', 'performance', 'designpatterns'],
   ],
   [
     'system-design',
@@ -581,7 +609,7 @@ const certifications = [
     'https://www.coursera.org/',
     '2024-07-01',
     'specialist',
-    ['postgresql', 'redis'],
+    ['systemdesign', 'microservices', 'scalability', 'postgresql'],
   ],
   [
     'cypress-e2e',
@@ -590,7 +618,7 @@ const certifications = [
     'https://www.cypress.io/',
     '2024-05-01',
     'professional',
-    ['cypress', 'githubactions'],
+    ['cypress', 'e2etesting', 'testautomation', 'githubactions'],
   ],
 ].map(([id, title, issuer, issuerUrl, issueDate, level, skills]) => ({
   _id: `certification-${id}`,

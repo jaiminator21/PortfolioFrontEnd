@@ -7,11 +7,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "typegen": "sanity schema extract && sanity typegen generate",
+    "seed": "node --env-file-if-exists=.env scripts/seed.mjs"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.4",
+    "@sanity/icons": "^3.8.0",
     "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^6.6.0",
     "class-variance-authority": "^0.7.1",
     "framer-motion": "^12.27.5",
     "lucide-react": "^0.562.0",
@@ -20,7 +24,10 @@
     "next-sanity": "^13.2.1",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "schema-dts": "^2.0.0"
+    "sanity": "^6.6.0",
+    "sanity-plugin-internationalized-array": "^5.1.24",
+    "schema-dts": "^2.0.0",
+    "styled-components": "^6.4.4"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",

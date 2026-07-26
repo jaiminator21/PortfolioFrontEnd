@@ -3,11 +3,9 @@ import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import { internationalizedArray } from 'sanity-plugin-internationalized-array';
 
-import { schemaTypes } from './schemaTypes';
-import { structure } from './structure';
-
-const projectId = 'eplgy6nk';
-const dataset = 'production';
+import { apiVersion, dataset, projectId } from './src/sanity/env';
+import { schemaTypes } from './src/sanity/schemaTypes';
+import { structure } from './src/sanity/structure';
 
 /** Singletons must not be creatable or deletable from the Studio. */
 const SINGLETON_TYPES = new Set(['profile', 'page']);
@@ -15,6 +13,13 @@ const SINGLETON_TYPES = new Set(['profile', 'page']);
 export default defineConfig({
   name: 'default',
   title: 'Portfolio — Jaime Sebastián',
+
+  /**
+   * The Studio is mounted inside the Next app at /studio, so it shares the
+   * project's env vars and ships in the same deploy as the site.
+   */
+  basePath: '/studio',
+
   projectId,
   dataset,
 
@@ -38,7 +43,7 @@ export default defineConfig({
       defaultLanguages: ['es'],
       fieldTypes: ['string', 'text', 'simpleBlockContent'],
     }),
-    visionTool({ defaultApiVersion: '2026-02-01' }),
+    visionTool({ defaultApiVersion: apiVersion }),
   ],
 
   schema: {
