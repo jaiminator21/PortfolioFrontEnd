@@ -38,12 +38,21 @@ import type {
 
 const defaultLocale = routing.defaultLocale;
 
+/**
+ * Sent as the request tag, which is part of each cached request's URL — and so
+ * of its cache key. `sanityFetch` caches with no expiry, so bumping this is how
+ * to drop every cached response at once (for example, content published while
+ * nothing was listening for Live events) on the next deploy.
+ */
+const requestTag = 'portfolio.v2';
+
 function localeParams(locale: string) {
   return { locale, defaultLocale };
 }
 
 export async function getProfile(locale: string): Promise<Profile | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PROFILE_QUERY,
     params: localeParams(locale),
   });
@@ -53,6 +62,7 @@ export async function getProfile(locale: string): Promise<Profile | null> {
 /** Profile without stega characters, for metadata and JSON-LD. */
 export async function getProfileForMetadata(locale: string): Promise<Profile | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PROFILE_QUERY,
     params: localeParams(locale),
     stega: false,
@@ -62,6 +72,7 @@ export async function getProfileForMetadata(locale: string): Promise<Profile | n
 
 export async function getPage(locale: string, key: PageKey): Promise<Page | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PAGE_QUERY,
     params: { ...localeParams(locale), key },
   });
@@ -73,6 +84,7 @@ export async function getPageForMetadata(
   key: PageKey
 ): Promise<Page | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PAGE_QUERY,
     params: { ...localeParams(locale), key },
     stega: false,
@@ -82,6 +94,7 @@ export async function getPageForMetadata(
 
 export async function getExperience(locale: string): Promise<Experience[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: EXPERIENCE_QUERY,
     params: localeParams(locale),
   });
@@ -90,6 +103,7 @@ export async function getExperience(locale: string): Promise<Experience[]> {
 
 export async function getEducation(locale: string): Promise<Education[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: EDUCATION_QUERY,
     params: localeParams(locale),
   });
@@ -98,6 +112,7 @@ export async function getEducation(locale: string): Promise<Education[]> {
 
 export async function getSkills(locale: string): Promise<Skill[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: SKILLS_QUERY,
     params: localeParams(locale),
   });
@@ -109,6 +124,7 @@ export async function getProjectsByKind(
   kind: ProjectKind
 ): Promise<ProjectCard[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PROJECTS_BY_KIND_QUERY,
     params: { ...localeParams(locale), kind },
   });
@@ -117,6 +133,7 @@ export async function getProjectsByKind(
 
 export async function getFeaturedProjects(locale: string): Promise<ProjectCard[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: FEATURED_PROJECTS_QUERY,
     params: localeParams(locale),
   });
@@ -128,6 +145,7 @@ export async function getProject(
   slug: string
 ): Promise<ProjectDetail | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PROJECT_BY_SLUG_QUERY,
     params: { ...localeParams(locale), slug },
   });
@@ -139,6 +157,7 @@ export async function getProjectForMetadata(
   slug: string
 ): Promise<ProjectDetail | null> {
   const { data } = await sanityFetch({
+    requestTag,
     query: PROJECT_BY_SLUG_QUERY,
     params: { ...localeParams(locale), slug },
     stega: false,
@@ -148,6 +167,7 @@ export async function getProjectForMetadata(
 
 export async function getCertifications(locale: string): Promise<Certification[]> {
   const { data } = await sanityFetch({
+    requestTag,
     query: CERTIFICATIONS_QUERY,
     params: localeParams(locale),
   });
@@ -156,6 +176,7 @@ export async function getCertifications(locale: string): Promise<Certification[]
 
 export async function getCertificationStats(): Promise<CertificationStats> {
   const { data } = await sanityFetch({
+    requestTag,
     query: CERTIFICATION_STATS_QUERY,
     stega: false,
   });
