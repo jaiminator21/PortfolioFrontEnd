@@ -108,7 +108,7 @@
 }
 
 .input {
-  width: 100%;
+  width: stretch;
   padding: 1.5rem 1rem 0.6rem 1rem;
   background-color: var(--secondary);
   border: none;
