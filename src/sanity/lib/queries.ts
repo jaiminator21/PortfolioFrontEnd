@@ -1,6 +1,6 @@
 import { defineQuery } from 'next-sanity';
 
-import { image, localized, seo, techStack, verifiedMetrics } from './fragments';
+import { image, localized, seo, techStack, valueIn, verifiedMetrics } from './fragments';
 
 /**
  * Every query takes `$locale` and `$defaultLocale`. Use the helpers in
@@ -42,7 +42,7 @@ export const PROFILE_QUERY = defineQuery(/* groq */ `
     phone,
     schedulingUrl,
     "socials": socials[]{ _key, platform, url, label },
-    ${seo('fullName', 'coalesce(shortBio[_key == $locale][0].value, shortBio[_key == $defaultLocale][0].value)')}
+    ${seo('fullName', `coalesce(${valueIn('shortBio')}, ${valueIn('shortBio', '$defaultLocale')})`)}
   }
 `);
 
@@ -52,7 +52,7 @@ export const PAGE_QUERY = defineQuery(/* groq */ `
     key,
     ${localized('title')},
     ${localized('lead')},
-    ${seo('title[_key == $locale][0].value', 'lead[_key == $locale][0].value')}
+    ${seo(valueIn('title'), valueIn('lead'))}
   }
 `);
 
@@ -179,7 +179,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(/* groq */ `
       confidential != true => employer->{ company, companyUrl, ${localized('role')} },
       null
     ),
-    ${seo('title[_key == $locale][0].value', 'summary[_key == $locale][0].value')},
+    ${seo(valueIn('title'), valueIn('summary'))},
     "related": *[_type == "project" && _id != ^._id && kind == ^.kind]
       | order(featured desc, order asc)[0...3]{
         _id,

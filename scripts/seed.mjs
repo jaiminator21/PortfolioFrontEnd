@@ -54,12 +54,15 @@ const client = createClient({
 let keyCounter = 0;
 const key = () => `k${(++keyCounter).toString(36)}`;
 
-/** Localized string/text: [{_key: 'es', value}, {_key: 'en', value}] */
+/**
+ * Localized string/text: [{_key: 'es', language: 'es', value}, …]. Plugin v5
+ * reads `language`; `_key` stays the language code so it is stable across runs.
+ */
 const i18n = (kind, es, en) => {
   const type = `internationalizedArray${kind}Value`;
   const out = [];
-  if (es != null) out.push({ _type: type, _key: 'es', value: es });
-  if (en != null) out.push({ _type: type, _key: 'en', value: en });
+  if (es != null) out.push({ _type: type, _key: 'es', language: 'es', value: es });
+  if (en != null) out.push({ _type: type, _key: 'en', language: 'en', value: en });
   return out;
 };
 const str = (es, en) => i18n('String', es, en);
@@ -86,8 +89,8 @@ const bullets = (items) =>
   }));
 
 const richText = (es, en) => [
-  { _type: 'internationalizedArraySimpleBlockContentValue', _key: 'es', value: es },
-  { _type: 'internationalizedArraySimpleBlockContentValue', _key: 'en', value: en },
+  { _type: 'internationalizedArraySimpleBlockContentValue', _key: 'es', language: 'es', value: es },
+  { _type: 'internationalizedArraySimpleBlockContentValue', _key: 'en', language: 'en', value: en },
 ];
 
 const ref = (id) => ({ _type: 'reference', _ref: id });

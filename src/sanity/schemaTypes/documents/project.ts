@@ -69,8 +69,11 @@ export const projectType = defineType({
       group: 'overview',
       options: {
         source: (doc: Record<string, unknown>) => {
-          const title = doc.title as { _key: string; value: string }[] | undefined;
-          return title?.find((t) => t._key === 'en')?.value ?? title?.[0]?.value ?? '';
+          const title = doc.title as
+            | { _key: string; language?: string; value: string }[]
+            | undefined;
+          const english = title?.find((t) => (t.language ?? t._key) === 'en');
+          return english?.value ?? title?.[0]?.value ?? '';
         },
         maxLength: 70,
       },

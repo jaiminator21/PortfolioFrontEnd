@@ -3,8 +3,19 @@
  *
  * Localization is resolved in the query, not the component: every localized
  * field comes back as a plain string already falling back to the default locale,
- * so components never touch `[{_key, value}]` arrays.
+ * so components never touch `[{language, value}]` arrays.
  */
+
+/**
+ * The value of an internationalized array for one language.
+ *
+ * Plugin v5 stores the language in `language`; v4 data stored it in `_key`.
+ * Matching both keeps content rendering on either side of the data migration.
+ * Once every document has `language`, the `_key` half can go.
+ */
+export function valueIn(path: string, locale = '$locale'): string {
+  return `${path}[language == ${locale} || _key == ${locale}][0].value`;
+}
 
 /**
  * Project an internationalized array down to a single value for `$locale`,
@@ -12,7 +23,7 @@
  */
 export function localized(path: string, alias?: string): string {
   const key = alias ?? path.split('.').pop() ?? path;
-  return `"${key}": coalesce(${path}[_key == $locale][0].value, ${path}[_key == $defaultLocale][0].value)`;
+  return `"${key}": coalesce(${valueIn(path)}, ${valueIn(path, '$defaultLocale')})`;
 }
 
 /**
@@ -62,14 +73,14 @@ export const verifiedMetrics = `"metrics": metrics[verified == true]{
 export function seo(titleFallback: string, descriptionFallback: string): string {
   return `"seo": {
     "title": coalesce(
-      seo.title[_key == $locale][0].value,
-      seo.title[_key == $defaultLocale][0].value,
+      ${valueIn('seo.title')},
+      ${valueIn('seo.title', '$defaultLocale')},
       ${titleFallback},
       ""
     ),
     "description": coalesce(
-      seo.description[_key == $locale][0].value,
-      seo.description[_key == $defaultLocale][0].value,
+      ${valueIn('seo.description')},
+      ${valueIn('seo.description', '$defaultLocale')},
       ${descriptionFallback},
       ""
     ),
