@@ -1,0 +1,123 @@
+.frame {
+  margin: 0 0 3rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--secondary);
+  overflow: hidden;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.dots {
+  display: none;
+  gap: 0.35rem;
+}
+
+.dots i {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 999px;
+  background-color: var(--muted);
+}
+
+.address {
+  flex: 1;
+  min-width: 0;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background-color: var(--secondary);
+  color: var(--muted-foreground);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.viewports {
+  display: none;
+  gap: 0.25rem;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.viewportButton,
+.open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid transparent;
+  border-radius: calc(var(--radius) - 4px);
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.viewportButton:hover,
+.open:hover {
+  background-color: var(--accent);
+  color: var(--foreground);
+}
+
+.viewportButton[aria-pressed='true'] {
+  border-color: var(--border);
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: min(75vh, 44rem);
+}
+
+.stage[data-viewport='mobile'] {
+  padding: 1.5rem 0;
+  height: min(85vh, 50rem);
+}
+
+.iframe {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background-color: #ffffff;
+}
+
+.stage[data-viewport='mobile'] .iframe {
+  width: 24.375rem;
+  max-width: calc(100% - 2rem);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+}
+
+.loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+/* On a phone the page is already mobile-sized, so the toggle has nothing to add. */
+@media (min-width: 640px) {
+  .dots,
+  .viewports {
+    display: inline-flex;
+  }
+}

@@ -113,6 +113,73 @@
   color: var(--foreground);
 }
 
+.actionPrimary {
+  margin-right: auto;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* --- Categories --- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 0;
+  margin: 0 0 2rem;
+  padding: 0;
+  border: 0;
+}
+
+.filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.9rem;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  color: var(--muted-foreground);
+  background-color: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.filter:hover {
+  color: var(--foreground);
+  border-color: color-mix(in oklab, var(--foreground) 30%, transparent);
+}
+
+.filter[aria-pressed='true'] {
+  background-color: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.filterCount {
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.7;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 2.25rem;
+  margin-bottom: 1rem;
+}
+
+.category {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}
+
 /* --- Sanity rewire additions --- */
 
 .emptyState {

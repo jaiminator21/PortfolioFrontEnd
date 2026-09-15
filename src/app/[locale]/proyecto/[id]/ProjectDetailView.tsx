@@ -4,6 +4,8 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ExternalLink, Github, Lock } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { ClientLogo } from '@/components/projects/ClientLogo';
+import { LivePreview } from '@/components/projects/LivePreview';
 import { Metrics } from '@/components/recruiter/Metrics';
 import { RichText } from '@/components/sanity/RichText';
 import { SanityImage } from '@/components/sanity/SanityImage';
@@ -16,9 +18,17 @@ import styles from '@/styles/ProjectDetail.module.css';
  * half-finished project degrades to a shorter page rather than a page of
  * empty headings.
  */
-export default function ProjectDetailView({ project }: { project: ProjectDetail }) {
+export default function ProjectDetailView({
+  project,
+  canPreview,
+}: {
+  project: ProjectDetail;
+  canPreview: boolean;
+}) {
   const t = useTranslations('ProfessionalProjects');
+  const tPersonal = useTranslations('PersonalProjects');
   const locale = useLocale();
+  const showPreview = canPreview && Boolean(project.demoUrl);
 
   return (
     <div className={styles.wrapper}>
@@ -33,16 +43,40 @@ export default function ProjectDetailView({ project }: { project: ProjectDetail 
             {t('backToProjects')}
           </Link>
 
-          {project.coverImage?.url && (
+          {/* The live site replaces the cover when it can be framed. */}
+          {!showPreview && project.coverImage?.url && (
             <div className={styles.heroImage}>
               <SanityImage value={project.coverImage} priority sizes="100vw" />
             </div>
           )}
 
           <div className={styles.header}>
+            <ClientLogo client={project.client} size="lg" />
+
             <h1 className={styles.title}>{project.title}</h1>
 
+            {!project.context && project.summary ? (
+              <p className={styles.lead}>{project.summary}</p>
+            ) : null}
+
             <div className={styles.metaRow}>
+              {project.kind === 'personal' && project.category ? (
+                <span>{tPersonal(`categories.${project.category}`)}</span>
+              ) : null}
+
+              {project.client ? (
+                <span>
+                  {t('builtFor')}{' '}
+                  {project.client.url ? (
+                    <a href={project.client.url} target="_blank" rel="noopener noreferrer">
+                      {project.client.name}
+                    </a>
+                  ) : (
+                    project.client.name
+                  )}
+                </span>
+              ) : null}
+
               {project.employer ? (
                 <span>
                   {t('builtAt')}{' '}
@@ -113,6 +147,10 @@ export default function ProjectDetailView({ project }: { project: ProjectDetail 
               </div>
             ) : null}
           </div>
+
+          {showPreview && project.demoUrl ? (
+            <LivePreview url={project.demoUrl} title={project.title ?? project.slug} />
+          ) : null}
 
           {/* Verified outcomes sit above the narrative — they get read first. */}
           {project.metrics?.length ? (

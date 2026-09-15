@@ -127,9 +127,30 @@
     "stackLabel": "Stack",
     "demo": "Demo",
     "code": "Código",
-    "empty": "Aún no hay proyectos personales publicados."
+    "viewProject": "Ver proyecto",
+    "empty": "Aún no hay proyectos personales publicados.",
+    "filterLabel": "Filtrar por categoría",
+    "all": "Todos",
+    "categories": {
+      "website": "Páginas web",
+      "script": "Scripts",
+      "sideProject": "Proyectos personales",
+      "mobileApp": "Apps móviles",
+      "other": "Otros"
+    }
+  },
+  "ProjectPreview": {
+    "heading": "Vista previa en vivo",
+    "viewport": "Tamaño de pantalla",
+    "desktop": "Escritorio",
+    "mobile": "Móvil",
+    "openInNewTab": "Abrir en una pestaña nueva",
+    "loading": "Cargando la web…",
+    "iframeTitle": "Vista previa en vivo de {title}"
   },
   "ProfessionalProjects": {
+    "builtFor": "Para",
+    "viewProject": "Ver proyecto",
     "builtAt": "En",
     "confidential": "Proyecto bajo NDA",
     "empty": "Aún no hay proyectos profesionales publicados.",

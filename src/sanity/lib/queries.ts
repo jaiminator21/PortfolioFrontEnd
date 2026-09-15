@@ -87,11 +87,21 @@ export const SKILLS_QUERY = defineQuery(/* groq */ `
   }
 `);
 
+/**
+ * The client a project was built for. Like the employer, it is withheld under
+ * NDA so the name and logo never reach the page.
+ */
+const client = `"client": select(
+  confidential != true && defined(client.name) => client{ name, url, ${image('logo', 'logo', false)} },
+  null
+)`;
+
 /** Project cards. `$kind` filters professional vs personal. */
 export const PROJECTS_BY_KIND_QUERY = defineQuery(/* groq */ `
   *[_type == "project" && kind == $kind] | order(featured desc, order asc, startDate desc){
     _id,
     kind,
+    category,
     "slug": slug.current,
     ${localized('title')},
     ${localized('summary')},
@@ -105,13 +115,15 @@ export const PROJECTS_BY_KIND_QUERY = defineQuery(/* groq */ `
     ${image('coverImage')},
     ${verifiedMetrics},
     ${techStack},
+    ${client},
     "employer": select(
       confidential != true => employer->{ company, companyUrl },
       null
     ),
     "hasCaseStudy": kind == "professional" && (
       defined(context) || defined(problem) || defined(solution) || defined(result)
-    )
+    ),
+    "hasPreview": embedDemo == true && defined(demoUrl)
   }
 `);
 
@@ -141,11 +153,14 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(/* groq */ `
     ${localized('problem')},
     ${localized('solution')},
     ${localized('result')},
+    category,
     confidential,
     startDate,
     endDate,
     demoUrl,
+    "embedDemo": embedDemo == true,
     repoUrl,
+    ${client},
     ${image('coverImage')},
     "gallery": gallery[]{
       _key,

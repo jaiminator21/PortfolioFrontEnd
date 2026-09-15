@@ -139,9 +139,18 @@ export type Experience = {
 
 export type ProjectKind = 'professional' | 'personal';
 
+export type ProjectCategory = 'website' | 'script' | 'sideProject' | 'mobileApp' | 'other';
+
+export type ProjectClient = {
+  name: string;
+  url: string | null;
+  logo: SanityImage;
+} | null;
+
 export type ProjectCard = {
   _id: string;
   kind: ProjectKind;
+  category: ProjectCategory | null;
   slug: string;
   title: string | null;
   summary: string | null;
@@ -155,8 +164,10 @@ export type ProjectCard = {
   coverImage: SanityImage;
   metrics: Metric[] | null;
   techStack: Skill[] | null;
+  client?: ProjectClient;
   employer?: { company: string; companyUrl: string | null } | null;
   hasCaseStudy?: boolean;
+  hasPreview?: boolean;
 };
 
 export type ProjectDetail = {
@@ -170,11 +181,14 @@ export type ProjectDetail = {
   problem: string | null;
   solution: PortableTextBlock[] | null;
   result: string | null;
+  category: ProjectCategory | null;
   confidential: boolean | null;
   startDate: string | null;
   endDate: string | null;
   demoUrl: string | null;
+  embedDemo: boolean;
   repoUrl: string | null;
+  client: ProjectClient;
   coverImage: SanityImage;
   gallery:
     | {

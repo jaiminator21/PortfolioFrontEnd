@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { JsonLd } from '@/components/sanity/JsonLd';
 import { routing } from '@/i18n/routing';
+import { canEmbed } from '@/lib/embed';
 import { breadcrumbSchema, projectSchema } from '@/lib/jsonld';
 import { SITE_URL, buildMetadata } from '@/lib/metadata';
 import {
@@ -71,13 +72,16 @@ export default async function ProjectDetailPage({
     notFound();
   }
 
+  const canPreview =
+    project.embedDemo && project.demoUrl ? await canEmbed(project.demoUrl) : false;
+
   const projectsPath = locale === 'en' ? 'projects' : 'proyectos';
   const projectPath = locale === 'en' ? 'project' : 'proyecto';
   const url = `${SITE_URL}/${locale}/${projectPath}/${project.slug}`;
 
   return (
     <>
-      <ProjectDetailView project={project} />
+      <ProjectDetailView project={project} canPreview={canPreview} />
 
       {profile ? (
         <JsonLd data={projectSchema({ project, profile, siteUrl: SITE_URL, url })} />

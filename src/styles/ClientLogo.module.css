@@ -1,0 +1,39 @@
+.tile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  overflow: hidden;
+}
+
+.sm {
+  height: 2.25rem;
+  min-width: 2.25rem;
+  max-width: 7rem;
+  padding: 0.3rem 0.5rem;
+}
+
+.md {
+  height: 3rem;
+  min-width: 3rem;
+  max-width: 9rem;
+  padding: 0.4rem 0.65rem;
+}
+
+.lg {
+  height: 4rem;
+  min-width: 4rem;
+  max-width: 12rem;
+  padding: 0.5rem 0.85rem;
+}
+
+.image {
+  display: block;
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+}

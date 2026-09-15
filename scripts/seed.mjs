@@ -592,12 +592,18 @@ const professionalProjects = [
   slug: { _type: 'slug', current: p.slug },
   summary: text(p.summaryEs, p.summaryEn),
   employer: weakRef('experience-attomo'),
+  // The logo is uploaded by hand in the Studio; the seed only knows the name.
+  client: {
+    name: p.title,
+    ...(p.demoUrl ? { url: p.demoUrl } : {}),
+  },
   techStack: p.stack.map(s),
   featured: p.featured ?? false,
   order: p.order,
   ...(p.startDate ? { startDate: p.startDate } : {}),
   ...(p.endDate ? { endDate: p.endDate } : {}),
-  ...(p.demoUrl ? { demoUrl: p.demoUrl } : {}),
+  // The project page checks the site's framing headers before embedding it.
+  ...(p.demoUrl ? { demoUrl: p.demoUrl, embedDemo: true } : {}),
 }));
 
 // ---------------------------------------------------------------------------
@@ -625,6 +631,7 @@ const otherProjects = [
     _id: 'project-byd-fitness',
     _type: 'project',
     kind: 'personal',
+    category: 'sideProject',
     title: str('BYD Fitness App', 'BYD Fitness App'),
     slug: { _type: 'slug', current: 'byd-fitness-app' },
     summary: text(

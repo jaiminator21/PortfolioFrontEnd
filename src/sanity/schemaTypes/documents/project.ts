@@ -4,7 +4,7 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 /**
  * Covers both professional case studies and personal projects. `kind` drives
  * which fields matter: the context/problem/solution/result narrative only shows
- * for professional work, and demo/repo links only for personal work.
+ * for professional work, and `category` only for personal work.
  */
 export const projectType = defineType({
   name: 'project',
@@ -32,6 +32,28 @@ export const projectType = defineType({
       },
       initialValue: 'professional',
       validation: (rule) => rule.required(),
+    }),
+    defineField({
+      name: 'category',
+      title: 'Category',
+      description: 'Groups personal projects into filters on the projects page.',
+      type: 'string',
+      group: 'overview',
+      options: {
+        list: [
+          { title: 'Website', value: 'website' },
+          { title: 'Script', value: 'script' },
+          { title: 'Side project', value: 'sideProject' },
+          { title: 'Mobile app', value: 'mobileApp' },
+          { title: 'Other', value: 'other' },
+        ],
+        layout: 'radio',
+      },
+      hidden: ({ document }) => document?.kind !== 'personal',
+      validation: (rule) =>
+        rule.custom((value, { document }) =>
+          document?.kind === 'personal' && !value ? 'Pick a category' : true
+        ),
     }),
     defineField({
       name: 'title',
@@ -75,6 +97,30 @@ export const projectType = defineType({
       weak: true,
       group: 'overview',
       hidden: ({ document }) => document?.kind !== 'professional',
+    }),
+    defineField({
+      name: 'client',
+      title: 'Client',
+      description:
+        'The company the work was built for. Its logo shows on the card and the project page. Hidden publicly when the project is under NDA.',
+      type: 'object',
+      group: 'overview',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({ name: 'name', type: 'string' }),
+        defineField({
+          name: 'logo',
+          type: 'image',
+          description: 'SVG or a transparent PNG reads best on both light and dark themes.',
+          fields: [defineField({ name: 'alt', type: 'string', title: 'Alternative text' })],
+        }),
+        defineField({
+          name: 'url',
+          title: 'Website',
+          type: 'url',
+          validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
+        }),
+      ],
     }),
     defineField({
       name: 'techStack',
@@ -211,6 +257,16 @@ export const projectType = defineType({
       validation: (rule) => rule.uri({ scheme: ['http', 'https'] }),
     }),
     defineField({
+      name: 'embedDemo',
+      title: 'Show a live preview',
+      description:
+        'Embeds the live demo in an iframe on the project page. Many sites forbid being framed — the page checks this and falls back to the cover image and a link when they do.',
+      type: 'boolean',
+      group: 'media',
+      initialValue: false,
+      hidden: ({ document }) => !document?.demoUrl,
+    }),
+    defineField({
       name: 'repoUrl',
       title: 'Source code',
       type: 'url',
@@ -239,13 +295,18 @@ export const projectType = defineType({
     select: {
       title: 'title.0.value',
       kind: 'kind',
+      category: 'category',
+      client: 'client.name',
       featured: 'featured',
       media: 'coverImage',
+      logo: 'client.logo',
     },
-    prepare: ({ title, kind, featured, media }) => ({
+    prepare: ({ title, kind, category, client, featured, media, logo }) => ({
       title: title ?? 'Untitled project',
-      subtitle: [kind, featured ? 'featured' : null].filter(Boolean).join(' · '),
-      media,
+      subtitle: [kind, kind === 'personal' ? category : client, featured ? 'featured' : null]
+        .filter(Boolean)
+        .join(' · '),
+      media: media ?? logo,
     }),
   },
 });

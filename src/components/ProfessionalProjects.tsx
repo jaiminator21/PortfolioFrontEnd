@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, ExternalLink, Lock } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
+import { ClientLogo } from '@/components/projects/ClientLogo';
 import { Metrics } from '@/components/recruiter/Metrics';
 import { SanityImage } from '@/components/sanity/SanityImage';
 import type { ProjectCard } from '@/sanity/types';
@@ -53,32 +54,61 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
                       />
                     ) : (
                       <div className={styles.imageFallback}>
-                        <ExternalLink size={48} />
+                        {project.client?.logo?.url ? (
+                          <ClientLogo client={project.client} size="lg" />
+                        ) : (
+                          <ExternalLink size={48} />
+                        )}
                       </div>
                     )}
                   </div>
 
                   <div className={styles.cardBody}>
-                    <h2 className={styles.cardTitle}>{project.title}</h2>
+                    <div className={styles.titleRow}>
+                      {project.coverImage?.url ? (
+                        <ClientLogo client={project.client} size="md" />
+                      ) : null}
+                      <h2 className={styles.cardTitle}>{project.title}</h2>
+                    </div>
 
-                    {project.employer ? (
+                    {project.client || project.employer || project.confidential ? (
                       <p className={styles.employer}>
-                        {t('builtAt')}{' '}
-                        {project.employer.companyUrl ? (
-                          <a
-                            href={project.employer.companyUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {project.employer.company}
-                          </a>
-                        ) : (
-                          project.employer.company
-                        )}
-                      </p>
-                    ) : project.confidential ? (
-                      <p className={styles.employer}>
-                        <Lock size={13} aria-hidden="true" /> {t('confidential')}
+                        {project.client ? (
+                          <span>
+                            {t('builtFor')}{' '}
+                            {project.client.url ? (
+                              <a
+                                href={project.client.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {project.client.name}
+                              </a>
+                            ) : (
+                              project.client.name
+                            )}
+                          </span>
+                        ) : null}
+                        {project.employer ? (
+                          <span>
+                            {t('builtAt')}{' '}
+                            {project.employer.companyUrl ? (
+                              <a
+                                href={project.employer.companyUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                {project.employer.company}
+                              </a>
+                            ) : (
+                              project.employer.company
+                            )}
+                          </span>
+                        ) : project.confidential ? (
+                          <span>
+                            <Lock size={13} aria-hidden="true" /> {t('confidential')}
+                          </span>
+                        ) : null}
                       </p>
                     ) : null}
 
@@ -112,6 +142,17 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
                         className={styles.cta}
                       >
                         {t('caseStudyCta')}
+                        <ArrowRight size={20} />
+                      </Link>
+                    ) : project.hasPreview ? (
+                      <Link
+                        href={{
+                          pathname: '/proyecto/[id]',
+                          params: { id: project.slug },
+                        }}
+                        className={styles.cta}
+                      >
+                        {t('viewProject')}
                         <ArrowRight size={20} />
                       </Link>
                     ) : null}
