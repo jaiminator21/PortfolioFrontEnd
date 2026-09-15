@@ -211,8 +211,8 @@ const profile = {
     _type: 'object',
     status: 'open',
     headline: str(
-      'Abierto a nuevas oportunidades — respondo en menos de 24 h',
-      'Open to new opportunities — I reply within 24 hours'
+      'Abierto a nuevas oportunidades',
+      'Open to new opportunities'
     ),
     workModes: ['remote', 'hybrid'],
     contractTypes: ['fulltime'],
