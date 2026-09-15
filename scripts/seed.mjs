@@ -481,9 +481,10 @@ const professionalProjects = [
     slug: 'otto',
     // Only what is known so far. The case-study fields stay empty rather than
     // being filled with guesses about a project that is still being described.
-    summaryEs: 'Agente de IA para podcasts.',
-    summaryEn: 'An AI agent for podcasts.',
+    summaryEs: 'SaaS para podcasts basado en agentes de IA.',
+    summaryEn: 'A SaaS for podcasts powered by AI agents.',
     stack: ['aiagents', 'openai', 'nodejs', 'typescript'],
+    demoUrl: 'https://otto-dev.netlify.app/',
     featured: true,
     order: 5,
     startDate: '2026-01-01',
@@ -497,6 +498,7 @@ const professionalProjects = [
     summaryEn:
       'A real estate CRM with Spanish Land Registry (Cadastre) integration, Microsoft/Google login, calendar, email automation and PDF records.',
     stack: ['react', 'nodejs', 'restapi', 'nodemailer'],
+    demoUrl: 'https://salespropweb.netlify.app/',
     featured: true,
     order: 10,
     startDate: '2024-09-01',
@@ -518,10 +520,10 @@ const professionalProjects = [
     title: 'Carmen Navarro',
     slug: 'carmen-navarro',
     summaryEs:
-      'eCommerce completamente personalizado, con integración entre SADPE 3000 y Shopify y un backend propio en Node.js con NodeMailer e integración de la API de ChatGPT.',
+      'Migración de WordPress a Shopify y conector personalizado con SADPE (CRM especializado con control de stock).',
     summaryEn:
-      'Fully customised eCommerce with an integration between SADPE 3000 and Shopify, plus a custom Node.js backend using NodeMailer and the ChatGPT API.',
-    stack: ['shopify', 'liquid', 'nodejs', 'nodemailer', 'openai'],
+      'Migration from WordPress to Shopify and a custom connector to SADPE (a specialised CRM with stock control).',
+    stack: ['shopify', 'liquid', 'nodejs', 'nodemailer', 'openai', 'wordpress'],
     demoUrl: 'https://carmennavarro.com/',
     order: 30,
     startDate: '2024-11-01',
@@ -531,9 +533,9 @@ const professionalProjects = [
     title: 'Spherika',
     slug: 'spherika',
     summaryEs:
-      'Mantenimiento web y desarrollo de nuevas funcionalidades, más un eCommerce B2B simulado con backend propio en Node.js.',
+      'Mantenimiento web y desarrollos ad hoc, incluido un eCommerce B2B simulado con backend propio en Node.js.',
     summaryEn:
-      'Website maintenance and new feature development, plus a simulated B2B eCommerce with a custom Node.js backend.',
+      'Website maintenance and bespoke development, including a simulated B2B eCommerce with a custom Node.js backend.',
     stack: ['nodejs', 'javascript', 'shopify'],
     demoUrl: 'https://caviarspherika.com/',
     order: 40,
@@ -566,10 +568,8 @@ const professionalProjects = [
     id: 'hifas-da-terra',
     title: 'Hifas da Terra',
     slug: 'hifas-da-terra',
-    summaryEs:
-      'Mantenimiento del eCommerce y desarrollo de nuevas funcionalidades para las tiendas B2C y B2B.',
-    summaryEn:
-      'eCommerce maintenance and new functionality for both the B2C and B2B stores.',
+    summaryEs: 'Mantenimiento del eCommerce y desarrollos ad hoc para las tiendas B2C y B2B.',
+    summaryEn: 'eCommerce maintenance and bespoke development for both the B2C and B2B stores.',
     stack: ['shopify', 'liquid', 'nodejs'],
     demoUrl: 'https://hifasdaterra.com/',
     order: 70,
@@ -577,8 +577,8 @@ const professionalProjects = [
   },
   {
     id: 'imereti-dkf',
-    title: 'Imereti · Clínica DKF',
-    slug: 'imereti-clinica-dkf',
+    title: 'Imereti',
+    slug: 'imereti',
     summaryEs:
       'Desarrollo a medida en WordPress con Elementor y su mantenimiento posterior.',
     summaryEn: 'Custom WordPress development using Elementor, and ongoing maintenance.',
@@ -587,6 +587,29 @@ const professionalProjects = [
     order: 80,
     startDate: '2025-05-01',
   },
+  {
+    id: 'clinica-dkf',
+    title: 'Clínica DKF',
+    slug: 'clinica-dkf',
+    summaryEs:
+      'Desarrollo a medida en WordPress con Elementor y su mantenimiento posterior.',
+    summaryEn: 'Custom WordPress development using Elementor, and ongoing maintenance.',
+    stack: ['wordpress', 'elementor', 'php', 'css'],
+    demoUrl: 'https://clinicadkf.com/',
+    order: 85,
+  },
+  {
+    id: 'random-college',
+    title: 'Random College',
+    slug: 'random-college',
+    summaryEs: 'Plataforma de cursos online.',
+    summaryEn: 'An online course platform.',
+    stack: [],
+    demoUrl: 'https://www.random-college.com/',
+    // Not known to be ATTOMO work, so no employer is claimed.
+    employer: null,
+    order: 95,
+  },
 ].map((p) => ({
   _id: `project-${p.id}`,
   _type: 'project',
@@ -594,7 +617,7 @@ const professionalProjects = [
   title: str(p.title, p.title),
   slug: { _type: 'slug', current: p.slug },
   summary: text(p.summaryEs, p.summaryEn),
-  employer: weakRef('experience-attomo'),
+  ...(p.employer === null ? {} : { employer: weakRef('experience-attomo') }),
   // The logo is uploaded by hand in the Studio; the seed only knows the name.
   client: {
     name: p.title,
