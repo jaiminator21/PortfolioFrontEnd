@@ -263,10 +263,10 @@ export const projectType = defineType({
       name: 'embedDemo',
       title: 'Show a live preview',
       description:
-        'Embeds the live demo in an iframe on the project page. Many sites forbid being framed — the page checks this and falls back to the cover image and a link when they do.',
+        'Embeds the live demo in an iframe on the projects list and the project page. On unless switched off. Many sites forbid being framed — the site checks this and falls back to the cover image and a link when they do.',
       type: 'boolean',
       group: 'media',
-      initialValue: false,
+      initialValue: true,
       hidden: ({ document }) => !document?.demoUrl,
     }),
     defineField({

@@ -166,8 +166,10 @@ export type ProjectCard = {
   techStack: Skill[] | null;
   client?: ProjectClient;
   employer?: { company: string; companyUrl: string | null } | null;
+  embedDemo?: boolean;
   hasCaseStudy?: boolean;
-  hasPreview?: boolean;
+  /** Set on the server once the demo site is confirmed to allow framing. */
+  canPreview?: boolean;
 };
 
 export type ProjectDetail = {

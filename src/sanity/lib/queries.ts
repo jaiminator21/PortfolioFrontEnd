@@ -111,6 +111,7 @@ export const PROJECTS_BY_KIND_QUERY = defineQuery(/* groq */ `
     startDate,
     endDate,
     demoUrl,
+    "embedDemo": embedDemo != false,
     repoUrl,
     ${image('coverImage')},
     ${verifiedMetrics},
@@ -122,9 +123,7 @@ export const PROJECTS_BY_KIND_QUERY = defineQuery(/* groq */ `
     ),
     "hasCaseStudy": kind == "professional" && (
       defined(context) || defined(problem) || defined(solution) || defined(result)
-    ),
-    "hasPreview": embedDemo == true && defined(demoUrl)
-  }
+    )  }
 `);
 
 /** Featured work for the homepage, across both kinds. */
@@ -158,7 +157,7 @@ export const PROJECT_BY_SLUG_QUERY = defineQuery(/* groq */ `
     startDate,
     endDate,
     demoUrl,
-    "embedDemo": embedDemo == true,
+    "embedDemo": embedDemo != false,
     repoUrl,
     ${client},
     ${image('coverImage')},

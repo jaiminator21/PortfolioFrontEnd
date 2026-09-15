@@ -46,7 +46,20 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
               >
                 <div className={styles.cardGrid}>
                   <div className={styles.imageWrap}>
-                    {project.coverImage?.url ? (
+                    {/* A scaled-down, non-interactive view of the live site.
+                        The project page has the full, usable preview. */}
+                    {project.canPreview && project.demoUrl ? (
+                      <iframe
+                        src={project.demoUrl}
+                        title={project.title ?? project.slug}
+                        loading="lazy"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        sandbox="allow-scripts allow-same-origin"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        className={styles.livePreview}
+                      />
+                    ) : project.coverImage?.url ? (
                       <SanityImage
                         value={project.coverImage}
                         className={styles.image}
@@ -65,7 +78,7 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
 
                   <div className={styles.cardBody}>
                     <div className={styles.titleRow}>
-                      {project.coverImage?.url ? (
+                      {project.coverImage?.url || project.canPreview ? (
                         <ClientLogo client={project.client} size="md" />
                       ) : null}
                       <h2 className={styles.cardTitle}>{project.title}</h2>
@@ -144,7 +157,7 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
                         {t('caseStudyCta')}
                         <ArrowRight size={20} />
                       </Link>
-                    ) : project.hasPreview ? (
+                    ) : (
                       <Link
                         href={{
                           pathname: '/proyecto/[id]',
@@ -155,7 +168,7 @@ export default function ProfessionalProjects({ projects }: { projects: ProjectCa
                         {t('viewProject')}
                         <ArrowRight size={20} />
                       </Link>
-                    ) : null}
+                    )}
                   </div>
                 </div>
               </motion.article>

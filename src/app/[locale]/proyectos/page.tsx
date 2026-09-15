@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import ProjectsHub from '@/components/ProjectsHub';
 import { JsonLd } from '@/components/sanity/JsonLd';
+import { canEmbed } from '@/lib/embed';
 import { projectListSchema } from '@/lib/jsonld';
 import { SITE_URL, buildMetadata } from '@/lib/metadata';
 import {
@@ -39,11 +40,21 @@ export default async function ProjectsPage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [page, professional, personal] = await Promise.all([
+  const [page, projects, personal] = await Promise.all([
     getPage(locale, 'projects'),
     getProjectsByKind(locale, 'professional'),
     getProjectsByKind(locale, 'personal'),
   ]);
+
+  // Checked in parallel and cached for a day (see canEmbed), so the list pays
+  // for the header checks once, not on every request.
+  const professional = await Promise.all(
+    projects.map(async (project) => ({
+      ...project,
+      canPreview:
+        project.embedDemo && project.demoUrl ? await canEmbed(project.demoUrl) : false,
+    }))
+  );
 
   return (
     <div className={styles.wrapper}>

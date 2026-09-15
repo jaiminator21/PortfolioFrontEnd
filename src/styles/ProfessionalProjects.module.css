@@ -73,6 +73,21 @@
   transform: scale(1.05);
 }
 
+/* Rendered at three times the box size and scaled down, so the site lays out
+   at a desktop width instead of squeezing into the card. */
+.livePreview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 300%;
+  border: 0;
+  background-color: #ffffff;
+  transform: scale(0.3333);
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
 .imageFallback {
   width: 100%;
   height: 100%;
